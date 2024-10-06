@@ -39,6 +39,8 @@ extern "C" {
 #include "lauxlib.h"
 }
 
+#include "ElunaCompat.h"
+
 #define MAR_TREF 1
 #define MAR_TVAL 2
 #define MAR_TUSR 3
