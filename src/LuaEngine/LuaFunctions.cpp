@@ -31,6 +31,7 @@ extern "C"
 #include "ItemMethods.h"
 #include "WorldPacketMethods.h"
 #include "SpellMethods.h"
+#include "SpellInfoMethods.h"
 #include "QuestMethods.h"
 #include "MapMethods.h"
 #include "CorpseMethods.h"
@@ -41,128 +42,7 @@ extern "C"
 #include "ItemTemplateMethods.h"
 #include "RollMethods.h"
 
-luaL_Reg GlobalMethods[] =
-{
-    // Hooks
-    { "RegisterPacketEvent", &LuaGlobalFunctions::RegisterPacketEvent },
-    { "RegisterServerEvent", &LuaGlobalFunctions::RegisterServerEvent },
-    { "RegisterPlayerEvent", &LuaGlobalFunctions::RegisterPlayerEvent },
-    { "RegisterGuildEvent", &LuaGlobalFunctions::RegisterGuildEvent },
-    { "RegisterGroupEvent", &LuaGlobalFunctions::RegisterGroupEvent },
-    { "RegisterCreatureEvent", &LuaGlobalFunctions::RegisterCreatureEvent },
-    { "RegisterUniqueCreatureEvent", &LuaGlobalFunctions::RegisterUniqueCreatureEvent },
-    { "RegisterCreatureGossipEvent", &LuaGlobalFunctions::RegisterCreatureGossipEvent },
-    { "RegisterGameObjectEvent", &LuaGlobalFunctions::RegisterGameObjectEvent },
-    { "RegisterGameObjectGossipEvent", &LuaGlobalFunctions::RegisterGameObjectGossipEvent },
-    { "RegisterItemEvent", &LuaGlobalFunctions::RegisterItemEvent },
-    { "RegisterItemGossipEvent", &LuaGlobalFunctions::RegisterItemGossipEvent },
-    { "RegisterPlayerGossipEvent", &LuaGlobalFunctions::RegisterPlayerGossipEvent },
-    { "RegisterBattlegroundEvent", &LuaGlobalFunctions::RegisterBattlegroundEvent },
-    { "RegisterMapEvent", &LuaGlobalFunctions::RegisterMapEvent },
-    { "RegisterInstanceEvent", &LuaGlobalFunctions::RegisterInstanceEvent },
 
-    { "ClearBattleGroundEvents", &LuaGlobalFunctions::ClearBattleGroundEvents },
-    { "ClearCreatureEvents", &LuaGlobalFunctions::ClearCreatureEvents },
-    { "ClearUniqueCreatureEvents", &LuaGlobalFunctions::ClearUniqueCreatureEvents },
-    { "ClearCreatureGossipEvents", &LuaGlobalFunctions::ClearCreatureGossipEvents },
-    { "ClearGameObjectEvents", &LuaGlobalFunctions::ClearGameObjectEvents },
-    { "ClearGameObjectGossipEvents", &LuaGlobalFunctions::ClearGameObjectGossipEvents },
-    { "ClearGroupEvents", &LuaGlobalFunctions::ClearGroupEvents },
-    { "ClearGuildEvents", &LuaGlobalFunctions::ClearGuildEvents },
-    { "ClearItemEvents", &LuaGlobalFunctions::ClearItemEvents },
-    { "ClearItemGossipEvents", &LuaGlobalFunctions::ClearItemGossipEvents },
-    { "ClearPacketEvents", &LuaGlobalFunctions::ClearPacketEvents },
-    { "ClearPlayerEvents", &LuaGlobalFunctions::ClearPlayerEvents },
-    { "ClearPlayerGossipEvents", &LuaGlobalFunctions::ClearPlayerGossipEvents },
-    { "ClearServerEvents", &LuaGlobalFunctions::ClearServerEvents },
-    { "ClearMapEvents", &LuaGlobalFunctions::ClearMapEvents },
-    { "ClearInstanceEvents", &LuaGlobalFunctions::ClearInstanceEvents },
-
-    // Getters
-    { "GetLuaEngine", &LuaGlobalFunctions::GetLuaEngine },
-    { "GetCoreName", &LuaGlobalFunctions::GetCoreName },
-    { "GetRealmID", &LuaGlobalFunctions::GetRealmID },
-    { "GetCoreVersion", &LuaGlobalFunctions::GetCoreVersion },
-    { "GetCoreExpansion", &LuaGlobalFunctions::GetCoreExpansion },
-    { "GetStateMap", &LuaGlobalFunctions::GetStateMap },
-    { "GetStateMapId", &LuaGlobalFunctions::GetStateMapId },
-    { "GetStateInstanceId", &LuaGlobalFunctions::GetStateInstanceId },
-    { "GetQuest", &LuaGlobalFunctions::GetQuest },
-    { "GetPlayerByGUID", &LuaGlobalFunctions::GetPlayerByGUID },
-    { "GetPlayerByName", &LuaGlobalFunctions::GetPlayerByName },
-    { "GetGameTime", &LuaGlobalFunctions::GetGameTime },
-    { "GetPlayersInWorld", &LuaGlobalFunctions::GetPlayersInWorld },
-    { "GetGuildByName", &LuaGlobalFunctions::GetGuildByName },
-    { "GetGuildByLeaderGUID", &LuaGlobalFunctions::GetGuildByLeaderGUID },
-    { "GetPlayerCount", &LuaGlobalFunctions::GetPlayerCount },
-    { "GetPlayerGUID", &LuaGlobalFunctions::GetPlayerGUID },
-    { "GetItemGUID", &LuaGlobalFunctions::GetItemGUID },
-    { "GetItemTemplate", &LuaGlobalFunctions::GetItemTemplate },
-    { "GetObjectGUID", &LuaGlobalFunctions::GetObjectGUID },
-    { "GetUnitGUID", &LuaGlobalFunctions::GetUnitGUID },
-    { "GetGUIDLow", &LuaGlobalFunctions::GetGUIDLow },
-    { "GetGUIDType", &LuaGlobalFunctions::GetGUIDType },
-    { "GetGUIDEntry", &LuaGlobalFunctions::GetGUIDEntry },
-    { "GetAreaName", &LuaGlobalFunctions::GetAreaName },
-    { "GetOwnerHalaa", &LuaGlobalFunctions::GetOwnerHalaa },
-    { "bit_not", &LuaGlobalFunctions::bit_not },
-    { "bit_xor", &LuaGlobalFunctions::bit_xor },
-    { "bit_rshift", &LuaGlobalFunctions::bit_rshift },
-    { "bit_lshift", &LuaGlobalFunctions::bit_lshift },
-    { "bit_or", &LuaGlobalFunctions::bit_or },
-    { "bit_and", &LuaGlobalFunctions::bit_and },
-    { "GetItemLink", &LuaGlobalFunctions::GetItemLink },
-    { "GetMapById", &LuaGlobalFunctions::GetMapById },
-    { "GetCurrTime", &LuaGlobalFunctions::GetCurrTime },
-    { "GetTimeDiff", &LuaGlobalFunctions::GetTimeDiff },
-    { "PrintInfo", &LuaGlobalFunctions::PrintInfo },
-    { "PrintError", &LuaGlobalFunctions::PrintError },
-    { "PrintDebug", &LuaGlobalFunctions::PrintDebug },
-    { "GetActiveGameEvents", &LuaGlobalFunctions::GetActiveGameEvents },
-
-    // Boolean
-    { "IsCompatibilityMode", &LuaGlobalFunctions::IsCompatibilityMode },
-    { "IsInventoryPos", &LuaGlobalFunctions::IsInventoryPos },
-    { "IsEquipmentPos", &LuaGlobalFunctions::IsEquipmentPos },
-    { "IsBankPos", &LuaGlobalFunctions::IsBankPos },
-    { "IsBagPos", &LuaGlobalFunctions::IsBagPos },
-    { "IsGameEventActive", &LuaGlobalFunctions::IsGameEventActive },
-
-    // Other
-    { "ReloadEluna", &LuaGlobalFunctions::ReloadEluna },
-    { "RunCommand", &LuaGlobalFunctions::RunCommand },
-    { "SendWorldMessage", &LuaGlobalFunctions::SendWorldMessage },
-    { "WorldDBQuery", &LuaGlobalFunctions::WorldDBQuery },
-    { "WorldDBQueryAsync", &LuaGlobalFunctions::WorldDBQueryAsync },
-    { "WorldDBExecute", &LuaGlobalFunctions::WorldDBExecute },
-    { "CharDBQuery", &LuaGlobalFunctions::CharDBQuery },
-    { "CharDBQueryAsync", &LuaGlobalFunctions::CharDBQueryAsync },
-    { "CharDBExecute", &LuaGlobalFunctions::CharDBExecute },
-    { "AuthDBQuery", &LuaGlobalFunctions::AuthDBQuery },
-    { "AuthDBQueryAsync", &LuaGlobalFunctions::AuthDBQueryAsync },
-    { "AuthDBExecute", &LuaGlobalFunctions::AuthDBExecute },
-    { "CreateLuaEvent", &LuaGlobalFunctions::CreateLuaEvent },
-    { "RemoveEventById", &LuaGlobalFunctions::RemoveEventById },
-    { "RemoveEvents", &LuaGlobalFunctions::RemoveEvents },
-    { "PerformIngameSpawn", &LuaGlobalFunctions::PerformIngameSpawn },
-    { "CreatePacket", &LuaGlobalFunctions::CreatePacket },
-    { "AddVendorItem", &LuaGlobalFunctions::AddVendorItem },
-    { "VendorRemoveItem", &LuaGlobalFunctions::VendorRemoveItem },
-    { "VendorRemoveAllItems", &LuaGlobalFunctions::VendorRemoveAllItems },
-    { "Kick", &LuaGlobalFunctions::Kick },
-    { "Ban", &LuaGlobalFunctions::Ban },
-    { "SaveAllPlayers", &LuaGlobalFunctions::SaveAllPlayers },
-    { "SendMail", &LuaGlobalFunctions::SendMail },
-    { "AddTaxiPath", &LuaGlobalFunctions::AddTaxiPath },
-    { "CreateInt64", &LuaGlobalFunctions::CreateLongLong },
-    { "CreateUint64", &LuaGlobalFunctions::CreateULongLong },
-    { "StartGameEvent", &LuaGlobalFunctions::StartGameEvent },
-    { "StopGameEvent", &LuaGlobalFunctions::StopGameEvent },
-    { "HttpRequest", &LuaGlobalFunctions::HttpRequest },
-    { "SetOwnerHalaa", &LuaGlobalFunctions::SetOwnerHalaa },
-
-    { NULL, NULL }
-};
 
 ElunaRegister<Object> ObjectMethods[] =
 {
@@ -1085,32 +965,6 @@ ElunaRegister<Aura> AuraMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<Spell> SpellMethods[] =
-{
-    // Getters
-    { "GetCaster", &LuaSpell::GetCaster },
-    { "GetCastTime", &LuaSpell::GetCastTime },
-    { "GetEntry", &LuaSpell::GetEntry },
-    { "GetDuration", &LuaSpell::GetDuration },
-    { "GetPowerCost", &LuaSpell::GetPowerCost },
-    { "GetReagentCost", &LuaSpell::GetReagentCost },
-    { "GetTargetDest", &LuaSpell::GetTargetDest },
-    { "GetTarget", &LuaSpell::GetTarget },
-
-    // Setters
-    { "SetAutoRepeat", &LuaSpell::SetAutoRepeat },
-
-    // Boolean
-    { "IsAutoRepeat", &LuaSpell::IsAutoRepeat },
-
-    // Other
-    { "Cancel", &LuaSpell::Cancel },
-    { "Cast", &LuaSpell::Cast },
-    { "Finish", &LuaSpell::Finish },
-
-    { NULL, NULL }
-};
-
 ElunaRegister<Quest> QuestMethods[] =
 {
     // Getters
@@ -1443,7 +1297,7 @@ template<> int ElunaTemplate<long long>::ToString(lua_State* L)
 
 void RegisterFunctions(Eluna* E)
 {
-    ElunaGlobal::SetMethods(E, GlobalMethods);
+    ElunaGlobal::SetMethods(E, LuaGlobalFunctions::GlobalMethods);
 
     ElunaTemplate<Object>::Register(E, "Object");
     ElunaTemplate<Object>::SetMethods(E, ObjectMethods);
@@ -1503,7 +1357,10 @@ void RegisterFunctions(Eluna* E)
     ElunaTemplate<Aura>::SetMethods(E, AuraMethods);
 
     ElunaTemplate<Spell>::Register(E, "Spell");
-    ElunaTemplate<Spell>::SetMethods(E, SpellMethods);
+    ElunaTemplate<Spell>::SetMethods(E, LuaSpell::SpellMethods);
+
+    ElunaTemplate<SpellInfo>::Register(E, "SpellInfo");
+    ElunaTemplate<SpellInfo>::SetMethods(E, LuaSpellInfo::SpellInfoMethods);
 
     ElunaTemplate<Quest>::Register(E, "Quest");
     ElunaTemplate<Quest>::SetMethods(E, QuestMethods);
