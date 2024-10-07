@@ -4425,89 +4425,342 @@ namespace LuaPlayer
         return 0;
     }
 
-    /*int BindToInstance(lua_State* L, Player* player)
+    /**
+     *  Returns the [Player] spells list
+     *
+     * @return table playerSpells
+     */
+    int GetSpells(lua_State* L, Player* player)
     {
-    player->BindToInstance();
-    return 0;
-    }*/
+        std::list<uint32> list;
+        lua_createtable(L, list.size(), 0);
+        int tbl = lua_gettop(L);
+        uint32 i = 0;
 
-    /*int AddTalent(lua_State* L, Player* player)
+        PlayerSpellMap spellMap = player->GetSpellMap();
+        for (PlayerSpellMap::const_iterator itr = spellMap.begin(); itr != spellMap.end(); ++itr)
+        {
+            SpellInfo const* spellInfo = sSpellMgr->AssertSpellInfo(itr->first);
+            Eluna::Push(L, spellInfo->Id);
+            lua_rawseti(L, tbl, ++i);
+        }
+
+        lua_settop(L, tbl);
+        return 1;
+    }
+
+    /*
+     *  Returns bool if [Player] has specified glyph
+     *
+     *  @param int glyphId : entry of the glyph
+     *  @return bool has_glyph
+     */
+    int HasGlyph(lua_State* L, Player* player)
     {
-    uint32 spellId = Eluna::CHECKVAL<uint32>(L, 2);
-    uint8 spec = Eluna::CHECKVAL<uint8>(L, 3);
-    bool learning = Eluna::CHECKVAL<bool>(L, 4, true);
-    if (spec >= MAX_TALENT_SPECS)
-    Eluna::Push(L, false);
-    else
-    Eluna::Push(L, player->AddTalent(spellId, spec, learning));
-    return 1;
-    }*/
+        int glyphId = Eluna::CHECKVAL<int>(L, 2);
+        bool has_glyph = false;
 
-    /*int GainSpellComboPoints(lua_State* L, Player* player)
+        GlyphPropertiesEntry const* glyphEntry = sGlyphPropertiesStore.LookupEntry(glyphId);
+        if (!glyphEntry)
+            has_glyph = false;
+        else
+        {
+            uint32 spellId = glyphEntry->SpellId;
+            has_glyph = player->HasAura(spellId);
+        }
+
+        Eluna::Push(L, has_glyph);
+        return 1;
+    }
+
+    /**
+     *  Returns the [Player] glyphs list
+     *
+     * @return table playerGlyphs : a table containing the glyph slot and the glyph id assigned to it
+     */
+    int GetGlyphs(lua_State* L, Player* player)
     {
-    int8 count = Eluna::CHECKVAL<int8>(L, 2);
+        lua_newtable(L);
 
-    player->GainSpellComboPoints(count);
-    return 0;
-    }*/
+        for (auto slot = 0; slot < MAX_GLYPH_SLOT_INDEX; ++slot)
+        {
+            int32 glyph = player->GetGlyph(slot);
+            if (glyph != 0)
+            {
+                Eluna::Push(L, slot);
+                Eluna::Push(L, glyph);
+                lua_settable(L, -3);
+            }
+        }
+        return 1;
+    }
 
-    /*int KillGOCredit(lua_State* L, Player* player)
+
+    ElunaRegister<Player> PlayerMethods[] =
     {
-    uint32 entry = Eluna::CHECKVAL<uint32>(L, 2);
-    ObjectGuid guid = Eluna::CHECKVAL<ObjectGuid>(L, 3);
-    player->KillCreditGO(entry, guid);
-    return 0;
-    }*/
+        // Getters
+        { "GetSelection", &LuaPlayer::GetSelection },
+        { "GetGMRank", &LuaPlayer::GetGMRank },
+        { "GetGuildId", &LuaPlayer::GetGuildId },
+        { "GetCoinage", &LuaPlayer::GetCoinage },
+        { "GetTeam", &LuaPlayer::GetTeam },
+        { "GetItemCount", &LuaPlayer::GetItemCount },
+        { "GetGroup", &LuaPlayer::GetGroup },
+        { "GetGuild", &LuaPlayer::GetGuild },
+        { "GetAccountId", &LuaPlayer::GetAccountId },
+        { "GetAccountName", &LuaPlayer::GetAccountName },
+        { "GetCompletedQuestsCount", &LuaPlayer::GetCompletedQuestsCount },
+        { "GetArenaPoints", &LuaPlayer::GetArenaPoints },
+        { "GetHonorPoints", &LuaPlayer::GetHonorPoints },
+        { "GetLifetimeKills", &LuaPlayer::GetLifetimeKills },
+        { "GetPlayerIP", &LuaPlayer::GetPlayerIP },
+        { "GetLevelPlayedTime", &LuaPlayer::GetLevelPlayedTime },
+        { "GetTotalPlayedTime", &LuaPlayer::GetTotalPlayedTime },
+        { "GetItemByPos", &LuaPlayer::GetItemByPos },
+        { "GetItemByEntry", &LuaPlayer::GetItemByEntry },
+        { "GetItemByGUID", &LuaPlayer::GetItemByGUID },
+        { "GetMailCount", &LuaPlayer::GetMailCount },
+        { "GetMailItem", &LuaPlayer::GetMailItem },
+        { "GetReputation", &LuaPlayer::GetReputation },
+        { "GetEquippedItemBySlot", &LuaPlayer::GetEquippedItemBySlot },
+        { "GetQuestLevel", &LuaPlayer::GetQuestLevel },
+        { "GetChatTag", &LuaPlayer::GetChatTag },
+        { "GetRestBonus", &LuaPlayer::GetRestBonus },
+        { "GetPhaseMaskForSpawn", &LuaPlayer::GetPhaseMaskForSpawn },
+        { "GetAchievementPoints", &LuaPlayer::GetAchievementPoints },
+        { "GetCompletedAchievementsCount", &LuaPlayer::GetCompletedAchievementsCount },
+        { "GetReqKillOrCastCurrentCount", &LuaPlayer::GetReqKillOrCastCurrentCount },
+        { "GetQuestStatus", &LuaPlayer::GetQuestStatus },
+        { "GetInGameTime", &LuaPlayer::GetInGameTime },
+        { "GetComboPoints", &LuaPlayer::GetComboPoints },
+        { "GetComboTarget", &LuaPlayer::GetComboTarget },
+        { "GetGuildName", &LuaPlayer::GetGuildName },
+        { "GetFreeTalentPoints", &LuaPlayer::GetFreeTalentPoints },
+        { "GetActiveSpec", &LuaPlayer::GetActiveSpec },
+        { "GetSpecsCount", &LuaPlayer::GetSpecsCount },
+        { "GetSpellCooldownDelay", &LuaPlayer::GetSpellCooldownDelay },
+        { "GetGuildRank", &LuaPlayer::GetGuildRank },
+        { "GetDifficulty", &LuaPlayer::GetDifficulty },
+        { "GetHealthBonusFromStamina", &LuaPlayer::GetHealthBonusFromStamina },
+        { "GetManaBonusFromIntellect", &LuaPlayer::GetManaBonusFromIntellect },
+        { "GetMaxSkillValue", &LuaPlayer::GetMaxSkillValue },
+        { "GetPureMaxSkillValue", &LuaPlayer::GetPureMaxSkillValue },
+        { "GetSkillValue", &LuaPlayer::GetSkillValue },
+        { "GetBaseSkillValue", &LuaPlayer::GetBaseSkillValue },
+        { "GetPureSkillValue", &LuaPlayer::GetPureSkillValue },
+        { "GetSkillPermBonusValue", &LuaPlayer::GetSkillPermBonusValue },
+        { "GetSkillTempBonusValue", &LuaPlayer::GetSkillTempBonusValue },
+        { "GetReputationRank", &LuaPlayer::GetReputationRank },
+        { "GetDrunkValue", &LuaPlayer::GetDrunkValue },
+        { "GetBattlegroundId", &LuaPlayer::GetBattlegroundId },
+        { "GetBattlegroundTypeId", &LuaPlayer::GetBattlegroundTypeId },
+        { "GetXP", &LuaPlayer::GetXP },
+        { "GetXPRestBonus", &LuaPlayer::GetXPRestBonus },
+        { "GetGroupInvite", &LuaPlayer::GetGroupInvite },
+        { "GetSubGroup", &LuaPlayer::GetSubGroup },
+        { "GetNextRandomRaidMember", &LuaPlayer::GetNextRandomRaidMember },
+        { "GetOriginalGroup", &LuaPlayer::GetOriginalGroup },
+        { "GetOriginalSubGroup", &LuaPlayer::GetOriginalSubGroup },
+        { "GetChampioningFaction", &LuaPlayer::GetChampioningFaction },
+        { "GetLatency", &LuaPlayer::GetLatency },
+        { "GetDbLocaleIndex", &LuaPlayer::GetDbLocaleIndex },
+        { "GetDbcLocale", &LuaPlayer::GetDbcLocale },
+        { "GetCorpse", &LuaPlayer::GetCorpse },
+        { "GetGossipTextId", &LuaPlayer::GetGossipTextId },
+        { "GetQuestRewardStatus", &LuaPlayer::GetQuestRewardStatus },
+        { "GetShieldBlockValue", &LuaPlayer::GetShieldBlockValue },
+        { "GetPlayerSettingValue", &LuaPlayer::GetPlayerSettingValue },
+        { "GetTrader", &LuaPlayer::GetTrader },
+        { "GetGlyphs", &LuaPlayer::GetGlyphs },
+        { "GetSpells", &LuaPlayer::GetSpells },
 
-    /*int KilledPlayerCredit(lua_State* L, Player* player)
-    {
-    player->KilledPlayerCredit();
-    return 0;
-    }*/
+        // Setters
+        { "AdvanceSkillsToMax", &LuaPlayer::AdvanceSkillsToMax },
+        { "AdvanceSkill", &LuaPlayer::AdvanceSkill },
+        { "AdvanceAllSkills", &LuaPlayer::AdvanceAllSkills },
+        { "AddLifetimeKills", &LuaPlayer::AddLifetimeKills },
+        { "SetCoinage", &LuaPlayer::SetCoinage },
+        { "SetKnownTitle", &LuaPlayer::SetKnownTitle },
+        { "UnsetKnownTitle", &LuaPlayer::UnsetKnownTitle },
+        { "SetBindPoint", &LuaPlayer::SetBindPoint },
+        { "SetArenaPoints", &LuaPlayer::SetArenaPoints },
+        { "SetHonorPoints", &LuaPlayer::SetHonorPoints },
+        { "SetSpellPower", &LuaPlayer::SetSpellPower },
+        { "SetLifetimeKills", &LuaPlayer::SetLifetimeKills },
+        { "SetGameMaster", &LuaPlayer::SetGameMaster },
+        { "SetGMChat", &LuaPlayer::SetGMChat },
+        { "SetTaxiCheat", &LuaPlayer::SetTaxiCheat },
+        { "SetGMVisible", &LuaPlayer::SetGMVisible },
+        { "SetPvPDeath", &LuaPlayer::SetPvPDeath },
+        { "SetAcceptWhispers", &LuaPlayer::SetAcceptWhispers },
+        { "SetRestBonus", &LuaPlayer::SetRestBonus },
+        { "SetQuestStatus", &LuaPlayer::SetQuestStatus },
+        { "SetReputation", &LuaPlayer::SetReputation },
+        { "SetFreeTalentPoints", &LuaPlayer::SetFreeTalentPoints },
+        { "SetGuildRank", &LuaPlayer::SetGuildRank },
+        { "SetSkill", &LuaPlayer::SetSkill },
+        { "SetFactionForRace", &LuaPlayer::SetFactionForRace },
+        { "SetDrunkValue", &LuaPlayer::SetDrunkValue },
+        { "SetAtLoginFlag", &LuaPlayer::SetAtLoginFlag },
+        { "SetPlayerLock", &LuaPlayer::SetPlayerLock },
+        { "SetGender", &LuaPlayer::SetGender },
+        { "SetSheath", &LuaPlayer::SetSheath },
 
-    /*int RemoveRewardedQuest(lua_State* L, Player* player)
-    {
-    uint32 entry = Eluna::CHECKVAL<uint32>(L, 2);
+        // Boolean
+        { "HasTankSpec", &LuaPlayer::HasTankSpec },
+        { "HasMeleeSpec", &LuaPlayer::HasMeleeSpec },
+        { "HasCasterSpec", &LuaPlayer::HasCasterSpec },
+        { "HasHealSpec", &LuaPlayer::HasHealSpec },
+        { "IsInGroup", &LuaPlayer::IsInGroup },
+        { "IsInGuild", &LuaPlayer::IsInGuild },
+        { "IsGM", &LuaPlayer::IsGM },
+        { "IsImmuneToDamage", &LuaPlayer::IsImmuneToDamage },
+        { "IsAlliance", &LuaPlayer::IsAlliance },
+        { "IsHorde", &LuaPlayer::IsHorde },
+        { "HasTitle", &LuaPlayer::HasTitle },
+        { "HasItem", &LuaPlayer::HasItem },
+        { "Teleport", &LuaPlayer::Teleport },
+        { "AddItem", &LuaPlayer::AddItem },
+        { "IsInArenaTeam", &LuaPlayer::IsInArenaTeam },
+        { "CanRewardQuest", &LuaPlayer::CanRewardQuest },
+        { "CanCompleteRepeatableQuest", &LuaPlayer::CanCompleteRepeatableQuest },
+        { "CanCompleteQuest", &LuaPlayer::CanCompleteQuest },
+        { "CanEquipItem", &LuaPlayer::CanEquipItem },
+        { "IsFalling", &LuaPlayer::IsFalling },
+        { "ToggleAFK", &LuaPlayer::ToggleAFK },
+        { "ToggleDND", &LuaPlayer::ToggleDND },
+        { "IsAFK", &LuaPlayer::IsAFK },
+        { "IsDND", &LuaPlayer::IsDND },
+        { "IsAcceptingWhispers", &LuaPlayer::IsAcceptingWhispers },
+        { "IsGMChat", &LuaPlayer::IsGMChat },
+        { "IsTaxiCheater", &LuaPlayer::IsTaxiCheater },
+        { "IsGMVisible", &LuaPlayer::IsGMVisible },
+        { "HasQuest", &LuaPlayer::HasQuest },
+        { "InBattlegroundQueue", &LuaPlayer::InBattlegroundQueue },
+        { "CanSpeak", &LuaPlayer::CanSpeak },
+        { "HasAtLoginFlag", &LuaPlayer::HasAtLoginFlag },
+        { "HasAchieved", &LuaPlayer::HasAchieved },
+        { "GetAchievementCriteriaProgress", &LuaPlayer::GetAchievementCriteriaProgress },
+        { "SetAchievement", &LuaPlayer::SetAchievement },
+        { "CanUninviteFromGroup", &LuaPlayer::CanUninviteFromGroup },
+        { "IsRested", &LuaPlayer::IsRested },
+        { "IsVisibleForPlayer", &LuaPlayer::IsVisibleForPlayer },
+        { "HasQuestForItem", &LuaPlayer::HasQuestForItem },
+        { "HasQuestForGO", &LuaPlayer::HasQuestForGO },
+        { "CanShareQuest", &LuaPlayer::CanShareQuest },
+        { "HasTalent", &LuaPlayer::HasTalent },
+        { "IsInSameGroupWith", &LuaPlayer::IsInSameGroupWith },
+        { "IsInSameRaidWith", &LuaPlayer::IsInSameRaidWith },
+        { "IsGroupVisibleFor", &LuaPlayer::IsGroupVisibleFor },
+        { "HasSkill", &LuaPlayer::HasSkill },
+        { "IsHonorOrXPTarget", &LuaPlayer::IsHonorOrXPTarget },
+        { "CanParry", &LuaPlayer::CanParry },
+        { "CanBlock", &LuaPlayer::CanBlock },
+        { "CanTitanGrip", &LuaPlayer::CanTitanGrip },
+        { "InBattleground", &LuaPlayer::InBattleground },
+        { "InArena", &LuaPlayer::InArena },
+        { "CanUseItem", &LuaPlayer::CanUseItem },
+        { "HasSpell", &LuaPlayer::HasSpell },
+        { "HasSpellCooldown", &LuaPlayer::HasSpellCooldown },
+        { "IsInWater", &LuaPlayer::IsInWater },
+        { "CanFly", &LuaPlayer::CanFly },
+        { "IsMoving", &LuaPlayer::IsMoving },
+        { "IsFlying", &LuaPlayer::IsFlying },
+        { "HasGlyph", &LuaPlayer::HasGlyph },
 
-    player->RemoveRewardedQuest(entry);
-    return 0;
-    }*/
 
-    /*int RemoveActiveQuest(lua_State* L, Player* player)
-    {
-    uint32 entry = Eluna::CHECKVAL<uint32>(L, 2);
+        // Gossip
+        { "GossipMenuAddItem", &LuaPlayer::GossipMenuAddItem },
+        { "GossipSendMenu", &LuaPlayer::GossipSendMenu },
+        { "GossipComplete", &LuaPlayer::GossipComplete },
+        { "GossipClearMenu", &LuaPlayer::GossipClearMenu },
 
-    player->RemoveActiveQuest(entry);
-    return 0;
-    }*/
+        // Other
+        { "SendBroadcastMessage", &LuaPlayer::SendBroadcastMessage },
+        { "SendAreaTriggerMessage", &LuaPlayer::SendAreaTriggerMessage },
+        { "SendNotification", &LuaPlayer::SendNotification },
+        { "SendPacket", &LuaPlayer::SendPacket },
+        { "SendAddonMessage", &LuaPlayer::SendAddonMessage },
+        { "ModifyMoney", &LuaPlayer::ModifyMoney },
+        { "LearnSpell", &LuaPlayer::LearnSpell },
+        { "LearnTalent", &LuaPlayer::LearnTalent },
 
-    /*int SummonPet(lua_State* L, Player* player)
-    {
-    uint32 entry = Eluna::CHECKVAL<uint32>(L, 2);
-    float x = Eluna::CHECKVAL<float>(L, 3);
-    float y = Eluna::CHECKVAL<float>(L, 4);
-    float z = Eluna::CHECKVAL<float>(L, 5);
-    float o = Eluna::CHECKVAL<float>(L, 6);
-    uint32 petType = Eluna::CHECKVAL<uint32>(L, 7);
-    uint32 despwtime = Eluna::CHECKVAL<uint32>(L, 8);
+        { "RunCommand", &LuaPlayer::RunCommand },
+        { "SetGlyph", &LuaPlayer::SetGlyph },
+        { "GetGlyph", &LuaPlayer::GetGlyph },
+        { "RemoveArenaSpellCooldowns", &LuaPlayer::RemoveArenaSpellCooldowns },
+        { "RemoveItem", &LuaPlayer::RemoveItem },
+        { "RemoveLifetimeKills", &LuaPlayer::RemoveLifetimeKills },
+        { "ResurrectPlayer", &LuaPlayer::ResurrectPlayer },
+        { "EquipItem", &LuaPlayer::EquipItem },
+        { "ResetSpellCooldown", &LuaPlayer::ResetSpellCooldown },
+        { "ResetTypeCooldowns", &LuaPlayer::ResetTypeCooldowns },
+        { "ResetAllCooldowns", &LuaPlayer::ResetAllCooldowns },
+        { "GiveXP", &LuaPlayer::GiveXP },                                                       // :GiveXP(xp[, victim, pureXP, triggerHook]) - UNDOCUMENTED - Gives XP to the player. If pure is false, bonuses are count in. If triggerHook is false, GiveXp hook is not triggered.
+        { "Say", &LuaPlayer::Say },
+        { "Yell", &LuaPlayer::Yell },
+        { "TextEmote", &LuaPlayer::TextEmote },
+        { "Whisper", &LuaPlayer::Whisper },
+        { "CompleteQuest", &LuaPlayer::CompleteQuest },
+        { "IncompleteQuest", &LuaPlayer::IncompleteQuest },
+        { "FailQuest", &LuaPlayer::FailQuest },
+        { "AddQuest", &LuaPlayer::AddQuest },
+        { "RemoveQuest", &LuaPlayer::RemoveQuest },
+        { "AreaExploredOrEventHappens", &LuaPlayer::AreaExploredOrEventHappens },
+        { "GroupEventHappens", &LuaPlayer::GroupEventHappens },
+        { "KilledMonsterCredit", &LuaPlayer::KilledMonsterCredit },
+        { "TalkedToCreature", &LuaPlayer::TalkedToCreature },
+        { "ResetPetTalents", &LuaPlayer::ResetPetTalents },
+        { "AddComboPoints", &LuaPlayer::AddComboPoints },
+        { "ClearComboPoints", &LuaPlayer::ClearComboPoints },
+        { "RemoveSpell", &LuaPlayer::RemoveSpell },
+        { "ResetTalents", &LuaPlayer::ResetTalents },
+        { "ResetTalentsCost", &LuaPlayer::ResetTalentsCost },
+        { "RemoveFromGroup", &LuaPlayer::RemoveFromGroup },
+        { "KillPlayer", &LuaPlayer::KillPlayer },
+        { "DurabilityLossAll", &LuaPlayer::DurabilityLossAll },
+        { "DurabilityLoss", &LuaPlayer::DurabilityLoss },
+        { "DurabilityPointsLoss", &LuaPlayer::DurabilityPointsLoss },
+        { "DurabilityPointsLossAll", &LuaPlayer::DurabilityPointsLossAll },
+        { "DurabilityPointLossForEquipSlot", &LuaPlayer::DurabilityPointLossForEquipSlot },
+        { "DurabilityRepairAll", &LuaPlayer::DurabilityRepairAll },
+        { "DurabilityRepair", &LuaPlayer::DurabilityRepair },
+        { "ModifyHonorPoints", &LuaPlayer::ModifyHonorPoints },
+        { "ModifyArenaPoints", &LuaPlayer::ModifyArenaPoints },
+        { "LeaveBattleground", &LuaPlayer::LeaveBattleground },
+        { "UnbindInstance", &LuaPlayer::UnbindInstance },
+        { "UnbindAllInstances", &LuaPlayer::UnbindAllInstances },
+        { "RemoveFromBattlegroundRaid", &LuaPlayer::RemoveFromBattlegroundRaid },
+        { "ResetAchievements", &LuaPlayer::ResetAchievements },
+        { "KickPlayer", &LuaPlayer::KickPlayer },
+        { "LogoutPlayer", &LuaPlayer::LogoutPlayer },
+        { "SendTrainerList", &LuaPlayer::SendTrainerList },
+        { "SendListInventory", &LuaPlayer::SendListInventory },
+        { "SendShowBank", &LuaPlayer::SendShowBank },
+        { "SendTabardVendorActivate", &LuaPlayer::SendTabardVendorActivate },
+        { "SendSpiritResurrect", &LuaPlayer::SendSpiritResurrect },
+        { "SendTaxiMenu", &LuaPlayer::SendTaxiMenu },
+        { "SendUpdateWorldState", &LuaPlayer::SendUpdateWorldState },
+        { "RewardQuest", &LuaPlayer::RewardQuest },
+        { "SendAuctionMenu", &LuaPlayer::SendAuctionMenu },
+        { "SendShowMailBox", &LuaPlayer::SendShowMailBox },
+        { "StartTaxi", &LuaPlayer::StartTaxi },
+        { "GossipSendPOI", &LuaPlayer::GossipSendPOI },
+        { "GossipAddQuests", &LuaPlayer::GossipAddQuests },
+        { "SendQuestTemplate", &LuaPlayer::SendQuestTemplate },
+        { "SpawnBones", &LuaPlayer::SpawnBones },
+        { "RemovedInsignia", &LuaPlayer::RemovedInsignia },
+        { "SendGuildInvite", &LuaPlayer::SendGuildInvite },
+        { "Mute", &LuaPlayer::Mute },
+        { "SummonPlayer", &LuaPlayer::SummonPlayer },
+        { "SaveToDB", &LuaPlayer::SaveToDB },
+        { "GroupInvite", &LuaPlayer::GroupInvite },
+        { "GroupCreate", &LuaPlayer::GroupCreate },
+        { "SendCinematicStart", &LuaPlayer::SendCinematicStart },
+        { "SendMovieStart", &LuaPlayer::SendMovieStart },
+        { "UpdatePlayerSetting", &LuaPlayer::UpdatePlayerSetting },
 
-    if (petType >= MAX_PET_TYPE)
-    return 0;
-
-    player->SummonPet(entry, x, y, z, o, (PetType)petType, despwtime);
-    return 0;
-    }*/
-
-    /*int RemovePet(lua_State* L, Player* player)
-    {
-    int mode = Eluna::CHECKVAL<int>(L, 2, PET_SAVE_AS_DELETED);
-    bool returnreagent = Eluna::CHECKVAL<bool>(L, 2, false);
-
-    if (!player->GetPet())
-    return 0;
-
-    player->RemovePet(player->GetPet(), (PetSaveMode)mode, returnreagent);
-    return 0;
-    }*/
+        { NULL, NULL }
+    };
 };
 #endif
