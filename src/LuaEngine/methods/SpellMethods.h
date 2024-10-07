@@ -431,6 +431,20 @@ namespace LuaSpell
         return 0;
     }
 
+    int GetEffectInfo(lua_State* L, SpellInfo* spell_info)
+    {
+        uint8 effIndex = Eluna::CHECKVAL<uint32>(L, 2);
+        if (effIndex >= MAX_SPELL_EFFECTS)
+            return 0;
+
+        SpellEffectInfo const& spellEffectInfo = spell_info->GetEffect(static_cast<SpellEffIndex>(effIndex));
+        if (!spellEffectInfo.IsEffect())
+            return 0;
+
+        Eluna::Push(L, spellEffectInfo);
+        return 1;
+    }
+
     ElunaRegister<Spell> SpellMethods[] =
     {
         // Getters
