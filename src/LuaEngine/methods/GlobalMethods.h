@@ -875,7 +875,7 @@ namespace LuaGlobalFunctions
      *
      * @return function cancel : a function that cancels the binding when called
      */
-    int RegisterBGEvent(lua_State* L)
+    int RegisterBattlegroundEvent(lua_State* L)
     {
         return RegisterEventHelper(L, Hooks::REGTYPE_BG);
     }
@@ -2964,7 +2964,7 @@ namespace LuaGlobalFunctions
      *
      * @proto ()
      * @proto (event_type)
-     * @param uint32 event_type : the event whose handlers will be cleared, see [Global:RegisterBGEvent]
+     * @param uint32 event_type : the event whose handlers will be cleared, see [Global:RegisterBattlegroundEvent]
      */
     int ClearBattleGroundEvents(lua_State* L)
     {

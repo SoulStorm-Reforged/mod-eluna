@@ -57,7 +57,7 @@ luaL_Reg GlobalMethods[] =
     { "RegisterItemEvent", &LuaGlobalFunctions::RegisterItemEvent },
     { "RegisterItemGossipEvent", &LuaGlobalFunctions::RegisterItemGossipEvent },
     { "RegisterPlayerGossipEvent", &LuaGlobalFunctions::RegisterPlayerGossipEvent },
-    { "RegisterBGEvent", &LuaGlobalFunctions::RegisterBGEvent },
+    { "RegisterBattlegroundEvent", &LuaGlobalFunctions::RegisterBattlegroundEvent },
     { "RegisterMapEvent", &LuaGlobalFunctions::RegisterMapEvent },
     { "RegisterInstanceEvent", &LuaGlobalFunctions::RegisterInstanceEvent },
 
