@@ -369,5 +369,69 @@ namespace LuaMap
         lua_settop(L, tbl);
         return 1;
     }
+
+    int GetCreatureByAreaId(lua_State* L, Map* map)
+    {
+        uint32 areaId = Eluna::CHECKVAL<uint32>(L, 2, -1);
+        std::vector<Creature*> filteredCreatures;
+
+        for (const auto& pair : map->GetCreatureBySpawnIdStore())
+        {
+            Creature* creature = pair.second;
+            if (areaId == -1 || creature->GetAreaId() == areaId)
+            {
+                filteredCreatures.push_back(creature);
+            }
+        }
+
+        lua_createtable(L, filteredCreatures.size(), 0);
+        int tbl = lua_gettop(L);
+
+        for (Creature* creature : filteredCreatures)
+        {
+            Eluna::Push(L, creature);
+            lua_rawseti(L, tbl, creature->GetSpawnId());
+        }
+
+        lua_settop(L, tbl);
+        return 1;
+    }
+
+    ElunaRegister<Map> MapMethods[] =
+    {
+        // Getters
+        { "GetName", &LuaMap::GetName },
+        { "GetDifficulty", &LuaMap::GetDifficulty },
+        { "GetInstanceId", &LuaMap::GetInstanceId },
+        { "GetInstanceData", &LuaMap::GetInstanceData },
+        { "GetPlayerCount", &LuaMap::GetPlayerCount },
+        { "GetPlayers", &LuaMap::GetPlayers },
+        { "GetMapId", &LuaMap::GetMapId },
+        { "GetAreaId", &LuaMap::GetAreaId },
+        { "GetHeight", &LuaMap::GetHeight },
+        { "GetWorldObject", &LuaMap::GetWorldObject },
+        { "GetCreatureByAreaId", &LuaMap::GetCreatureByAreaId },
+
+        // Setters
+        { "SetWeather", &LuaMap::SetWeather },
+
+        // Boolean
+    #ifndef CLASSIC
+        { "IsArena", &LuaMap::IsArena },
+    #endif
+        { "IsBattleground", &LuaMap::IsBattleground },
+        { "IsDungeon", &LuaMap::IsDungeon },
+        { "IsEmpty", &LuaMap::IsEmpty },
+    #ifndef CLASSIC
+        { "IsHeroic", &LuaMap::IsHeroic },
+    #endif
+        { "IsRaid", &LuaMap::IsRaid },
+
+        // Other
+        { "SaveInstanceData", &LuaMap::SaveInstanceData },
+
+        { NULL, NULL }
+    };
+
 };
 #endif

@@ -1288,41 +1288,6 @@ ElunaRegister<WorldPacket> PacketMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<Map> MapMethods[] =
-{
-    // Getters
-    { "GetName", &LuaMap::GetName },
-    { "GetDifficulty", &LuaMap::GetDifficulty },
-    { "GetInstanceId", &LuaMap::GetInstanceId },
-    { "GetInstanceData", &LuaMap::GetInstanceData },
-    { "GetPlayerCount", &LuaMap::GetPlayerCount },
-    { "GetPlayers", &LuaMap::GetPlayers },
-    { "GetMapId", &LuaMap::GetMapId },
-    { "GetAreaId", &LuaMap::GetAreaId },
-    { "GetHeight", &LuaMap::GetHeight },
-    { "GetWorldObject", &LuaMap::GetWorldObject },
-
-    // Setters
-    { "SetWeather", &LuaMap::SetWeather },
-
-    // Boolean
-#ifndef CLASSIC
-    { "IsArena", &LuaMap::IsArena },
-#endif
-    { "IsBattleground", &LuaMap::IsBattleground },
-    { "IsDungeon", &LuaMap::IsDungeon },
-    { "IsEmpty", &LuaMap::IsEmpty },
-#ifndef CLASSIC
-    { "IsHeroic", &LuaMap::IsHeroic },
-#endif
-    { "IsRaid", &LuaMap::IsRaid },
-
-    // Other
-    { "SaveInstanceData", &LuaMap::SaveInstanceData },
-
-    { NULL, NULL }
-};
-
 ElunaRegister<Corpse> CorpseMethods[] =
 {
     // Getters
@@ -1544,7 +1509,7 @@ void RegisterFunctions(Eluna* E)
     ElunaTemplate<Quest>::SetMethods(E, QuestMethods);
 
     ElunaTemplate<Map>::Register(E, "Map");
-    ElunaTemplate<Map>::SetMethods(E, MapMethods);
+    ElunaTemplate<Map>::SetMethods(E, LuaMap::MapMethods);
 
     ElunaTemplate<AuctionHouseEntry>::Register(E, "AuctionHouseEntry");
     ElunaTemplate<AuctionHouseEntry>::SetMethods(E, AuctionMethods);
