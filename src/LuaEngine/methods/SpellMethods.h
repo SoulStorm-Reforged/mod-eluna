@@ -431,6 +431,11 @@ namespace LuaSpell
         return 0;
     }
 
+    /**
+     * Get the [SpellEffectInfo].
+     *
+     * @return [SpellEffectInfo] spell_effect_info
+     */
     int GetEffectInfo(lua_State* L, SpellInfo* spell_info)
     {
         uint8 effIndex = Eluna::CHECKVAL<uint32>(L, 2);
@@ -457,6 +462,7 @@ namespace LuaSpell
         { "GetTargetDest", &LuaSpell::GetTargetDest },
         { "GetTarget", &LuaSpell::GetTarget },
         { "GetSpellInfo", &LuaSpell::GetSpellInfo },
+        { "GetEffectInfo", &LuaSpell::GetEffectInfo },
 
         // Setters
         { "SetAutoRepeat", &LuaSpell::SetAutoRepeat },
