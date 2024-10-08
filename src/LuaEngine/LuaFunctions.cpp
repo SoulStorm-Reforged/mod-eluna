@@ -346,129 +346,6 @@ ElunaRegister<Unit> UnitMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<Creature> CreatureMethods[] =
-{
-    // Getters
-    { "GetAITarget", &LuaCreature::GetAITarget },
-    { "GetAITargets", &LuaCreature::GetAITargets },
-    { "GetAITargetsCount", &LuaCreature::GetAITargetsCount },
-    { "GetHomePosition", &LuaCreature::GetHomePosition },
-    { "GetCorpseDelay", &LuaCreature::GetCorpseDelay },
-    { "GetCreatureSpellCooldownDelay", &LuaCreature::GetCreatureSpellCooldownDelay },
-    { "GetScriptId", &LuaCreature::GetScriptId },
-    { "GetAIName", &LuaCreature::GetAIName },
-    { "GetScriptName", &LuaCreature::GetScriptName },
-#ifndef AZEROTHCORE
-    { "GetAttackDistance", &LuaCreature::GetAttackDistance },
-#endif
-    { "GetAggroRange", &LuaCreature::GetAggroRange },
-    { "GetDefaultMovementType", &LuaCreature::GetDefaultMovementType },
-    { "GetRespawnDelay", &LuaCreature::GetRespawnDelay },
-    { "GetWanderRadius", &LuaCreature::GetWanderRadius },
-    { "GetCurrentWaypointId", &LuaCreature::GetCurrentWaypointId },
-#if defined(TRINITY) || AZEROTHCORE
-    { "GetWaypointPath", &LuaCreature::GetWaypointPath },
-    { "GetLootMode", &LuaCreature::GetLootMode },
-#endif
-    { "GetLootRecipient", &LuaCreature::GetLootRecipient },
-    { "GetLootRecipientGroup", &LuaCreature::GetLootRecipientGroup },
-    { "GetNPCFlags", &LuaCreature::GetNPCFlags },
-    { "GetUnitFlags", &LuaCreature::GetUnitFlags },
-    { "GetUnitFlagsTwo", &LuaCreature::GetUnitFlagsTwo },
-    { "GetExtraFlags", &LuaCreature::GetExtraFlags },
-    { "GetRank", &LuaCreature::GetRank },
-#if defined(CLASSIC) || defined(TBC) || defined(WOTLK)
-    { "GetShieldBlockValue", &LuaCreature::GetShieldBlockValue },
-#endif
-    { "GetDBTableGUIDLow", &LuaCreature::GetDBTableGUIDLow },
-    { "GetCreatureFamily", &LuaCreature::GetCreatureFamily },
-
-    // Setters
-#if defined(TRINITY) || defined(AZEROTHCORE)
-    { "SetRegeneratingHealth", &LuaCreature::SetRegeneratingHealth },
-#endif
-    { "SetHover", &LuaCreature::SetHover },
-    { "SetDisableGravity", &LuaCreature::SetDisableGravity },
-    { "SetAggroEnabled", &LuaCreature::SetAggroEnabled },
-    { "SetNoCallAssistance", &LuaCreature::SetNoCallAssistance },
-    { "SetNoSearchAssistance", &LuaCreature::SetNoSearchAssistance },
-    { "SetDefaultMovementType", &LuaCreature::SetDefaultMovementType },
-    { "SetRespawnDelay", &LuaCreature::SetRespawnDelay },
-    { "SetWanderRadius", &LuaCreature::SetWanderRadius },
-    { "SetInCombatWithZone", &LuaCreature::SetInCombatWithZone },
-    { "SetDisableReputationGain", &LuaCreature::SetDisableReputationGain },
-#if defined(TRINITY) || AZEROTHCORE
-    { "SetLootMode", &LuaCreature::SetLootMode },
-#endif
-    { "SetNPCFlags", &LuaCreature::SetNPCFlags },
-    { "SetUnitFlags", &LuaCreature::SetUnitFlags },
-    { "SetUnitFlagsTwo", &LuaCreature::SetUnitFlagsTwo },
-#if defined(TRINITY) || AZEROTHCORE
-    { "SetReactState", &LuaCreature::SetReactState },
-#endif
-    { "SetDeathState", &LuaCreature::SetDeathState },
-    { "SetWalk", &LuaCreature::SetWalk },
-    { "SetHomePosition", &LuaCreature::SetHomePosition },
-    { "SetEquipmentSlots", &LuaCreature::SetEquipmentSlots },
-
-    // Boolean
-    { "IsRegeneratingHealth", &LuaCreature::IsRegeneratingHealth },
-#if defined(TRINITY) || defined(AZEROTHCORE)
-    { "IsDungeonBoss", &LuaCreature::IsDungeonBoss },
-#endif
-    { "IsWorldBoss", &LuaCreature::IsWorldBoss },
-    { "IsRacialLeader", &LuaCreature::IsRacialLeader },
-    { "IsCivilian", &LuaCreature::IsCivilian },
-#if defined(TRINITY) || AZEROTHCORE
-    { "IsTrigger", &LuaCreature::IsTrigger },
-#endif
-    { "IsGuard", &LuaCreature::IsGuard },
-    { "IsElite", &LuaCreature::IsElite },
-    { "IsInEvadeMode", &LuaCreature::IsInEvadeMode },
-    { "HasCategoryCooldown", &LuaCreature::HasCategoryCooldown },
-    { "CanWalk", &LuaCreature::CanWalk },
-    { "CanSwim", &LuaCreature::CanSwim },
-    { "CanAggro", &LuaCreature::CanAggro },
-#if defined(TRINITY) || AZEROTHCORE
-    { "CanStartAttack", &LuaCreature::CanStartAttack },
-#endif
-    { "HasSearchedAssistance", &LuaCreature::HasSearchedAssistance },
-    { "IsTappedBy", &LuaCreature::IsTappedBy },
-    { "HasLootRecipient", &LuaCreature::HasLootRecipient },
-    { "CanAssistTo", &LuaCreature::CanAssistTo },
-    { "IsTargetableForAttack", &LuaCreature::IsTargetableForAttack },
-    { "CanCompleteQuest", &LuaCreature::CanCompleteQuest },
-    { "IsReputationGainDisabled", &LuaCreature::IsReputationGainDisabled },
-#if defined(TRINITY) || AZEROTHCORE
-    { "IsDamageEnoughForLootingAndReward", &LuaCreature::IsDamageEnoughForLootingAndReward },
-    { "HasLootMode", &LuaCreature::HasLootMode },
-#endif
-    { "HasSpell", &LuaCreature::HasSpell },
-    { "HasQuest", &LuaCreature::HasQuest },
-    { "HasSpellCooldown", &LuaCreature::HasSpellCooldown },
-    { "CanFly", &LuaCreature::CanFly },
-
-    // Other
-    { "FleeToGetAssistance", &LuaCreature::FleeToGetAssistance },
-    { "CallForHelp", &LuaCreature::CallForHelp },
-    { "CallAssistance", &LuaCreature::CallAssistance },
-    { "RemoveCorpse", &LuaCreature::RemoveCorpse },
-    { "DespawnOrUnsummon", &LuaCreature::DespawnOrUnsummon },
-    { "Respawn", &LuaCreature::Respawn },
-    { "AttackStart", &LuaCreature::AttackStart },
-#if defined(TRINITY) || AZEROTHCORE
-    { "AddLootMode", &LuaCreature::AddLootMode },
-    { "ResetLootMode", &LuaCreature::ResetLootMode },
-    { "RemoveLootMode", &LuaCreature::RemoveLootMode },
-#endif
-    { "SaveToDB", &LuaCreature::SaveToDB },
-    { "SelectVictim", &LuaCreature::SelectVictim },
-    { "MoveWaypoint", &LuaCreature::MoveWaypoint },
-    { "UpdateEntry", &LuaCreature::UpdateEntry },
-
-    { NULL, NULL }
-};
-
 ElunaRegister<GameObject> GameObjectMethods[] =
 {
     // Getters
@@ -979,7 +856,7 @@ void RegisterFunctions(Eluna* E)
     ElunaTemplate<Creature>::SetMethods(E, ObjectMethods);
     ElunaTemplate<Creature>::SetMethods(E, WorldObjectMethods);
     ElunaTemplate<Creature>::SetMethods(E, UnitMethods);
-    ElunaTemplate<Creature>::SetMethods(E, CreatureMethods);
+    ElunaTemplate<Creature>::SetMethods(E, LuaCreature::CreatureMethods);
 
     ElunaTemplate<GameObject>::Register(E, "GameObject");
     ElunaTemplate<GameObject>::SetMethods(E, ObjectMethods);

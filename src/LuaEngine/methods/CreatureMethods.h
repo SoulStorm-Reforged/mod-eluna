@@ -1538,5 +1538,127 @@ auto const& threatlist = creature->GetThreatMgr().GetThreatList();
 #endif
         return 1;
     }
+
+    /**
+    * Return the [Loot] object from the [Creature]
+    *
+    * @return [Loot] loot
+    */
+    int GetLoot(lua_State* L, Creature* creature)
+    {
+        Eluna::Push(L, &creature->loot);
+        return 1;
+    }
+
+    /**
+     * Set all loot removed from corpse for the [Creature]
+     */
+    int AllLootRemoved(lua_State* /*L*/, Creature* creature)
+    {
+        creature->AllLootRemovedFromCorpse();
+        return 0;
+    }
+
+    ElunaRegister<Creature> CreatureMethods[] =
+    {
+        // Getters
+        { "GetAITarget", &LuaCreature::GetAITarget },
+        { "GetAITargets", &LuaCreature::GetAITargets },
+        { "GetAITargetsCount", &LuaCreature::GetAITargetsCount },
+        { "GetHomePosition", &LuaCreature::GetHomePosition },
+        { "GetCorpseDelay", &LuaCreature::GetCorpseDelay },
+        { "GetCreatureSpellCooldownDelay", &LuaCreature::GetCreatureSpellCooldownDelay },
+        { "GetScriptId", &LuaCreature::GetScriptId },
+        { "GetAIName", &LuaCreature::GetAIName },
+        { "GetScriptName", &LuaCreature::GetScriptName },
+        { "GetAggroRange", &LuaCreature::GetAggroRange },
+        { "GetDefaultMovementType", &LuaCreature::GetDefaultMovementType },
+        { "GetRespawnDelay", &LuaCreature::GetRespawnDelay },
+        { "GetWanderRadius", &LuaCreature::GetWanderRadius },
+        { "GetCurrentWaypointId", &LuaCreature::GetCurrentWaypointId },
+        { "GetWaypointPath", &LuaCreature::GetWaypointPath },
+        { "GetLootMode", &LuaCreature::GetLootMode },
+        { "GetLootRecipient", &LuaCreature::GetLootRecipient },
+        { "GetLootRecipientGroup", &LuaCreature::GetLootRecipientGroup },
+        { "GetNPCFlags", &LuaCreature::GetNPCFlags },
+        { "GetUnitFlags", &LuaCreature::GetUnitFlags },
+        { "GetUnitFlagsTwo", &LuaCreature::GetUnitFlagsTwo },
+        { "GetExtraFlags", &LuaCreature::GetExtraFlags },
+        { "GetRank", &LuaCreature::GetRank },
+        { "GetShieldBlockValue", &LuaCreature::GetShieldBlockValue },
+        { "GetDBTableGUIDLow", &LuaCreature::GetDBTableGUIDLow },
+        { "GetCreatureFamily", &LuaCreature::GetCreatureFamily },
+        { "GetLoot", &LuaCreature::GetLoot },
+
+        // Setters
+        { "SetRegeneratingHealth", &LuaCreature::SetRegeneratingHealth },
+        { "SetHover", &LuaCreature::SetHover },
+        { "SetDisableGravity", &LuaCreature::SetDisableGravity },
+        { "SetAggroEnabled", &LuaCreature::SetAggroEnabled },
+        { "SetNoCallAssistance", &LuaCreature::SetNoCallAssistance },
+        { "SetNoSearchAssistance", &LuaCreature::SetNoSearchAssistance },
+        { "SetDefaultMovementType", &LuaCreature::SetDefaultMovementType },
+        { "SetRespawnDelay", &LuaCreature::SetRespawnDelay },
+        { "SetWanderRadius", &LuaCreature::SetWanderRadius },
+        { "SetInCombatWithZone", &LuaCreature::SetInCombatWithZone },
+        { "SetDisableReputationGain", &LuaCreature::SetDisableReputationGain },
+        { "SetLootMode", &LuaCreature::SetLootMode },
+        { "SetNPCFlags", &LuaCreature::SetNPCFlags },
+        { "SetUnitFlags", &LuaCreature::SetUnitFlags },
+        { "SetUnitFlagsTwo", &LuaCreature::SetUnitFlagsTwo },
+        { "SetReactState", &LuaCreature::SetReactState },
+        { "SetDeathState", &LuaCreature::SetDeathState },
+        { "SetWalk", &LuaCreature::SetWalk },
+        { "SetHomePosition", &LuaCreature::SetHomePosition },
+        { "SetEquipmentSlots", &LuaCreature::SetEquipmentSlots },
+
+        // Boolean
+        { "IsRegeneratingHealth", &LuaCreature::IsRegeneratingHealth },
+        { "IsDungeonBoss", &LuaCreature::IsDungeonBoss },
+        { "IsWorldBoss", &LuaCreature::IsWorldBoss },
+        { "IsRacialLeader", &LuaCreature::IsRacialLeader },
+        { "IsCivilian", &LuaCreature::IsCivilian },
+        { "IsTrigger", &LuaCreature::IsTrigger },
+        { "IsGuard", &LuaCreature::IsGuard },
+        { "IsElite", &LuaCreature::IsElite },
+        { "IsInEvadeMode", &LuaCreature::IsInEvadeMode },
+        { "HasCategoryCooldown", &LuaCreature::HasCategoryCooldown },
+        { "CanWalk", &LuaCreature::CanWalk },
+        { "CanSwim", &LuaCreature::CanSwim },
+        { "CanAggro", &LuaCreature::CanAggro },
+        { "CanStartAttack", &LuaCreature::CanStartAttack },
+        { "HasSearchedAssistance", &LuaCreature::HasSearchedAssistance },
+        { "IsTappedBy", &LuaCreature::IsTappedBy },
+        { "HasLootRecipient", &LuaCreature::HasLootRecipient },
+        { "CanAssistTo", &LuaCreature::CanAssistTo },
+        { "IsTargetableForAttack", &LuaCreature::IsTargetableForAttack },
+        { "CanCompleteQuest", &LuaCreature::CanCompleteQuest },
+        { "IsReputationGainDisabled", &LuaCreature::IsReputationGainDisabled },
+        { "IsDamageEnoughForLootingAndReward", &LuaCreature::IsDamageEnoughForLootingAndReward },
+        { "HasLootMode", &LuaCreature::HasLootMode },
+        { "HasSpell", &LuaCreature::HasSpell },
+        { "HasQuest", &LuaCreature::HasQuest },
+        { "HasSpellCooldown", &LuaCreature::HasSpellCooldown },
+        { "CanFly", &LuaCreature::CanFly },
+
+        // Other
+        { "FleeToGetAssistance", &LuaCreature::FleeToGetAssistance },
+        { "CallForHelp", &LuaCreature::CallForHelp },
+        { "CallAssistance", &LuaCreature::CallAssistance },
+        { "RemoveCorpse", &LuaCreature::RemoveCorpse },
+        { "DespawnOrUnsummon", &LuaCreature::DespawnOrUnsummon },
+        { "Respawn", &LuaCreature::Respawn },
+        { "AttackStart", &LuaCreature::AttackStart },
+        { "AddLootMode", &LuaCreature::AddLootMode },
+        { "ResetLootMode", &LuaCreature::ResetLootMode },
+        { "RemoveLootMode", &LuaCreature::RemoveLootMode },
+        { "SaveToDB", &LuaCreature::SaveToDB },
+        { "SelectVictim", &LuaCreature::SelectVictim },
+        { "MoveWaypoint", &LuaCreature::MoveWaypoint },
+        { "UpdateEntry", &LuaCreature::UpdateEntry },
+        { "AllLootRemoved", &LuaCreature::AllLootRemoved },
+
+        { NULL, NULL }
+    };
 };
 #endif

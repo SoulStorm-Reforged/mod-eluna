@@ -2573,12 +2573,12 @@ namespace LuaPlayer
     int SendTrainerList(lua_State* L, Player* player)
     {
         Creature* obj = Eluna::CHECKOBJ<Creature>(L, 2);
+        uint32 trainerlist = Eluna::CHECKVAL<uint32>(L, 3, false);
 
-#ifdef TRINITY
-        player->GetSession()->SendTrainerList(obj);
-#else
-        player->GetSession()->SendTrainerList(obj->GET_GUID());
-#endif
+        if (!trainerlist)
+            trainerlist = 0;
+
+        player->GetSession()->SendTrainerList(obj->GET_GUID(), trainerlist);
         return 0;
     }
 
