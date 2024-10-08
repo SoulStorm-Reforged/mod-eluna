@@ -4529,6 +4529,32 @@ namespace LuaPlayer
         return 1;
     }
 
+    /**
+     *  Returns the [Player] homebind location.
+     *
+     *  @return table homebind : a table containing the player's homebind information:
+     *      - uint32 mapId: The ID of the map where the player is bound.
+     *      - float x: The X coordinate of the homebind location.
+     *      - float y: The Y coordinate of the homebind location.
+     *      - float z: The Z coordinate of the homebind location.
+     */
+    int GetHomebind(lua_State* L, Player* player)
+    {
+        lua_newtable(L);
+        lua_pushinteger(L, player->m_homebindMapId);
+        lua_setfield(L, -2, "mapId");
+
+        lua_pushnumber(L, player->m_homebindX);
+        lua_setfield(L, -2, "x");
+
+        lua_pushnumber(L, player->m_homebindY);
+        lua_setfield(L, -2, "y");
+
+        lua_pushnumber(L, player->m_homebindZ);
+        lua_setfield(L, -2, "z");
+
+        return 1;
+    }
 
     ElunaRegister<Player> PlayerMethods[] =
     {
@@ -4607,6 +4633,7 @@ namespace LuaPlayer
         { "GetTrader", &LuaPlayer::GetTrader },
         { "GetGlyphs", &LuaPlayer::GetGlyphs },
         { "GetSpells", &LuaPlayer::GetSpells },
+        { "GetHomebind", &LuaPlayer::GetHomebind },
 
         // Setters
         { "AdvanceSkillsToMax", &LuaPlayer::AdvanceSkillsToMax },
