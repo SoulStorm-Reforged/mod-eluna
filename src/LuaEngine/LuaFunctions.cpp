@@ -29,6 +29,7 @@ extern "C"
 #include "ElunaQueryMethods.h"
 #include "AuraMethods.h"
 #include "ItemMethods.h"
+#include "LootMethods.h"
 #include "WorldPacketMethods.h"
 #include "SpellMethods.h"
 #include "SpellEffectInfoMethods.h"
@@ -926,6 +927,9 @@ void RegisterFunctions(Eluna* E)
 
     ElunaTemplate<Roll>::Register(E, "Roll");
     ElunaTemplate<Roll>::SetMethods(E, RollMethods);
+
+    ElunaTemplate<Loot>::Register(E, "Loot");
+    ElunaTemplate<Loot>::SetMethods(E, LuaLoot::LootMethods);
 
     ElunaTemplate<long long>::Register(E, "long long", true);
 
