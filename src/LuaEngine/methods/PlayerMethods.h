@@ -4075,6 +4075,40 @@ namespace LuaPlayer
     }
 
     /**
+     * Sets the text for a specific gossip menu.
+     *
+     * @param uint32 textID : The ID of the custom text.
+     * @param string customText : Custom text to set for the option. If empty, uses a default text.
+     */
+    int GossipMenuSetText(lua_State* L, Player* player)
+    {
+        uint32 textID = Eluna::CHECKVAL<uint32>(L, 2);
+        std::string customText = Eluna::CHECKVAL<std::string>(L, 3, "");
+
+        WorldPacket data(SMSG_NPC_TEXT_UPDATE, 100);
+        data << textID;
+
+        std::string textToSend = !customText.empty() ? customText : "Greetings $N!";
+
+        for (uint8 i = 0; i < MAX_GOSSIP_TEXT_OPTIONS; ++i)
+        {
+            data << float(0);
+            data << textToSend;
+            data << textToSend;
+            data << uint32(0);
+            data << uint32(0);
+            data << uint32(0);
+            data << uint32(0);
+            data << uint32(0);
+            data << uint32(0);
+            data << uint32(0);
+        }
+
+        player->GetSession()->SendPacket(&data);
+        return 0;
+    }
+
+    /**
      * Sends the current gossip items of the player to him as a gossip menu with header text from the given textId.
      *
      * If sender is a [Player] then menu_id is mandatory, otherwise it is not used for anything.
@@ -4673,6 +4707,7 @@ namespace LuaPlayer
         { "GossipMenuAddItem", &LuaPlayer::GossipMenuAddItem },
         { "GossipSendMenu", &LuaPlayer::GossipSendMenu },
         { "GossipComplete", &LuaPlayer::GossipComplete },
+        { "GossipMenuSetText", &LuaPlayer::GossipMenuSetText },
         { "GossipClearMenu", &LuaPlayer::GossipClearMenu },
 
         // Other
