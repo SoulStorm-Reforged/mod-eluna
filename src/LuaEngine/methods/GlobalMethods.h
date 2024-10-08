@@ -3595,6 +3595,21 @@ namespace LuaGlobalFunctions
     }
 
     /**
+     * Return the [ItemTemplate] of the selection [Item] by entry
+     *
+     * @param uint32 itemEntry : The entry ID of the item.
+     *
+     * @return [ItemTemplate] itemTemplate : The ItemTemplate
+     */
+    int GetItemTemplateByEntry(lua_State* L)
+    {
+        uint32 entry = Eluna::CHECKVAL<uint32>(L, 1);
+        Eluna::Push(L, eObjectMgr->GetItemTemplate(entry));
+
+        return 1;
+    }
+
+    /**
      * Retrieves the DisplayId for a specific item entry.
      * This method fetches the `DisplayId` for an item based on its entry ID from the `item_template` table.
      *
@@ -3774,6 +3789,7 @@ namespace LuaGlobalFunctions
         { "GetItemDisplayId", &LuaGlobalFunctions::GetItemDisplayId },
         { "GetDungeonEntrancePosition", &LuaGlobalFunctions::GetDungeonEntrancePosition },
         { "GetTrainerSpells", &LuaGlobalFunctions::GetTrainerSpells },
+        { "GetItemTemplateByEntry", &LuaGlobalFunctions::GetItemTemplateByEntry },
         
         // Boolean
         { "IsCompatibilityMode", &LuaGlobalFunctions::IsCompatibilityMode },
