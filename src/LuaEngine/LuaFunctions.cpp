@@ -149,203 +149,7 @@ ElunaRegister<WorldObject> WorldObjectMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<Unit> UnitMethods[] =
-{
-    // Getters
-    { "GetLevel", &LuaUnit::GetLevel },
-    { "GetHealth", &LuaUnit::GetHealth },
-    { "GetDisplayId", &LuaUnit::GetDisplayId },
-    { "GetNativeDisplayId", &LuaUnit::GetNativeDisplayId },
-    { "GetPower", &LuaUnit::GetPower },
-    { "GetMaxPower", &LuaUnit::GetMaxPower },
-    { "GetPowerType", &LuaUnit::GetPowerType },
-    { "GetMaxHealth", &LuaUnit::GetMaxHealth },
-    { "GetHealthPct", &LuaUnit::GetHealthPct },
-    { "GetPowerPct", &LuaUnit::GetPowerPct },
-    { "GetGender", &LuaUnit::GetGender },
-    { "GetRace", &LuaUnit::GetRace },
-    { "GetClass", &LuaUnit::GetClass },
-    { "GetRaceMask", &LuaUnit::GetRaceMask },
-    { "GetClassMask", &LuaUnit::GetClassMask },
-    { "GetRaceAsString", &LuaUnit::GetRaceAsString },
-    { "GetClassAsString", &LuaUnit::GetClassAsString },
-    { "GetAura", &LuaUnit::GetAura },
-    { "GetFaction", &LuaUnit::GetFaction },
-    { "GetCurrentSpell", &LuaUnit::GetCurrentSpell },
-    { "GetCreatureType", &LuaUnit::GetCreatureType },
-    { "GetMountId", &LuaUnit::GetMountId },
-    { "GetOwner", &LuaUnit::GetOwner },
-    { "GetFriendlyUnitsInRange", &LuaUnit::GetFriendlyUnitsInRange },
-    { "GetUnfriendlyUnitsInRange", &LuaUnit::GetUnfriendlyUnitsInRange },
-    { "GetOwnerGUID", &LuaUnit::GetOwnerGUID },
-    { "GetCreatorGUID", &LuaUnit::GetCreatorGUID },
-    { "GetMinionGUID", &LuaUnit::GetPetGUID },
-    { "GetCharmerGUID", &LuaUnit::GetCharmerGUID },
-    { "GetCharmGUID", &LuaUnit::GetCharmGUID },
-    { "GetPetGUID", &LuaUnit::GetPetGUID },
-#if (!defined(TBC) && !defined(CLASSIC))
-    { "GetCritterGUID", &LuaUnit::GetCritterGUID },
-#endif
-    { "GetControllerGUID", &LuaUnit::GetControllerGUID },
-    { "GetControllerGUIDS", &LuaUnit::GetControllerGUIDS },
-    { "GetStandState", &LuaUnit::GetStandState },
-    { "GetVictim", &LuaUnit::GetVictim },
-    { "GetSpeed", &LuaUnit::GetSpeed },
-    { "GetSpeedRate", &LuaUnit::GetSpeedRate },
-    { "GetStat", &LuaUnit::GetStat },
-    { "GetBaseSpellPower", &LuaUnit::GetBaseSpellPower },
-#if (!defined(TBC) && !defined(CLASSIC))
-    { "GetVehicleKit", &LuaUnit::GetVehicleKit },
-    // {"GetVehicle", &LuaUnit::GetVehicle},                           // :GetVehicle() - UNDOCUMENTED - Gets the Vehicle kit of the vehicle the unit is on
-#endif
-    { "GetMovementType", &LuaUnit::GetMovementType },
-    { "GetAttackers", &LuaUnit::GetAttackers },
 
-    // Setters
-    { "SetFaction", &LuaUnit::SetFaction },
-    { "SetLevel", &LuaUnit::SetLevel },
-    { "SetHealth", &LuaUnit::SetHealth },
-    { "SetMaxHealth", &LuaUnit::SetMaxHealth },
-    { "SetPower", &LuaUnit::SetPower },
-    { "SetMaxPower", &LuaUnit::SetMaxPower },
-    { "SetPowerType", &LuaUnit::SetPowerType },
-    { "SetDisplayId", &LuaUnit::SetDisplayId },
-    { "SetNativeDisplayId", &LuaUnit::SetNativeDisplayId },
-    { "SetFacing", &LuaUnit::SetFacing },
-    { "SetFacingToObject", &LuaUnit::SetFacingToObject },
-    { "SetSpeed", &LuaUnit::SetSpeed },
-    { "SetSpeedRate", &LuaUnit::SetSpeedRate },
-    // {"SetStunned", &LuaUnit::SetStunned},                           // :SetStunned([enable]) - UNDOCUMENTED - Stuns or removes stun
-    {"SetRooted", &LuaUnit::SetRooted},
-    {"SetConfused", &LuaUnit::SetConfused},
-    {"SetFeared", &LuaUnit::SetFeared},
-    { "SetPvP", &LuaUnit::SetPvP },
-#if (!defined(TBC) && !defined(CLASSIC))
-    { "SetFFA", &LuaUnit::SetFFA },
-    { "SetSanctuary", &LuaUnit::SetSanctuary },
-#endif
-    // {"SetCanFly", &LuaUnit::SetCanFly},                             // :SetCanFly(apply) - UNDOCUMENTED
-    // {"SetVisible", &LuaUnit::SetVisible},                           // :SetVisible(x) - UNDOCUMENTED
-    { "SetOwnerGUID", &LuaUnit::SetOwnerGUID },
-    { "SetName", &LuaUnit::SetName },
-    { "SetSheath", &LuaUnit::SetSheath },
-    { "SetCreatorGUID", &LuaUnit::SetCreatorGUID },
-    { "SetMinionGUID", &LuaUnit::SetPetGUID },
-    { "SetPetGUID", &LuaUnit::SetPetGUID },
-#if (!defined(TBC) && !defined(CLASSIC))
-    { "SetCritterGUID", &LuaUnit::SetCritterGUID },
-#endif
-    { "SetWaterWalk", &LuaUnit::SetWaterWalk },
-    { "SetStandState", &LuaUnit::SetStandState },
-    { "SetInCombatWith", &LuaUnit::SetInCombatWith },
-    { "ModifyPower", &LuaUnit::ModifyPower },
-    { "SetImmuneTo", &LuaUnit::SetImmuneTo },
-
-    // Boolean
-    { "IsAlive", &LuaUnit::IsAlive },
-    { "IsDead", &LuaUnit::IsDead },
-    { "IsDying", &LuaUnit::IsDying },
-    { "IsPvPFlagged", &LuaUnit::IsPvPFlagged },
-    { "IsInCombat", &LuaUnit::IsInCombat },
-    { "IsBanker", &LuaUnit::IsBanker },
-    { "IsBattleMaster", &LuaUnit::IsBattleMaster },
-    { "IsCharmed", &LuaUnit::IsCharmed },
-    { "IsArmorer", &LuaUnit::IsArmorer },
-    { "IsAttackingPlayer", &LuaUnit::IsAttackingPlayer },
-    { "IsInWater", &LuaUnit::IsInWater },
-    { "IsUnderWater", &LuaUnit::IsUnderWater },
-    { "IsAuctioneer", &LuaUnit::IsAuctioneer },
-    { "IsGuildMaster", &LuaUnit::IsGuildMaster },
-    { "IsInnkeeper", &LuaUnit::IsInnkeeper },
-    { "IsTrainer", &LuaUnit::IsTrainer },
-    { "IsGossip", &LuaUnit::IsGossip },
-    { "IsTaxi", &LuaUnit::IsTaxi },
-    { "IsSpiritHealer", &LuaUnit::IsSpiritHealer },
-    { "IsSpiritGuide", &LuaUnit::IsSpiritGuide },
-    { "IsTabardDesigner", &LuaUnit::IsTabardDesigner },
-    { "IsServiceProvider", &LuaUnit::IsServiceProvider },
-    { "IsSpiritService", &LuaUnit::IsSpiritService },
-    { "HealthBelowPct", &LuaUnit::HealthBelowPct },
-    { "HealthAbovePct", &LuaUnit::HealthAbovePct },
-    { "IsMounted", &LuaUnit::IsMounted },
-    { "AttackStop", &LuaUnit::AttackStop },
-    { "Attack", &LuaUnit::Attack },
-    // {"IsVisible", &LuaUnit::IsVisible},                              // :IsVisible() - UNDOCUMENTED
-    // {"IsMoving", &LuaUnit::IsMoving},                                // :IsMoving() - UNDOCUMENTED
-    // {"IsFlying", &LuaUnit::IsFlying},                                // :IsFlying() - UNDOCUMENTED
-    { "IsStopped", &LuaUnit::IsStopped },
-    { "HasUnitState", &LuaUnit::HasUnitState },
-    { "IsQuestGiver", &LuaUnit::IsQuestGiver },
-    { "IsInAccessiblePlaceFor", &LuaUnit::IsInAccessiblePlaceFor },
-    { "IsVendor", &LuaUnit::IsVendor },
-    { "IsRooted", &LuaUnit::IsRooted },
-    { "IsFullHealth", &LuaUnit::IsFullHealth },
-    { "HasAura", &LuaUnit::HasAura },
-    { "IsCasting", &LuaUnit::IsCasting },
-    { "IsStandState", &LuaUnit::IsStandState },
-#ifndef CLASSIC
-    { "IsOnVehicle", &LuaUnit::IsOnVehicle },
-#endif
-
-    // Other
-    { "HandleStatModifier", &LuaUnit::HandleStatModifier },
-    { "AddAura", &LuaUnit::AddAura },
-    { "RemoveAura", &LuaUnit::RemoveAura },
-    { "RemoveAllAuras", &LuaUnit::RemoveAllAuras },
-#if !defined(CLASSIC)
-    { "RemoveArenaAuras", &LuaUnit::RemoveArenaAuras },
-#endif
-    { "ClearInCombat", &LuaUnit::ClearInCombat },
-    { "DeMorph", &LuaUnit::DeMorph },
-    { "SendUnitWhisper", &LuaUnit::SendUnitWhisper },
-    { "SendUnitEmote", &LuaUnit::SendUnitEmote },
-    { "SendUnitSay", &LuaUnit::SendUnitSay },
-    { "SendUnitYell", &LuaUnit::SendUnitYell },
-    { "CastSpell", &LuaUnit::CastSpell },
-    { "CastCustomSpell", &LuaUnit::CastCustomSpell },
-    { "CastSpellAoF", &LuaUnit::CastSpellAoF },
-    { "Kill", &LuaUnit::Kill },
-    { "StopSpellCast", &LuaUnit::StopSpellCast },
-    { "InterruptSpell", &LuaUnit::InterruptSpell },
-    { "SendChatMessageToPlayer", &LuaUnit::SendChatMessageToPlayer },
-    { "PerformEmote", &LuaUnit::PerformEmote },
-    { "EmoteState", &LuaUnit::EmoteState },
-    { "CountPctFromCurHealth", &LuaUnit::CountPctFromCurHealth },
-    { "CountPctFromMaxHealth", &LuaUnit::CountPctFromMaxHealth },
-    { "Dismount", &LuaUnit::Dismount },
-    { "Mount", &LuaUnit::Mount },
-    // {"RestoreDisplayId", &LuaUnit::RestoreDisplayId},                // :RestoreDisplayId() - UNDOCUMENTED
-    // {"RestoreFaction", &LuaUnit::RestoreFaction},                    // :RestoreFaction() - UNDOCUMENTED
-    // {"RemoveBindSightAuras", &LuaUnit::RemoveBindSightAuras},        // :RemoveBindSightAuras() - UNDOCUMENTED
-    // {"RemoveCharmAuras", &LuaUnit::RemoveCharmAuras},                // :RemoveCharmAuras() - UNDOCUMENTED
-    { "ClearThreatList", &LuaUnit::ClearThreatList },
-    { "GetThreatList", &LuaUnit::GetThreatList },
-    { "ClearUnitState", &LuaUnit::ClearUnitState },
-    { "AddUnitState", &LuaUnit::AddUnitState },
-    // {"DisableMelee", &LuaUnit::DisableMelee},                        // :DisableMelee([disable]) - UNDOCUMENTED - if true, enables
-    // {"SummonGuardian", &LuaUnit::SummonGuardian},                    // :SummonGuardian(entry, x, y, z, o[, duration]) - UNDOCUMENTED - summons a guardian to location. Scales with summoner, is friendly to him and guards him.
-    { "NearTeleport", &LuaUnit::NearTeleport },
-    { "MoveIdle", &LuaUnit::MoveIdle },
-    { "MoveRandom", &LuaUnit::MoveRandom },
-    { "MoveHome", &LuaUnit::MoveHome },
-    { "MoveFollow", &LuaUnit::MoveFollow },
-    { "MoveChase", &LuaUnit::MoveChase },
-    { "MoveConfused", &LuaUnit::MoveConfused },
-    { "MoveFleeing", &LuaUnit::MoveFleeing },
-    { "MoveTo", &LuaUnit::MoveTo },
-#if (!defined(TBC) && !defined(CLASSIC))
-    { "MoveJump", &LuaUnit::MoveJump },
-#endif
-    { "MoveStop", &LuaUnit::MoveStop },
-    { "MoveExpire", &LuaUnit::MoveExpire },
-    { "MoveClear", &LuaUnit::MoveClear },
-    { "DealDamage", &LuaUnit::DealDamage },
-    { "DealHeal", &LuaUnit::DealHeal },
-    { "AddThreat", &LuaUnit::AddThreat },
-    { "ModifyThreatPct", &LuaUnit::ModifyThreatPct },
-
-    { NULL, NULL }
-};
 
 ElunaRegister<GameObject> GameObjectMethods[] =
 {
@@ -845,18 +649,18 @@ void RegisterFunctions(Eluna* E)
     ElunaTemplate<Unit>::Register(E, "Unit");
     ElunaTemplate<Unit>::SetMethods(E, ObjectMethods);
     ElunaTemplate<Unit>::SetMethods(E, WorldObjectMethods);
-    ElunaTemplate<Unit>::SetMethods(E, UnitMethods);
+    ElunaTemplate<Unit>::SetMethods(E, LuaUnit::UnitMethods);
 
     ElunaTemplate<Player>::Register(E, "Player");
     ElunaTemplate<Player>::SetMethods(E, ObjectMethods);
     ElunaTemplate<Player>::SetMethods(E, WorldObjectMethods);
-    ElunaTemplate<Player>::SetMethods(E, UnitMethods);
+    ElunaTemplate<Player>::SetMethods(E, LuaUnit::UnitMethods);
     ElunaTemplate<Player>::SetMethods(E, LuaPlayer::PlayerMethods);
 
     ElunaTemplate<Creature>::Register(E, "Creature");
     ElunaTemplate<Creature>::SetMethods(E, ObjectMethods);
     ElunaTemplate<Creature>::SetMethods(E, WorldObjectMethods);
-    ElunaTemplate<Creature>::SetMethods(E, UnitMethods);
+    ElunaTemplate<Creature>::SetMethods(E, LuaUnit::UnitMethods);
     ElunaTemplate<Creature>::SetMethods(E, LuaCreature::CreatureMethods);
 
     ElunaTemplate<GameObject>::Register(E, "GameObject");

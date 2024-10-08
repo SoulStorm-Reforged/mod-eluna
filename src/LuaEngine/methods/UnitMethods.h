@@ -1849,26 +1849,34 @@ namespace LuaUnit
         return 0;
     }
 
-    /*int SetCanFly(lua_State* L, Unit* unit)
-    {
-        bool apply = Eluna::CHECKVAL<bool>(L, 2, true);
-        unit->SetCanFly(apply);
-        return 0;
-    }*/
-
-    /*int SetVisible(lua_State* L, Unit* unit)
-    {
-        bool x = Eluna::CHECKVAL<bool>(L, 2, true);
-        unit->SetVisible(x);
-        return 0;
-    }*/
-
     /**
      * Clears the [Unit]'s threat list.
      */
     int ClearThreatList(lua_State* /*L*/, Unit* unit)
     {
         unit->GetThreatMgr().ClearAllThreat();
+        return 0;
+    }
+
+    /**
+     * Clear the threat of a [Unit] in this [Creature]'s threat list.
+     *
+     * @param [Unit] target
+     */
+    int ClearThreat(lua_State* L, Unit* unit)
+    {
+        Unit* target = Eluna::CHECKOBJ<Unit>(L, 2);
+
+        unit->GetThreatMgr().ClearThreat(target);
+        return 0;
+    }
+
+    /**
+     * Resets the [Unit]'s threat list, setting all threat targets' threat to 0.
+     */
+    int ResetAllThreat(lua_State* /*L*/, Unit* unit)
+    {
+        unit->GetThreatMgr().ResetAllThreat();
         return 0;
     }
 
@@ -1908,6 +1916,20 @@ namespace LuaUnit
         }
 
         lua_settop(L, table); // push table to top of stack
+        return 1;
+    }
+
+    /**
+     * Returns the threat of a [Unit] in this [Unit]'s threat list.
+     *
+     * @param [Unit] target
+     * @return float threat
+     */
+    int GetThreat(lua_State* L, Unit* unit)
+    {
+        Unit* target = Eluna::CHECKOBJ<Unit>(L, 2);
+
+        Eluna::Push(L, unit->GetThreatMgr().GetThreat(target));
         return 1;
     }
 
@@ -2650,79 +2672,178 @@ namespace LuaUnit
         return 0;
     }
 
-    /*int RestoreDisplayId(lua_State* L, Unit* unit)
+    ElunaRegister<Unit> UnitMethods[] =
     {
-        unit->RestoreDisplayId();
-        return 0;
-    }*/
+        // Getters
+        { "GetLevel", &LuaUnit::GetLevel },
+        { "GetHealth", &LuaUnit::GetHealth },
+        { "GetDisplayId", &LuaUnit::GetDisplayId },
+        { "GetNativeDisplayId", &LuaUnit::GetNativeDisplayId },
+        { "GetPower", &LuaUnit::GetPower },
+        { "GetMaxPower", &LuaUnit::GetMaxPower },
+        { "GetPowerType", &LuaUnit::GetPowerType },
+        { "GetMaxHealth", &LuaUnit::GetMaxHealth },
+        { "GetHealthPct", &LuaUnit::GetHealthPct },
+        { "GetPowerPct", &LuaUnit::GetPowerPct },
+        { "GetGender", &LuaUnit::GetGender },
+        { "GetRace", &LuaUnit::GetRace },
+        { "GetClass", &LuaUnit::GetClass },
+        { "GetRaceMask", &LuaUnit::GetRaceMask },
+        { "GetClassMask", &LuaUnit::GetClassMask },
+        { "GetRaceAsString", &LuaUnit::GetRaceAsString },
+        { "GetClassAsString", &LuaUnit::GetClassAsString },
+        { "GetAura", &LuaUnit::GetAura },
+        { "GetFaction", &LuaUnit::GetFaction },
+        { "GetCurrentSpell", &LuaUnit::GetCurrentSpell },
+        { "GetCreatureType", &LuaUnit::GetCreatureType },
+        { "GetMountId", &LuaUnit::GetMountId },
+        { "GetOwner", &LuaUnit::GetOwner },
+        { "GetFriendlyUnitsInRange", &LuaUnit::GetFriendlyUnitsInRange },
+        { "GetUnfriendlyUnitsInRange", &LuaUnit::GetUnfriendlyUnitsInRange },
+        { "GetOwnerGUID", &LuaUnit::GetOwnerGUID },
+        { "GetCreatorGUID", &LuaUnit::GetCreatorGUID },
+        { "GetMinionGUID", &LuaUnit::GetPetGUID },
+        { "GetCharmerGUID", &LuaUnit::GetCharmerGUID },
+        { "GetCharmGUID", &LuaUnit::GetCharmGUID },
+        { "GetPetGUID", &LuaUnit::GetPetGUID },
+        { "GetCritterGUID", &LuaUnit::GetCritterGUID },
+        { "GetControllerGUID", &LuaUnit::GetControllerGUID },
+        { "GetControllerGUIDS", &LuaUnit::GetControllerGUIDS },
+        { "GetStandState", &LuaUnit::GetStandState },
+        { "GetVictim", &LuaUnit::GetVictim },
+        { "GetSpeed", &LuaUnit::GetSpeed },
+        { "GetSpeedRate", &LuaUnit::GetSpeedRate },
+        { "GetStat", &LuaUnit::GetStat },
+        { "GetBaseSpellPower", &LuaUnit::GetBaseSpellPower },
+        { "GetVehicleKit", &LuaUnit::GetVehicleKit },
+        { "GetMovementType", &LuaUnit::GetMovementType },
+        { "GetAttackers", &LuaUnit::GetAttackers },
+        { "GetThreat", &LuaUnit::GetThreat },
 
-    /*int RestoreFaction(lua_State* L, Unit* unit)
-    {
-        unit->RestoreFaction();
-        return 0;
-    }*/
+        // Setters
+        { "SetFaction", &LuaUnit::SetFaction },
+        { "SetLevel", &LuaUnit::SetLevel },
+        { "SetHealth", &LuaUnit::SetHealth },
+        { "SetMaxHealth", &LuaUnit::SetMaxHealth },
+        { "SetPower", &LuaUnit::SetPower },
+        { "SetMaxPower", &LuaUnit::SetMaxPower },
+        { "SetPowerType", &LuaUnit::SetPowerType },
+        { "SetDisplayId", &LuaUnit::SetDisplayId },
+        { "SetNativeDisplayId", &LuaUnit::SetNativeDisplayId },
+        { "SetFacing", &LuaUnit::SetFacing },
+        { "SetFacingToObject", &LuaUnit::SetFacingToObject },
+        { "SetSpeed", &LuaUnit::SetSpeed },
+        { "SetSpeedRate", &LuaUnit::SetSpeedRate },
+        { "SetRooted", &LuaUnit::SetRooted },
+        { "SetConfused", &LuaUnit::SetConfused },
+        { "SetFeared", &LuaUnit::SetFeared },
+        { "SetPvP", &LuaUnit::SetPvP },
+        { "SetFFA", &LuaUnit::SetFFA },
+        { "SetSanctuary", &LuaUnit::SetSanctuary },
+        { "SetOwnerGUID", &LuaUnit::SetOwnerGUID },
+        { "SetName", &LuaUnit::SetName },
+        { "SetSheath", &LuaUnit::SetSheath },
+        { "SetCreatorGUID", &LuaUnit::SetCreatorGUID },
+        { "SetMinionGUID", &LuaUnit::SetPetGUID },
+        { "SetPetGUID", &LuaUnit::SetPetGUID },
+        { "SetCritterGUID", &LuaUnit::SetCritterGUID },
+        { "SetWaterWalk", &LuaUnit::SetWaterWalk },
+        { "SetStandState", &LuaUnit::SetStandState },
+        { "SetInCombatWith", &LuaUnit::SetInCombatWith },
+        { "ModifyPower", &LuaUnit::ModifyPower },
+        { "SetImmuneTo", &LuaUnit::SetImmuneTo },
 
-    /*int RemoveBindSightAuras(lua_State* L, Unit* unit)
-    {
-        unit->RemoveBindSightAuras();
-        return 0;
-    }*/
+        // Boolean
+        { "IsAlive", &LuaUnit::IsAlive },
+        { "IsDead", &LuaUnit::IsDead },
+        { "IsDying", &LuaUnit::IsDying },
+        { "IsPvPFlagged", &LuaUnit::IsPvPFlagged },
+        { "IsInCombat", &LuaUnit::IsInCombat },
+        { "IsBanker", &LuaUnit::IsBanker },
+        { "IsBattleMaster", &LuaUnit::IsBattleMaster },
+        { "IsCharmed", &LuaUnit::IsCharmed },
+        { "IsArmorer", &LuaUnit::IsArmorer },
+        { "IsAttackingPlayer", &LuaUnit::IsAttackingPlayer },
+        { "IsInWater", &LuaUnit::IsInWater },
+        { "IsUnderWater", &LuaUnit::IsUnderWater },
+        { "IsAuctioneer", &LuaUnit::IsAuctioneer },
+        { "IsGuildMaster", &LuaUnit::IsGuildMaster },
+        { "IsInnkeeper", &LuaUnit::IsInnkeeper },
+        { "IsTrainer", &LuaUnit::IsTrainer },
+        { "IsGossip", &LuaUnit::IsGossip },
+        { "IsTaxi", &LuaUnit::IsTaxi },
+        { "IsSpiritHealer", &LuaUnit::IsSpiritHealer },
+        { "IsSpiritGuide", &LuaUnit::IsSpiritGuide },
+        { "IsTabardDesigner", &LuaUnit::IsTabardDesigner },
+        { "IsServiceProvider", &LuaUnit::IsServiceProvider },
+        { "IsSpiritService", &LuaUnit::IsSpiritService },
+        { "HealthBelowPct", &LuaUnit::HealthBelowPct },
+        { "HealthAbovePct", &LuaUnit::HealthAbovePct },
+        { "IsMounted", &LuaUnit::IsMounted },
+        { "AttackStop", &LuaUnit::AttackStop },
+        { "Attack", &LuaUnit::Attack },
+        { "IsStopped", &LuaUnit::IsStopped },
+        { "HasUnitState", &LuaUnit::HasUnitState },
+        { "IsQuestGiver", &LuaUnit::IsQuestGiver },
+        { "IsInAccessiblePlaceFor", &LuaUnit::IsInAccessiblePlaceFor },
+        { "IsVendor", &LuaUnit::IsVendor },
+        { "IsRooted", &LuaUnit::IsRooted },
+        { "IsFullHealth", &LuaUnit::IsFullHealth },
+        { "HasAura", &LuaUnit::HasAura },
+        { "IsCasting", &LuaUnit::IsCasting },
+        { "IsStandState", &LuaUnit::IsStandState },
+        { "IsOnVehicle", &LuaUnit::IsOnVehicle },
 
-    /*int RemoveCharmAuras(lua_State* L, Unit* unit)
-    {
-        unit->RemoveCharmAuras();
-        return 0;
-    }*/
+        // Other
+        { "HandleStatModifier", &LuaUnit::HandleStatModifier },
+        { "AddAura", &LuaUnit::AddAura },
+        { "RemoveAura", &LuaUnit::RemoveAura },
+        { "RemoveAllAuras", &LuaUnit::RemoveAllAuras },
+        { "RemoveArenaAuras", &LuaUnit::RemoveArenaAuras },
+        { "ClearInCombat", &LuaUnit::ClearInCombat },
+        { "DeMorph", &LuaUnit::DeMorph },
+        { "SendUnitWhisper", &LuaUnit::SendUnitWhisper },
+        { "SendUnitEmote", &LuaUnit::SendUnitEmote },
+        { "SendUnitSay", &LuaUnit::SendUnitSay },
+        { "SendUnitYell", &LuaUnit::SendUnitYell },
+        { "CastSpell", &LuaUnit::CastSpell },
+        { "CastCustomSpell", &LuaUnit::CastCustomSpell },
+        { "CastSpellAoF", &LuaUnit::CastSpellAoF },
+        { "Kill", &LuaUnit::Kill },
+        { "StopSpellCast", &LuaUnit::StopSpellCast },
+        { "InterruptSpell", &LuaUnit::InterruptSpell },
+        { "SendChatMessageToPlayer", &LuaUnit::SendChatMessageToPlayer },
+        { "PerformEmote", &LuaUnit::PerformEmote },
+        { "EmoteState", &LuaUnit::EmoteState },
+        { "CountPctFromCurHealth", &LuaUnit::CountPctFromCurHealth },
+        { "CountPctFromMaxHealth", &LuaUnit::CountPctFromMaxHealth },
+        { "Dismount", &LuaUnit::Dismount },
+        { "Mount", &LuaUnit::Mount },
+        { "ClearThreatList", &LuaUnit::ClearThreatList },
+        { "GetThreatList", &LuaUnit::GetThreatList },
+        { "ClearUnitState", &LuaUnit::ClearUnitState },
+        { "AddUnitState", &LuaUnit::AddUnitState },
+        { "NearTeleport", &LuaUnit::NearTeleport },
+        { "MoveIdle", &LuaUnit::MoveIdle },
+        { "MoveRandom", &LuaUnit::MoveRandom },
+        { "MoveHome", &LuaUnit::MoveHome },
+        { "MoveFollow", &LuaUnit::MoveFollow },
+        { "MoveChase", &LuaUnit::MoveChase },
+        { "MoveConfused", &LuaUnit::MoveConfused },
+        { "MoveFleeing", &LuaUnit::MoveFleeing },
+        { "MoveTo", &LuaUnit::MoveTo },
+        { "MoveJump", &LuaUnit::MoveJump },
+        { "MoveStop", &LuaUnit::MoveStop },
+        { "MoveExpire", &LuaUnit::MoveExpire },
+        { "MoveClear", &LuaUnit::MoveClear },
+        { "DealDamage", &LuaUnit::DealDamage },
+        { "DealHeal", &LuaUnit::DealHeal },
+        { "AddThreat", &LuaUnit::AddThreat },
+        { "ModifyThreatPct", &LuaUnit::ModifyThreatPct },
+        { "ResetAllThreat", &LuaUnit::ResetAllThreat },
+        { "ClearThreat", &LuaUnit::ClearThreat },
 
-    /*int DisableMelee(lua_State* L, Unit* unit)
-    {
-    bool apply = Eluna::CHECKVAL<bool>(L, 2, true);
-
-    if (apply)
-    unit->AddUnitState(UNIT_STATE_CANNOT_AUTOATTACK);
-    else
-    unit->ClearUnitState(UNIT_STATE_CANNOT_AUTOATTACK);
-    return 0;
-    }*/
-
-    /*int SummonGuardian(lua_State* L, Unit* unit)
-    {
-    uint32 entry = Eluna::CHECKVAL<uint32>(L, 2);
-    float x = Eluna::CHECKVAL<float>(L, 3);
-    float y = Eluna::CHECKVAL<float>(L, 4);
-    float z = Eluna::CHECKVAL<float>(L, 5);
-    float o = Eluna::CHECKVAL<float>(L, 6);
-    uint32 desp = Eluna::CHECKVAL<uint32>(L, 7, 0);
-
-    SummonPropertiesEntry const* properties = sSummonPropertiesStore.LookupEntry(61);
-    if (!properties)
-    return 1;
-    Position pos;
-    pos.Relocate(x,y,z,o);
-    TempSummon* summon = unit->GetMap()->SummonCreature(entry, pos, properties, desp, unit);
-
-    if (!summon)
-    return 1;
-
-    if (summon->HasUnitTypeMask(UNIT_MASK_GUARDIAN))
-    ((Guardian*)summon)->InitStatsForLevel(unit->getLevel());
-
-    if (properties && properties->Category == SUMMON_CATEGORY_ALLY)
-    summon->setFaction(unit->getFaction());
-    if (summon->GetEntry() == 27893)
-    {
-    if (uint32 weapon = unit->GetUInt32Value(PLAYER_VISIBLE_ITEM_16_ENTRYID))
-    {
-    summon->SetDisplayId(11686);
-    summon->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, weapon);
-    }
-    else
-    summon->SetDisplayId(1126);
-    }
-    summon->AI()->EnterEvadeMode();
-
-    Eluna::Push(L, summon);
-    return 1;
-    }*/
+        { NULL, NULL }
+    };
 };
 #endif

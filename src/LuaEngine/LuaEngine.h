@@ -14,13 +14,12 @@
 #include "Group.h"
 #include "Item.h"
 #include "Chat.h"
-#ifndef TRINITY
 #include "Player.h"
-#endif
 #include "Weather.h"
 #include "World.h"
 #include "Hooks.h"
 #include "LFG.h"
+#include "LootMgr.h"
 #include "ElunaUtility.h"
 #include "HttpManager.h"
 #include "EventEmitter.h"
