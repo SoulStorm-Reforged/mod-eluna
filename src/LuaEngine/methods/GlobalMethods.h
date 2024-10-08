@@ -3599,7 +3599,7 @@ namespace LuaGlobalFunctions
      * This method fetches the `DisplayId` for an item based on its entry ID from the `item_template` table.
      *
      * @param uint32 itemEntry : The entry ID of the item.
-     * *
+     *
      * @return uint32 displayId : The DisplayId of the item. Returns 0 if the item entry is not found.
      */
     int GetItemDisplayId(lua_State* L)
@@ -3615,6 +3615,17 @@ namespace LuaGlobalFunctions
         return 1;
     }
 
+    /**
+     * Return the entrance position (x, y, z, o) of the specified dungeon map id
+     *
+     * @param uint32 mapId
+     *
+     * return uint32 pos_x
+     * return uint32 pos_y
+     * return uint32 pos_z
+     * return uint32 pos_o
+     * 
+     */
     int GetDungeonEntrancePosition(lua_State* L)
     {
         uint32 mapId = Eluna::CHECKVAL<uint32>(L, 1);
@@ -3632,6 +3643,52 @@ namespace LuaGlobalFunctions
         Eluna::Push(L, at->target_Orientation);
 
         return 5;
+    }
+
+    /**
+     * Retrieve the list of available trainer spells for the specified NPC trainer.
+     *
+     * @param uint32 trainerId : The entry ID of the NPC trainer.
+     *
+     * @return trainer_spells : table of all spells in the specified trinaer
+     */
+    int GetTrainerSpells(lua_State* L)
+    {
+        uint32 trainerId = Eluna::CHECKVAL<uint32>(L, 1);
+
+        TrainerSpellData const* trainerSpellData = eObjectMgr->GetNpcTrainerSpells(trainerId);
+        if (!trainerSpellData)
+            return 0;
+
+        lua_newtable(L);
+        int tbl = lua_gettop(L);
+
+        uint32 i = 0;
+        for (const auto& itr : trainerSpellData->spellList)
+        {
+            TrainerSpell const* tSpell = &itr.second;
+
+            lua_newtable(L);
+
+            Eluna::Push(L, tSpell->spell);
+            lua_setfield(L, -2, "spellId");
+
+            Eluna::Push(L, tSpell->spellCost);
+            lua_setfield(L, -2, "spellCost");
+
+            Eluna::Push(L, tSpell->reqSkill);
+            lua_setfield(L, -2, "requiredSkillLine");
+
+            Eluna::Push(L, tSpell->reqSkillValue);
+            lua_setfield(L, -2, "requiredSkillRank");
+
+            Eluna::Push(L, tSpell->reqLevel);
+            lua_setfield(L, -2, "requiredLevel");
+
+            lua_rawseti(L, tbl, ++i);
+        }
+
+        return 1;
     }
 
     luaL_Reg GlobalMethods[] =
@@ -3716,7 +3773,8 @@ namespace LuaGlobalFunctions
         { "GetGossipMenuOptionLocale", &LuaGlobalFunctions::GetGossipMenuOptionLocale },
         { "GetItemDisplayId", &LuaGlobalFunctions::GetItemDisplayId },
         { "GetDungeonEntrancePosition", &LuaGlobalFunctions::GetDungeonEntrancePosition },
-
+        { "GetTrainerSpells", &LuaGlobalFunctions::GetTrainerSpells },
+        
         // Boolean
         { "IsCompatibilityMode", &LuaGlobalFunctions::IsCompatibilityMode },
         { "IsInventoryPos", &LuaGlobalFunctions::IsInventoryPos },
