@@ -1,33 +1,33 @@
 /*
- * Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+ * Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
  * This program is free software licensed under GPL version 3
  * Please see the included DOCS/LICENSE.md for more information
  */
 
-#include "ElunaInstanceAI.h"
-#include "ElunaUtility.h"
+#include "ForgeInstanceAI.h"
+#include "ForgeUtility.h"
 #include "lmarshal.h"
 
 
 #ifndef TRINITY
-void ElunaInstanceAI::Initialize()
+void ForgeInstanceAI::Initialize()
 {
-    LOCK_ELUNA;
+    LOCK_FORGE;
 
-    ASSERT(!sEluna->HasInstanceData(instance));
+    ASSERT(!sForge->HasInstanceData(instance));
 
     // Create a new table for instance data.
-    lua_State* L = sEluna->L;
+    lua_State* L = sForge->L;
     lua_newtable(L);
-    sEluna->CreateInstanceData(instance);
+    sForge->CreateInstanceData(instance);
 
-    sEluna->OnInitialize(this);
+    sForge->OnInitialize(this);
 }
 #endif
 
-void ElunaInstanceAI::Load(const char* data)
+void ForgeInstanceAI::Load(const char* data)
 {
-    LOCK_ELUNA;
+    LOCK_FORGE;
 
     // If we get passed NULL (i.e. `Reload` was called) then use
     //   the last known save data (or maybe just an empty string).
@@ -42,21 +42,21 @@ void ElunaInstanceAI::Load(const char* data)
 
     if (data[0] == '\0')
     {
-        ASSERT(!sEluna->HasInstanceData(instance));
+        ASSERT(!sForge->HasInstanceData(instance));
 
         // Create a new table for instance data.
-        lua_State* L = sEluna->L;
+        lua_State* L = sForge->L;
         lua_newtable(L);
-        sEluna->CreateInstanceData(instance);
+        sForge->CreateInstanceData(instance);
 
-        sEluna->OnLoad(this);
+        sForge->OnLoad(this);
         // Stack: (empty)
         return;
     }
 
     size_t decodedLength;
-    const unsigned char* decodedData = ElunaUtil::DecodeData(data, &decodedLength);
-    lua_State* L = sEluna->L;
+    const unsigned char* decodedData = ForgeUtil::DecodeData(data, &decodedLength);
+    lua_State* L = sForge->L;
 
     if (decodedData)
     {
@@ -73,14 +73,14 @@ void ElunaInstanceAI::Load(const char* data)
             // Only use the data if it's a table.
             if (lua_istable(L, -1))
             {
-                sEluna->CreateInstanceData(instance);
+                sForge->CreateInstanceData(instance);
                 // Stack: (empty)
-                sEluna->OnLoad(this);
+                sForge->OnLoad(this);
                 // WARNING! lastSaveData might be different after `OnLoad` if the Lua code saved data.
             }
             else
             {
-                ELUNA_LOG_ERROR("Error while loading instance data: Expected data to be a table (type 5), got type {} instead", lua_type(L, -1));
+                FORGE_LOG_ERROR("Error while loading instance data: Expected data to be a table (type 5), got type {} instead", lua_type(L, -1));
                 lua_pop(L, 1);
                 // Stack: (empty)
 
@@ -92,7 +92,7 @@ void ElunaInstanceAI::Load(const char* data)
         else
         {
             // Stack: error_message
-            ELUNA_LOG_ERROR("Error while parsing instance data with lua-marshal: {}", lua_tostring(L, -1));
+            FORGE_LOG_ERROR("Error while parsing instance data with lua-marshal: {}", lua_tostring(L, -1));
             lua_pop(L, 1);
             // Stack: (empty)
 
@@ -105,7 +105,7 @@ void ElunaInstanceAI::Load(const char* data)
     }
     else
     {
-        ELUNA_LOG_ERROR("Error while decoding instance data: Data is not valid base-64");
+        FORGE_LOG_ERROR("Error while decoding instance data: Data is not valid base-64");
 
 #ifndef TRINITY
         Initialize();
@@ -113,10 +113,10 @@ void ElunaInstanceAI::Load(const char* data)
     }
 }
 
-const char* ElunaInstanceAI::Save() const
+const char* ForgeInstanceAI::Save() const
 {
-    LOCK_ELUNA;
-    lua_State* L = sEluna->L;
+    LOCK_FORGE;
+    lua_State* L = sForge->L;
     // Stack: (empty)
 
     /*
@@ -126,16 +126,16 @@ const char* ElunaInstanceAI::Save() const
      * Declaring virtual methods as `const` is BAD!
      * Don't dictate to children that their methods must be pure.
      */
-    ElunaInstanceAI* self = const_cast<ElunaInstanceAI*>(this);
+    ForgeInstanceAI* self = const_cast<ForgeInstanceAI*>(this);
 
     lua_pushcfunction(L, mar_encode);
-    sEluna->PushInstanceData(L, self, false);
+    sForge->PushInstanceData(L, self, false);
     // Stack: mar_encode, instance_data
 
     if (lua_pcall(L, 1, 1, 0) != 0)
     {
         // Stack: error_message
-        ELUNA_LOG_ERROR("Error while saving: {}", lua_tostring(L, -1));
+        FORGE_LOG_ERROR("Error while saving: {}", lua_tostring(L, -1));
         lua_pop(L, 1);
         return NULL;
     }
@@ -143,7 +143,7 @@ const char* ElunaInstanceAI::Save() const
     // Stack: data
     size_t dataLength;
     const unsigned char* data = (const unsigned char*)lua_tolstring(L, -1, &dataLength);
-    ElunaUtil::EncodeData(data, dataLength, self->lastSaveData);
+    ForgeUtil::EncodeData(data, dataLength, self->lastSaveData);
 
     lua_pop(L, 1);
     // Stack: (empty)
@@ -151,39 +151,39 @@ const char* ElunaInstanceAI::Save() const
     return lastSaveData.c_str();
 }
 
-uint32 ElunaInstanceAI::GetData(uint32 key) const
+uint32 ForgeInstanceAI::GetData(uint32 key) const
 {
-    LOCK_ELUNA;
-    lua_State* L = sEluna->L;
+    LOCK_FORGE;
+    lua_State* L = sForge->L;
     // Stack: (empty)
 
-    sEluna->PushInstanceData(L, const_cast<ElunaInstanceAI*>(this), false);
+    sForge->PushInstanceData(L, const_cast<ForgeInstanceAI*>(this), false);
     // Stack: instance_data
 
-    Eluna::Push(L, key);
+    Forge::Push(L, key);
     // Stack: instance_data, key
 
     lua_gettable(L, -2);
     // Stack: instance_data, value
 
-    uint32 value = Eluna::CHECKVAL<uint32>(L, -1, 0);
+    uint32 value = Forge::CHECKVAL<uint32>(L, -1, 0);
     lua_pop(L, 2);
     // Stack: (empty)
 
     return value;
 }
 
-void ElunaInstanceAI::SetData(uint32 key, uint32 value)
+void ForgeInstanceAI::SetData(uint32 key, uint32 value)
 {
-    LOCK_ELUNA;
-    lua_State* L = sEluna->L;
+    LOCK_FORGE;
+    lua_State* L = sForge->L;
     // Stack: (empty)
 
-    sEluna->PushInstanceData(L, this, false);
+    sForge->PushInstanceData(L, this, false);
     // Stack: instance_data
 
-    Eluna::Push(L, key);
-    Eluna::Push(L, value);
+    Forge::Push(L, key);
+    Forge::Push(L, value);
     // Stack: instance_data, key, value
 
     lua_settable(L, -3);
@@ -193,39 +193,39 @@ void ElunaInstanceAI::SetData(uint32 key, uint32 value)
     // Stack: (empty)
 }
 
-uint64 ElunaInstanceAI::GetData64(uint32 key) const
+uint64 ForgeInstanceAI::GetData64(uint32 key) const
 {
-    LOCK_ELUNA;
-    lua_State* L = sEluna->L;
+    LOCK_FORGE;
+    lua_State* L = sForge->L;
     // Stack: (empty)
 
-    sEluna->PushInstanceData(L, const_cast<ElunaInstanceAI*>(this), false);
+    sForge->PushInstanceData(L, const_cast<ForgeInstanceAI*>(this), false);
     // Stack: instance_data
 
-    Eluna::Push(L, key);
+    Forge::Push(L, key);
     // Stack: instance_data, key
 
     lua_gettable(L, -2);
     // Stack: instance_data, value
 
-    uint64 value = Eluna::CHECKVAL<uint64>(L, -1, 0);
+    uint64 value = Forge::CHECKVAL<uint64>(L, -1, 0);
     lua_pop(L, 2);
     // Stack: (empty)
 
     return value;
 }
 
-void ElunaInstanceAI::SetData64(uint32 key, uint64 value)
+void ForgeInstanceAI::SetData64(uint32 key, uint64 value)
 {
-    LOCK_ELUNA;
-    lua_State* L = sEluna->L;
+    LOCK_FORGE;
+    lua_State* L = sForge->L;
     // Stack: (empty)
 
-    sEluna->PushInstanceData(L, this, false);
+    sForge->PushInstanceData(L, this, false);
     // Stack: instance_data
 
-    Eluna::Push(L, key);
-    Eluna::Push(L, value);
+    Forge::Push(L, key);
+    Forge::Push(L, value);
     // Stack: instance_data, key, value
 
     lua_settable(L, -3);

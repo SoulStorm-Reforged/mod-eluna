@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
@@ -18,7 +18,7 @@ namespace LuaItemTemplate
      */
     int GetItemId(lua_State* L, ItemTemplate* itemTemplate)
     {
-        Eluna::Push(L, itemTemplate->ItemId);
+        Forge::Push(L, itemTemplate->ItemId);
         return 1;
     }
 
@@ -29,7 +29,7 @@ namespace LuaItemTemplate
      */
     int GetClass(lua_State* L, ItemTemplate* itemTemplate)
     {
-        Eluna::Push(L, itemTemplate->Class);
+        Forge::Push(L, itemTemplate->Class);
         return 1;
     }
 
@@ -40,7 +40,7 @@ namespace LuaItemTemplate
      */
     int GetSubClass(lua_State* L, ItemTemplate* itemTemplate)
     {
-        Eluna::Push(L, itemTemplate->SubClass);
+        Forge::Push(L, itemTemplate->SubClass);
         return 1;
     }
 
@@ -51,7 +51,7 @@ namespace LuaItemTemplate
      */
     int GetName(lua_State* L, ItemTemplate* itemTemplate)
     {
-        Eluna::Push(L, itemTemplate->Name1);
+        Forge::Push(L, itemTemplate->Name1);
         return 1;
     }
 
@@ -62,7 +62,7 @@ namespace LuaItemTemplate
      */
     int GetDisplayId(lua_State* L, ItemTemplate* itemTemplate)
     {
-        Eluna::Push(L, itemTemplate->DisplayInfoID);
+        Forge::Push(L, itemTemplate->DisplayInfoID);
         return 1;
     }
 
@@ -73,7 +73,7 @@ namespace LuaItemTemplate
      */
     int GetQuality(lua_State* L, ItemTemplate* itemTemplate)
     {
-        Eluna::Push(L, itemTemplate->Quality);
+        Forge::Push(L, itemTemplate->Quality);
         return 1;
     }
 
@@ -84,7 +84,7 @@ namespace LuaItemTemplate
      */
     int GetFlags(lua_State* L, ItemTemplate* itemTemplate)
     {
-        Eluna::Push(L, itemTemplate->Flags);
+        Forge::Push(L, itemTemplate->Flags);
         return 1;
     }
 
@@ -95,7 +95,7 @@ namespace LuaItemTemplate
      */
     int GetExtraFlags(lua_State* L, ItemTemplate* itemTemplate)
     {
-        Eluna::Push(L, itemTemplate->Flags2);
+        Forge::Push(L, itemTemplate->Flags2);
         return 1;
     }
 
@@ -106,7 +106,7 @@ namespace LuaItemTemplate
      */
     int GetBuyCount(lua_State* L, ItemTemplate* itemTemplate)
     {
-        Eluna::Push(L, itemTemplate->BuyCount);
+        Forge::Push(L, itemTemplate->BuyCount);
         return 1;
     }
 
@@ -117,7 +117,7 @@ namespace LuaItemTemplate
      */
     int GetBuyPrice(lua_State* L, ItemTemplate* itemTemplate)
     {
-        Eluna::Push(L, itemTemplate->BuyPrice);
+        Forge::Push(L, itemTemplate->BuyPrice);
         return 1;
     }
 
@@ -128,7 +128,7 @@ namespace LuaItemTemplate
      */
     int GetSellPrice(lua_State* L, ItemTemplate* itemTemplate)
     {
-        Eluna::Push(L, itemTemplate->SellPrice);
+        Forge::Push(L, itemTemplate->SellPrice);
         return 1;
     }
 
@@ -139,7 +139,7 @@ namespace LuaItemTemplate
      */
     int GetInventoryType(lua_State* L, ItemTemplate* itemTemplate)
     {
-        Eluna::Push(L, itemTemplate->InventoryType);
+        Forge::Push(L, itemTemplate->InventoryType);
         return 1;
     }
 
@@ -150,7 +150,7 @@ namespace LuaItemTemplate
      */
     int GetAllowableClass(lua_State* L, ItemTemplate* itemTemplate)
     {
-        Eluna::Push(L, itemTemplate->AllowableClass);
+        Forge::Push(L, itemTemplate->AllowableClass);
         return 1;
     }
 
@@ -161,7 +161,7 @@ namespace LuaItemTemplate
      */
     int GetAllowableRace(lua_State* L, ItemTemplate* itemTemplate)
     {
-        Eluna::Push(L, itemTemplate->AllowableRace);
+        Forge::Push(L, itemTemplate->AllowableRace);
         return 1;
     }
 
@@ -172,7 +172,7 @@ namespace LuaItemTemplate
      */
     int GetItemLevel(lua_State* L, ItemTemplate* itemTemplate)
     {
-        Eluna::Push(L, itemTemplate->ItemLevel);
+        Forge::Push(L, itemTemplate->ItemLevel);
         return 1;
     }
 
@@ -183,7 +183,7 @@ namespace LuaItemTemplate
      */
     int GetRequiredLevel(lua_State* L, ItemTemplate* itemTemplate)
     {
-        Eluna::Push(L, itemTemplate->RequiredLevel);
+        Forge::Push(L, itemTemplate->RequiredLevel);
         return 1;
     }
 }

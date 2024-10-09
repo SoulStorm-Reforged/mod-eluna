@@ -1,7 +1,7 @@
 /*
  * lmarshal.c
  * A Lua library for serializing and deserializing Lua values
- * Richard Hundt <richardhundt@gmail.com>, Eluna Lua Engine <http://emudevs.com/>
+ * Richard Hundt <richardhundt@gmail.com>, Forge Lua Engine <http://emudevs.com/>
  *
  * License: MIT
  *
@@ -39,7 +39,7 @@ extern "C" {
 #include "lauxlib.h"
 }
 
-#include "ElunaCompat.h"
+#include "ForgeCompat.h"
 
 #define MAR_TREF 1
 #define MAR_TVAL 2
@@ -205,8 +205,8 @@ static void mar_encode_value(lua_State *L, mar_Buffer *buf, int val, size_t *idx
         }
         else {
             mar_Buffer rec_buf;
-            unsigned int i;
             lua_Debug ar;
+            decltype(ar.nups) i;
             lua_pop(L, 1); /* pop nil */
 
             lua_pushvalue(L, -1);

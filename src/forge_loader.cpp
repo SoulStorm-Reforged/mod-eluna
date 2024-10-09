@@ -16,10 +16,10 @@
  */
 
 // From SC
-void AddSC_ElunaLuaEngine();
+void AddSC_ForgeLuaEngine();
 
 // Add all
-void Addmod_elunaScripts()
+void Addmod_forgeScripts()
 {
-    AddSC_ElunaLuaEngine();
+    AddSC_ForgeLuaEngine();
 }

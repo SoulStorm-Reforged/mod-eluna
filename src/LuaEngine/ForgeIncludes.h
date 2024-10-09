@@ -1,11 +1,11 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
 
-#ifndef _ELUNA_INCLUDES_H
-#define _ELUNA_INCLUDES_H
+#ifndef _FORGE_INCLUDES_H
+#define _FORGE_INCLUDES_H
 
 // Required
 #include "AccountMgr.h"
@@ -157,4 +157,4 @@ typedef TemporarySummon TempSummon;
 typedef SpellEntry SpellInfo;
 #endif // TRINITY
 
-#endif // _ELUNA_INCLUDES_H
+#endif // _FORGE_INCLUDES_H

@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
@@ -51,11 +51,11 @@ namespace LuaQuest
      */
     int HasFlag(lua_State* L, Quest* quest)
     {
-        uint32 flag = Eluna::CHECKVAL<uint32>(L, 2);
+        uint32 flag = Forge::CHECKVAL<uint32>(L, 2);
 #if defined TRINITY || AZEROTHCORE
-        Eluna::Push(L, quest->HasFlag(flag));
+        Forge::Push(L, quest->HasFlag(flag));
 #else
-        Eluna::Push(L, quest->HasQuestFlag((QuestFlags)flag));
+        Forge::Push(L, quest->HasQuestFlag((QuestFlags)flag));
 #endif
         return 1;
     }
@@ -68,7 +68,7 @@ namespace LuaQuest
      */
     int IsDaily(lua_State* L, Quest* quest)
     {
-        Eluna::Push(L, quest->IsDaily());
+        Forge::Push(L, quest->IsDaily());
         return 1;
     }
 #endif
@@ -80,7 +80,7 @@ namespace LuaQuest
      */
     int IsRepeatable(lua_State* L, Quest* quest)
     {
-        Eluna::Push(L, quest->IsRepeatable());
+        Forge::Push(L, quest->IsRepeatable());
         return 1;
     }
 
@@ -91,7 +91,7 @@ namespace LuaQuest
      */
     int GetId(lua_State* L, Quest* quest)
     {
-        Eluna::Push(L, quest->GetQuestId());
+        Forge::Push(L, quest->GetQuestId());
         return 1;
     }
 
@@ -102,7 +102,7 @@ namespace LuaQuest
      */
     int GetLevel(lua_State* L, Quest* quest)
     {
-        Eluna::Push(L, quest->GetQuestLevel());
+        Forge::Push(L, quest->GetQuestLevel());
         return 1;
     }
 
@@ -113,7 +113,7 @@ namespace LuaQuest
      */
     int GetMinLevel(lua_State* L, Quest* quest)
     {
-        Eluna::Push(L, quest->GetMinLevel());
+        Forge::Push(L, quest->GetMinLevel());
         return 1;
     }
 
@@ -124,7 +124,7 @@ namespace LuaQuest
      */
     int GetNextQuestId(lua_State* L, Quest* quest)
     {
-        Eluna::Push(L, quest->GetNextQuestId());
+        Forge::Push(L, quest->GetNextQuestId());
         return 1;
     }
 
@@ -135,7 +135,7 @@ namespace LuaQuest
      */
     int GetPrevQuestId(lua_State* L, Quest* quest)
     {
-        Eluna::Push(L, quest->GetPrevQuestId());
+        Forge::Push(L, quest->GetPrevQuestId());
         return 1;
     }
 
@@ -146,7 +146,7 @@ namespace LuaQuest
      */
     int GetNextQuestInChain(lua_State* L, Quest* quest)
     {
-        Eluna::Push(L, quest->GetNextQuestInChain());
+        Forge::Push(L, quest->GetNextQuestInChain());
         return 1;
     }
 
@@ -158,9 +158,9 @@ namespace LuaQuest
     int GetFlags(lua_State* L, Quest* quest)
     {
 #if defined TRINITY || AZEROTHCORE
-        Eluna::Push(L, quest->GetFlags());
+        Forge::Push(L, quest->GetFlags());
 #else
-        Eluna::Push(L, quest->GetQuestFlags());
+        Forge::Push(L, quest->GetQuestFlags());
 #endif
         return 1;
     }
@@ -174,13 +174,13 @@ namespace LuaQuest
      */
     int GetType(lua_State* L, Quest* quest)
     {
-        Eluna::Push(L, quest->GetType());
+        Forge::Push(L, quest->GetType());
         return 1;
     }
 
     /*int GetMaxLevel(lua_State* L, Quest* quest)
     {
-        Eluna::Push(L, quest->GetMaxLevel());
+        Forge::Push(L, quest->GetMaxLevel());
         return 1;
     }*/
 };

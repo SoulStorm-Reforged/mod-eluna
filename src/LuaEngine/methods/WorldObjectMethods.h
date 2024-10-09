@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
@@ -19,7 +19,7 @@ namespace LuaWorldObject
      */
     int GetName(lua_State* L, WorldObject* obj)
     {
-        Eluna::Push(L, obj->GetName());
+        Forge::Push(L, obj->GetName());
         return 1;
     }
 
@@ -30,7 +30,7 @@ namespace LuaWorldObject
      */
     int GetMap(lua_State* L, WorldObject* obj)
     {
-        Eluna::Push(L, obj->GetMap());
+        Forge::Push(L, obj->GetMap());
         return 1;
     }
 
@@ -42,7 +42,7 @@ namespace LuaWorldObject
      */
     int GetPhaseMask(lua_State* L, WorldObject* obj)
     {
-        Eluna::Push(L, obj->GetPhaseMask());
+        Forge::Push(L, obj->GetPhaseMask());
         return 1;
     }
 
@@ -54,8 +54,8 @@ namespace LuaWorldObject
     */
     int SetPhaseMask(lua_State* L, WorldObject* obj)
     {
-        uint32 phaseMask = Eluna::CHECKVAL<uint32>(L, 2);
-        bool update = Eluna::CHECKVAL<bool>(L, 3, true);
+        uint32 phaseMask = Forge::CHECKVAL<uint32>(L, 2);
+        bool update = Forge::CHECKVAL<bool>(L, 3, true);
         obj->SetPhaseMask(phaseMask, update);
         return 0;
     }
@@ -68,7 +68,7 @@ namespace LuaWorldObject
      */
     int GetInstanceId(lua_State* L, WorldObject* obj)
     {
-        Eluna::Push(L, obj->GetInstanceId());
+        Forge::Push(L, obj->GetInstanceId());
         return 1;
     }
 
@@ -79,7 +79,7 @@ namespace LuaWorldObject
      */
     int GetAreaId(lua_State* L, WorldObject* obj)
     {
-        Eluna::Push(L, obj->GetAreaId());
+        Forge::Push(L, obj->GetAreaId());
         return 1;
     }
 
@@ -90,7 +90,7 @@ namespace LuaWorldObject
      */
     int GetZoneId(lua_State* L, WorldObject* obj)
     {
-        Eluna::Push(L, obj->GetZoneId());
+        Forge::Push(L, obj->GetZoneId());
         return 1;
     }
 
@@ -101,7 +101,7 @@ namespace LuaWorldObject
      */
     int GetMapId(lua_State* L, WorldObject* obj)
     {
-        Eluna::Push(L, obj->GetMapId());
+        Forge::Push(L, obj->GetMapId());
         return 1;
     }
 
@@ -112,7 +112,7 @@ namespace LuaWorldObject
      */
     int GetX(lua_State* L, WorldObject* obj)
     {
-        Eluna::Push(L, obj->GetPositionX());
+        Forge::Push(L, obj->GetPositionX());
         return 1;
     }
 
@@ -123,7 +123,7 @@ namespace LuaWorldObject
      */
     int GetY(lua_State* L, WorldObject* obj)
     {
-        Eluna::Push(L, obj->GetPositionY());
+        Forge::Push(L, obj->GetPositionY());
         return 1;
     }
 
@@ -134,7 +134,7 @@ namespace LuaWorldObject
      */
     int GetZ(lua_State* L, WorldObject* obj)
     {
-        Eluna::Push(L, obj->GetPositionZ());
+        Forge::Push(L, obj->GetPositionZ());
         return 1;
     }
 
@@ -145,7 +145,7 @@ namespace LuaWorldObject
      */
     int GetO(lua_State* L, WorldObject* obj)
     {
-        Eluna::Push(L, obj->GetOrientation());
+        Forge::Push(L, obj->GetOrientation());
         return 1;
     }
 
@@ -159,10 +159,10 @@ namespace LuaWorldObject
      */
     int GetLocation(lua_State* L, WorldObject* obj)
     {
-        Eluna::Push(L, obj->GetPositionX());
-        Eluna::Push(L, obj->GetPositionY());
-        Eluna::Push(L, obj->GetPositionZ());
-        Eluna::Push(L, obj->GetOrientation());
+        Forge::Push(L, obj->GetPositionX());
+        Forge::Push(L, obj->GetPositionY());
+        Forge::Push(L, obj->GetPositionZ());
+        Forge::Push(L, obj->GetOrientation());
         return 4;
     }
 
@@ -177,25 +177,25 @@ namespace LuaWorldObject
      */
     int GetNearestPlayer(lua_State* L, WorldObject* obj)
     {
-        float range = Eluna::CHECKVAL<float>(L, 2, SIZE_OF_GRIDS);
-        uint32 hostile = Eluna::CHECKVAL<uint32>(L, 3, 0);
-        uint32 dead = Eluna::CHECKVAL<uint32>(L, 4, 1);
+        float range = Forge::CHECKVAL<float>(L, 2, SIZE_OF_GRIDS);
+        uint32 hostile = Forge::CHECKVAL<uint32>(L, 3, 0);
+        uint32 dead = Forge::CHECKVAL<uint32>(L, 4, 1);
 
         Unit* target = NULL;
-        ElunaUtil::WorldObjectInRangeCheck checker(true, obj, range, TYPEMASK_PLAYER, 0, hostile, dead);
+        ForgeUtil::WorldObjectInRangeCheck checker(true, obj, range, TYPEMASK_PLAYER, 0, hostile, dead);
 #ifdef TRINITY
-        Trinity::UnitLastSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
+        Trinity::UnitLastSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 
 #elif AZEROTHCORE
-        Acore::UnitLastSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
+        Acore::UnitLastSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #else
-        MaNGOS::UnitLastSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(target, checker);
+        MaNGOS::UnitLastSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(target, checker);
         Cell::VisitWorldObjects(obj, searcher, range);
 #endif
 
-        Eluna::Push(L, target);
+        Forge::Push(L, target);
         return 1;
     }
 
@@ -210,24 +210,24 @@ namespace LuaWorldObject
      */
     int GetNearestGameObject(lua_State* L, WorldObject* obj)
     {
-        float range = Eluna::CHECKVAL<float>(L, 2, SIZE_OF_GRIDS);
-        uint32 entry = Eluna::CHECKVAL<uint32>(L, 3, 0);
-        uint32 hostile = Eluna::CHECKVAL<uint32>(L, 4, 0);
+        float range = Forge::CHECKVAL<float>(L, 2, SIZE_OF_GRIDS);
+        uint32 entry = Forge::CHECKVAL<uint32>(L, 3, 0);
+        uint32 hostile = Forge::CHECKVAL<uint32>(L, 4, 0);
 
         GameObject* target = NULL;
-        ElunaUtil::WorldObjectInRangeCheck checker(true, obj, range, TYPEMASK_GAMEOBJECT, entry, hostile);
+        ForgeUtil::WorldObjectInRangeCheck checker(true, obj, range, TYPEMASK_GAMEOBJECT, entry, hostile);
 #ifdef TRINITY
-        Trinity::GameObjectLastSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
+        Trinity::GameObjectLastSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #elif AZEROTHCORE
-        Acore::GameObjectLastSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
+        Acore::GameObjectLastSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #else
-        MaNGOS::GameObjectLastSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(target, checker);
+        MaNGOS::GameObjectLastSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(target, checker);
         Cell::VisitGridObjects(obj, searcher, range);
 #endif
 
-        Eluna::Push(L, target);
+        Forge::Push(L, target);
         return 1;
     }
 
@@ -243,26 +243,26 @@ namespace LuaWorldObject
      */
     int GetNearestCreature(lua_State* L, WorldObject* obj)
     {
-        float range = Eluna::CHECKVAL<float>(L, 2, SIZE_OF_GRIDS);
-        uint32 entry = Eluna::CHECKVAL<uint32>(L, 3, 0);
-        uint32 hostile = Eluna::CHECKVAL<uint32>(L, 4, 0);
-        uint32 dead = Eluna::CHECKVAL<uint32>(L, 5, 1);
+        float range = Forge::CHECKVAL<float>(L, 2, SIZE_OF_GRIDS);
+        uint32 entry = Forge::CHECKVAL<uint32>(L, 3, 0);
+        uint32 hostile = Forge::CHECKVAL<uint32>(L, 4, 0);
+        uint32 dead = Forge::CHECKVAL<uint32>(L, 5, 1);
 
         Creature* target = NULL;
-        ElunaUtil::WorldObjectInRangeCheck checker(true, obj, range, TYPEMASK_UNIT, entry, hostile, dead);
+        ForgeUtil::WorldObjectInRangeCheck checker(true, obj, range, TYPEMASK_UNIT, entry, hostile, dead);
 #ifdef TRINITY
-        Trinity::CreatureLastSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
+        Trinity::CreatureLastSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #elif AZEROTHCORE
-        Acore::CreatureLastSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
+        Acore::CreatureLastSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #else
-        MaNGOS::CreatureLastSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(target, checker);
+        MaNGOS::CreatureLastSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(target, checker);
         Cell::VisitGridObjects(obj, searcher, range);
 
 #endif
 
-        Eluna::Push(L, target);
+        Forge::Push(L, target);
         return 1;
     }
 
@@ -277,20 +277,20 @@ namespace LuaWorldObject
      */
     int GetPlayersInRange(lua_State* L, WorldObject* obj)
     {
-        float range = Eluna::CHECKVAL<float>(L, 2, SIZE_OF_GRIDS);
-        uint32 hostile = Eluna::CHECKVAL<uint32>(L, 3, 0);
-        uint32 dead = Eluna::CHECKVAL<uint32>(L, 4, 1);
+        float range = Forge::CHECKVAL<float>(L, 2, SIZE_OF_GRIDS);
+        uint32 hostile = Forge::CHECKVAL<uint32>(L, 3, 0);
+        uint32 dead = Forge::CHECKVAL<uint32>(L, 4, 1);
 
         std::list<Player*> list;
-        ElunaUtil::WorldObjectInRangeCheck checker(false, obj, range, TYPEMASK_PLAYER, 0, hostile, dead);
+        ForgeUtil::WorldObjectInRangeCheck checker(false, obj, range, TYPEMASK_PLAYER, 0, hostile, dead);
 #ifdef TRINITY
-        Trinity::PlayerListSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
+        Trinity::PlayerListSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #elif AZEROTHCORE
-        Acore::PlayerListSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
+        Acore::PlayerListSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #else
-        MaNGOS::PlayerListSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(list, checker);
+        MaNGOS::PlayerListSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(list, checker);
         Cell::VisitWorldObjects(obj, searcher, range);
 #endif
 
@@ -300,7 +300,7 @@ namespace LuaWorldObject
 
         for (std::list<Player*>::const_iterator it = list.begin(); it != list.end(); ++it)
         {
-            Eluna::Push(L, *it);
+            Forge::Push(L, *it);
             lua_rawseti(L, tbl, ++i);
         }
 
@@ -320,21 +320,21 @@ namespace LuaWorldObject
      */
     int GetCreaturesInRange(lua_State* L, WorldObject* obj)
     {
-        float range = Eluna::CHECKVAL<float>(L, 2, SIZE_OF_GRIDS);
-        uint32 entry = Eluna::CHECKVAL<uint32>(L, 3, 0);
-        uint32 hostile = Eluna::CHECKVAL<uint32>(L, 4, 0);
-        uint32 dead = Eluna::CHECKVAL<uint32>(L, 5, 1);
+        float range = Forge::CHECKVAL<float>(L, 2, SIZE_OF_GRIDS);
+        uint32 entry = Forge::CHECKVAL<uint32>(L, 3, 0);
+        uint32 hostile = Forge::CHECKVAL<uint32>(L, 4, 0);
+        uint32 dead = Forge::CHECKVAL<uint32>(L, 5, 1);
 
         std::list<Creature*> list;
-        ElunaUtil::WorldObjectInRangeCheck checker(false, obj, range, TYPEMASK_UNIT, entry, hostile, dead);
+        ForgeUtil::WorldObjectInRangeCheck checker(false, obj, range, TYPEMASK_UNIT, entry, hostile, dead);
 #ifdef TRINITY
-        Trinity::CreatureListSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
+        Trinity::CreatureListSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #elif defined AZEROTHCORE
-        Acore::CreatureListSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
+        Acore::CreatureListSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #else
-        MaNGOS::CreatureListSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(list, checker);
+        MaNGOS::CreatureListSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(list, checker);
         Cell::VisitGridObjects(obj, searcher, range);
 #endif
 
@@ -344,7 +344,7 @@ namespace LuaWorldObject
 
         for (std::list<Creature*>::const_iterator it = list.begin(); it != list.end(); ++it)
         {
-            Eluna::Push(L, *it);
+            Forge::Push(L, *it);
             lua_rawseti(L, tbl, ++i);
         }
 
@@ -363,20 +363,20 @@ namespace LuaWorldObject
      */
     int GetGameObjectsInRange(lua_State* L, WorldObject* obj)
     {
-        float range = Eluna::CHECKVAL<float>(L, 2, SIZE_OF_GRIDS);
-        uint32 entry = Eluna::CHECKVAL<uint32>(L, 3, 0);
-        uint32 hostile = Eluna::CHECKVAL<uint32>(L, 4, 0);
+        float range = Forge::CHECKVAL<float>(L, 2, SIZE_OF_GRIDS);
+        uint32 entry = Forge::CHECKVAL<uint32>(L, 3, 0);
+        uint32 hostile = Forge::CHECKVAL<uint32>(L, 4, 0);
 
         std::list<GameObject*> list;
-        ElunaUtil::WorldObjectInRangeCheck checker(false, obj, range, TYPEMASK_GAMEOBJECT, entry, hostile);
+        ForgeUtil::WorldObjectInRangeCheck checker(false, obj, range, TYPEMASK_GAMEOBJECT, entry, hostile);
 #ifdef TRINITY
-        Trinity::GameObjectListSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
+        Trinity::GameObjectListSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #elif AZEROTHCORE
-        Acore::GameObjectListSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
+        Acore::GameObjectListSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #else
-        MaNGOS::GameObjectListSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(list, checker);
+        MaNGOS::GameObjectListSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(list, checker);
         Cell::VisitGridObjects(obj, searcher, range);
 #endif
 
@@ -386,7 +386,7 @@ namespace LuaWorldObject
 
         for (std::list<GameObject*>::const_iterator it = list.begin(); it != list.end(); ++it)
         {
-            Eluna::Push(L, *it);
+            Forge::Push(L, *it);
             lua_rawseti(L, tbl, ++i);
         }
 
@@ -408,29 +408,29 @@ namespace LuaWorldObject
      */
     int GetNearObject(lua_State* L, WorldObject* obj)
     {
-        float range = Eluna::CHECKVAL<float>(L, 2, SIZE_OF_GRIDS);
-        uint16 type = Eluna::CHECKVAL<uint16>(L, 3, 0); // TypeMask
-        uint32 entry = Eluna::CHECKVAL<uint32>(L, 4, 0);
-        uint32 hostile = Eluna::CHECKVAL<uint32>(L, 5, 0); // 0 none, 1 hostile, 2 friendly
-        uint32 dead = Eluna::CHECKVAL<uint32>(L, 6, 1); // 0 both, 1 alive, 2 dead
+        float range = Forge::CHECKVAL<float>(L, 2, SIZE_OF_GRIDS);
+        uint16 type = Forge::CHECKVAL<uint16>(L, 3, 0); // TypeMask
+        uint32 entry = Forge::CHECKVAL<uint32>(L, 4, 0);
+        uint32 hostile = Forge::CHECKVAL<uint32>(L, 5, 0); // 0 none, 1 hostile, 2 friendly
+        uint32 dead = Forge::CHECKVAL<uint32>(L, 6, 1); // 0 both, 1 alive, 2 dead
 
         float x, y, z;
         obj->GetPosition(x, y, z);
-        ElunaUtil::WorldObjectInRangeCheck checker(true, obj, range, type, entry, hostile, dead);
+        ForgeUtil::WorldObjectInRangeCheck checker(true, obj, range, type, entry, hostile, dead);
 
         WorldObject* target = NULL;
 #ifdef TRINITY
-        Trinity::WorldObjectLastSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
+        Trinity::WorldObjectLastSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #elif AZEROTHCORE
-        Acore::WorldObjectLastSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
+        Acore::WorldObjectLastSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #else
-        MaNGOS::WorldObjectLastSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(target, checker);
+        MaNGOS::WorldObjectLastSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(target, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #endif
 
-        Eluna::Push(L, target);
+        Forge::Push(L, target);
         return 1;
     }
 
@@ -448,25 +448,25 @@ namespace LuaWorldObject
      */
     int GetNearObjects(lua_State* L, WorldObject* obj)
     {
-        float range = Eluna::CHECKVAL<float>(L, 2, SIZE_OF_GRIDS);
-        uint16 type = Eluna::CHECKVAL<uint16>(L, 3, 0); // TypeMask
-        uint32 entry = Eluna::CHECKVAL<uint32>(L, 4, 0);
-        uint32 hostile = Eluna::CHECKVAL<uint32>(L, 5, 0); // 0 none, 1 hostile, 2 friendly
-        uint32 dead = Eluna::CHECKVAL<uint32>(L, 6, 1); // 0 both, 1 alive, 2 dead
+        float range = Forge::CHECKVAL<float>(L, 2, SIZE_OF_GRIDS);
+        uint16 type = Forge::CHECKVAL<uint16>(L, 3, 0); // TypeMask
+        uint32 entry = Forge::CHECKVAL<uint32>(L, 4, 0);
+        uint32 hostile = Forge::CHECKVAL<uint32>(L, 5, 0); // 0 none, 1 hostile, 2 friendly
+        uint32 dead = Forge::CHECKVAL<uint32>(L, 6, 1); // 0 both, 1 alive, 2 dead
 
         float x, y, z;
         obj->GetPosition(x, y, z);
-        ElunaUtil::WorldObjectInRangeCheck checker(false, obj, range, type, entry, hostile, dead);
+        ForgeUtil::WorldObjectInRangeCheck checker(false, obj, range, type, entry, hostile, dead);
 
         std::list<WorldObject*> list;
 #ifdef TRINITY
-        Trinity::WorldObjectListSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
+        Trinity::WorldObjectListSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #elif AZEROTHCORE
-        Acore::WorldObjectListSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
+        Acore::WorldObjectListSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #else
-        MaNGOS::WorldObjectListSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(list, checker);
+        MaNGOS::WorldObjectListSearcher<ForgeUtil::WorldObjectInRangeCheck> searcher(list, checker);
         Cell::VisitAllObjects(obj, searcher, range);
 #endif
 
@@ -476,7 +476,7 @@ namespace LuaWorldObject
 
         for (std::list<WorldObject*>::const_iterator it = list.begin(); it != list.end(); ++it)
         {
-            Eluna::Push(L, *it);
+            Forge::Push(L, *it);
             lua_rawseti(L, tbl, ++i);
         }
 
@@ -501,15 +501,15 @@ namespace LuaWorldObject
      */
     int GetDistance(lua_State* L, WorldObject* obj)
     {
-        WorldObject* target = Eluna::CHECKOBJ<WorldObject>(L, 2, false);
+        WorldObject* target = Forge::CHECKOBJ<WorldObject>(L, 2, false);
         if (target)
-            Eluna::Push(L, obj->GetDistance(target));
+            Forge::Push(L, obj->GetDistance(target));
         else
         {
-            float X = Eluna::CHECKVAL<float>(L, 2);
-            float Y = Eluna::CHECKVAL<float>(L, 3);
-            float Z = Eluna::CHECKVAL<float>(L, 4);
-            Eluna::Push(L, obj->GetDistance(X, Y, Z));
+            float X = Forge::CHECKVAL<float>(L, 2);
+            float Y = Forge::CHECKVAL<float>(L, 3);
+            float Z = Forge::CHECKVAL<float>(L, 4);
+            Forge::Push(L, obj->GetDistance(X, Y, Z));
         }
         return 1;
     }
@@ -533,7 +533,7 @@ namespace LuaWorldObject
     {
         float x, y, z;
         obj->GetPosition(x, y, z);
-        WorldObject* target = Eluna::CHECKOBJ<WorldObject>(L, 2, false);
+        WorldObject* target = Forge::CHECKOBJ<WorldObject>(L, 2, false);
         if (target)
         {
             float x2, y2, z2;
@@ -544,12 +544,12 @@ namespace LuaWorldObject
         }
         else
         {
-            x -= Eluna::CHECKVAL<float>(L, 2);
-            y -= Eluna::CHECKVAL<float>(L, 3);
-            z -= Eluna::CHECKVAL<float>(L, 4);
+            x -= Forge::CHECKVAL<float>(L, 2);
+            y -= Forge::CHECKVAL<float>(L, 3);
+            z -= Forge::CHECKVAL<float>(L, 4);
         }
 
-        Eluna::Push(L, std::sqrt(x*x + y*y + z*z));
+        Forge::Push(L, std::sqrt(x*x + y*y + z*z));
         return 1;
     }
 
@@ -569,14 +569,14 @@ namespace LuaWorldObject
      */
     int GetDistance2d(lua_State* L, WorldObject* obj)
     {
-        WorldObject* target = Eluna::CHECKOBJ<WorldObject>(L, 2, false);
+        WorldObject* target = Forge::CHECKOBJ<WorldObject>(L, 2, false);
         if (target)
-            Eluna::Push(L, obj->GetDistance2d(target));
+            Forge::Push(L, obj->GetDistance2d(target));
         else
         {
-            float X = Eluna::CHECKVAL<float>(L, 2);
-            float Y = Eluna::CHECKVAL<float>(L, 3);
-            Eluna::Push(L, obj->GetDistance2d(X, Y));
+            float X = Forge::CHECKVAL<float>(L, 2);
+            float Y = Forge::CHECKVAL<float>(L, 3);
+            Forge::Push(L, obj->GetDistance2d(X, Y));
         }
         return 1;
     }
@@ -599,7 +599,7 @@ namespace LuaWorldObject
     {
         float x, y, z;
         obj->GetPosition(x, y, z);
-        WorldObject* target = Eluna::CHECKOBJ<WorldObject>(L, 2, false);
+        WorldObject* target = Forge::CHECKOBJ<WorldObject>(L, 2, false);
         if (target)
         {
             float x2, y2, z2;
@@ -609,11 +609,11 @@ namespace LuaWorldObject
         }
         else
         {
-            x -= Eluna::CHECKVAL<float>(L, 2);
-            y -= Eluna::CHECKVAL<float>(L, 3);
+            x -= Forge::CHECKVAL<float>(L, 2);
+            y -= Forge::CHECKVAL<float>(L, 3);
         }
 
-        Eluna::Push(L, std::sqrt(x*x + y*y));
+        Forge::Push(L, std::sqrt(x*x + y*y));
         return 1;
     }
 
@@ -629,15 +629,15 @@ namespace LuaWorldObject
      */
     int GetRelativePoint(lua_State* L, WorldObject* obj)
     {
-        float dist = Eluna::CHECKVAL<float>(L, 2);
-        float rad = Eluna::CHECKVAL<float>(L, 3);
+        float dist = Forge::CHECKVAL<float>(L, 2);
+        float rad = Forge::CHECKVAL<float>(L, 3);
 
         float x, y, z;
         obj->GetClosePoint(x, y, z, 0.0f, dist, rad);
 
-        Eluna::Push(L, x);
-        Eluna::Push(L, y);
-        Eluna::Push(L, z);
+        Forge::Push(L, x);
+        Forge::Push(L, y);
+        Forge::Push(L, z);
         return 3;
     }
 
@@ -657,24 +657,24 @@ namespace LuaWorldObject
      */
     int GetAngle(lua_State* L, WorldObject* obj)
     {
-        WorldObject* target = Eluna::CHECKOBJ<WorldObject>(L, 2, false);
+        WorldObject* target = Forge::CHECKOBJ<WorldObject>(L, 2, false);
 #if defined TRINITY && !AZEROTHCORE
         if (target)
-            Eluna::Push(L, obj->GetAbsoluteAngle(target));
+            Forge::Push(L, obj->GetAbsoluteAngle(target));
         else
         {
-            float x = Eluna::CHECKVAL<float>(L, 2);
-            float y = Eluna::CHECKVAL<float>(L, 3);
-            Eluna::Push(L, obj->GetAbsoluteAngle(x, y));
+            float x = Forge::CHECKVAL<float>(L, 2);
+            float y = Forge::CHECKVAL<float>(L, 3);
+            Forge::Push(L, obj->GetAbsoluteAngle(x, y));
         }
 #else
         if (target)
-            Eluna::Push(L, obj->GetAngle(target));
+            Forge::Push(L, obj->GetAngle(target));
         else
         {
-            float x = Eluna::CHECKVAL<float>(L, 2);
-            float y = Eluna::CHECKVAL<float>(L, 3);
-            Eluna::Push(L, obj->GetAngle(x, y));
+            float x = Forge::CHECKVAL<float>(L, 2);
+            float y = Forge::CHECKVAL<float>(L, 3);
+            Forge::Push(L, obj->GetAngle(x, y));
         }
 #endif
         return 1;
@@ -687,7 +687,7 @@ namespace LuaWorldObject
      */
     int SendPacket(lua_State* L, WorldObject* obj)
     {
-        WorldPacket* data = Eluna::CHECKOBJ<WorldPacket>(L, 2);
+        WorldPacket* data = Forge::CHECKOBJ<WorldPacket>(L, 2);
 #ifdef CMANGOS
         obj->SendMessageToSet(*data, true);
 #else
@@ -709,19 +709,19 @@ namespace LuaWorldObject
      */
     int SummonGameObject(lua_State* L, WorldObject* obj)
     {
-        uint32 entry = Eluna::CHECKVAL<uint32>(L, 2);
-        float x = Eluna::CHECKVAL<float>(L, 3);
-        float y = Eluna::CHECKVAL<float>(L, 4);
-        float z = Eluna::CHECKVAL<float>(L, 5);
-        float o = Eluna::CHECKVAL<float>(L, 6);
-        uint32 respawnDelay = Eluna::CHECKVAL<uint32>(L, 7, 30);
+        uint32 entry = Forge::CHECKVAL<uint32>(L, 2);
+        float x = Forge::CHECKVAL<float>(L, 3);
+        float y = Forge::CHECKVAL<float>(L, 4);
+        float z = Forge::CHECKVAL<float>(L, 5);
+        float o = Forge::CHECKVAL<float>(L, 6);
+        uint32 respawnDelay = Forge::CHECKVAL<uint32>(L, 7, 30);
 #ifdef TRINITY
         QuaternionData rot = QuaternionData::fromEulerAnglesZYX(o, 0.f, 0.f);
-        Eluna::Push(L, obj->SummonGameObject(entry, Position(x, y, z, o), rot, Seconds(respawnDelay)));
+        Forge::Push(L, obj->SummonGameObject(entry, Position(x, y, z, o), rot, Seconds(respawnDelay)));
 #elif AZEROTHCORE
-        Eluna::Push(L, obj->SummonGameObject(entry, x, y, z, o, 0, 0, 0, 0, respawnDelay));
+        Forge::Push(L, obj->SummonGameObject(entry, x, y, z, o, 0, 0, 0, 0, respawnDelay));
 #else
-        Eluna::Push(L, obj->SummonGameObject(entry, x, y, z, o, respawnDelay));
+        Forge::Push(L, obj->SummonGameObject(entry, x, y, z, o, respawnDelay));
 #endif
         return 1;
     }
@@ -754,13 +754,13 @@ namespace LuaWorldObject
      */
     int SpawnCreature(lua_State* L, WorldObject* obj)
     {
-        uint32 entry = Eluna::CHECKVAL<uint32>(L, 2);
-        float x = Eluna::CHECKVAL<float>(L, 3);
-        float y = Eluna::CHECKVAL<float>(L, 4);
-        float z = Eluna::CHECKVAL<float>(L, 5);
-        float o = Eluna::CHECKVAL<float>(L, 6);
-        uint32 spawnType = Eluna::CHECKVAL<uint32>(L, 7, 8);
-        uint32 despawnTimer = Eluna::CHECKVAL<uint32>(L, 8, 0);
+        uint32 entry = Forge::CHECKVAL<uint32>(L, 2);
+        float x = Forge::CHECKVAL<float>(L, 3);
+        float y = Forge::CHECKVAL<float>(L, 4);
+        float z = Forge::CHECKVAL<float>(L, 5);
+        float o = Forge::CHECKVAL<float>(L, 6);
+        uint32 spawnType = Forge::CHECKVAL<uint32>(L, 7, 8);
+        uint32 despawnTimer = Forge::CHECKVAL<uint32>(L, 8, 0);
 
 #if defined TRINITY || AZEROTHCORE
         TempSummonType type;
@@ -832,9 +832,9 @@ namespace LuaWorldObject
         }
 #endif
 #ifdef TRINITY
-        Eluna::Push(L, obj->SummonCreature(entry, x, y, z, o, type, Seconds(despawnTimer)));
+        Forge::Push(L, obj->SummonCreature(entry, x, y, z, o, type, Seconds(despawnTimer)));
 #else
-        Eluna::Push(L, obj->SummonCreature(entry, x, y, z, o, type, despawnTimer));
+        Forge::Push(L, obj->SummonCreature(entry, x, y, z, o, type, despawnTimer));
 #endif
         return 1;
     }
@@ -870,17 +870,17 @@ namespace LuaWorldObject
         uint32 min, max;
         if (lua_istable(L, 3))
         {
-            Eluna::Push(L, 1);
+            Forge::Push(L, 1);
             lua_gettable(L, 3);
-            min = Eluna::CHECKVAL<uint32>(L, -1);
-            Eluna::Push(L, 2);
+            min = Forge::CHECKVAL<uint32>(L, -1);
+            Forge::Push(L, 2);
             lua_gettable(L, 3);
-            max = Eluna::CHECKVAL<uint32>(L, -1);
+            max = Forge::CHECKVAL<uint32>(L, -1);
             lua_pop(L, 2);
         }
         else
-            min = max = Eluna::CHECKVAL<uint32>(L, 3);
-        uint32 repeats = Eluna::CHECKVAL<uint32>(L, 4, 1);
+            min = max = Forge::CHECKVAL<uint32>(L, 3);
+        uint32 repeats = Forge::CHECKVAL<uint32>(L, 4, 1);
 
         if (min > max)
             return luaL_argerror(L, 3, "min is bigger than max delay");
@@ -889,8 +889,8 @@ namespace LuaWorldObject
         int functionRef = luaL_ref(L, LUA_REGISTRYINDEX);
         if (functionRef != LUA_REFNIL && functionRef != LUA_NOREF)
         {
-            obj->elunaEvents->AddEvent(functionRef, min, max, repeats);
-            Eluna::Push(L, functionRef);
+            obj->forgeEvents->AddEvent(functionRef, min, max, repeats);
+            Forge::Push(L, functionRef);
         }
         return 1;
     }
@@ -902,8 +902,8 @@ namespace LuaWorldObject
      */
     int RemoveEventById(lua_State* L, WorldObject* obj)
     {
-        int eventId = Eluna::CHECKVAL<int>(L, 2);
-        obj->elunaEvents->SetState(eventId, LUAEVENT_STATE_ABORT);
+        int eventId = Forge::CHECKVAL<int>(L, 2);
+        obj->forgeEvents->SetState(eventId, LUAEVENT_STATE_ABORT);
         return 0;
     }
 
@@ -913,7 +913,7 @@ namespace LuaWorldObject
      */
     int RemoveEvents(lua_State* /*L*/, WorldObject* obj)
     {
-        obj->elunaEvents->SetStates(LUAEVENT_STATE_ABORT);
+        obj->forgeEvents->SetStates(LUAEVENT_STATE_ABORT);
         return 0;
     }
 
@@ -931,16 +931,16 @@ namespace LuaWorldObject
      */
     int IsWithinLoS(lua_State* L, WorldObject* obj)
     {
-        WorldObject* target = Eluna::CHECKOBJ<WorldObject>(L, 2, false);
+        WorldObject* target = Forge::CHECKOBJ<WorldObject>(L, 2, false);
 
         if (target)
-            Eluna::Push(L, obj->IsWithinLOSInMap(target));
+            Forge::Push(L, obj->IsWithinLOSInMap(target));
         else
         {
-            float x = Eluna::CHECKVAL<float>(L, 2);
-            float y = Eluna::CHECKVAL<float>(L, 3);
-            float z = Eluna::CHECKVAL<float>(L, 4);
-            Eluna::Push(L, obj->IsWithinLOS(x, y, z));
+            float x = Forge::CHECKVAL<float>(L, 2);
+            float y = Forge::CHECKVAL<float>(L, 3);
+            float z = Forge::CHECKVAL<float>(L, 4);
+            Forge::Push(L, obj->IsWithinLOS(x, y, z));
         }
 
         return 1;
@@ -954,8 +954,8 @@ namespace LuaWorldObject
      */
     int IsInMap(lua_State* L, WorldObject* obj)
     {
-        WorldObject* target = Eluna::CHECKOBJ<WorldObject>(L, 2, true);
-        Eluna::Push(L, obj->IsInMap(target));
+        WorldObject* target = Forge::CHECKOBJ<WorldObject>(L, 2, true);
+        Forge::Push(L, obj->IsInMap(target));
         return 1;
     }
 
@@ -972,11 +972,11 @@ namespace LuaWorldObject
      */
     int IsWithinDist3d(lua_State* L, WorldObject* obj)
     {
-        float x = Eluna::CHECKVAL<float>(L, 2);
-        float y = Eluna::CHECKVAL<float>(L, 3);
-        float z = Eluna::CHECKVAL<float>(L, 4);
-        float dist = Eluna::CHECKVAL<float>(L, 5);
-        Eluna::Push(L, obj->IsWithinDist3d(x, y, z, dist));
+        float x = Forge::CHECKVAL<float>(L, 2);
+        float y = Forge::CHECKVAL<float>(L, 3);
+        float z = Forge::CHECKVAL<float>(L, 4);
+        float dist = Forge::CHECKVAL<float>(L, 5);
+        Forge::Push(L, obj->IsWithinDist3d(x, y, z, dist));
         return 1;
     }
 
@@ -993,10 +993,10 @@ namespace LuaWorldObject
      */
     int IsWithinDist2d(lua_State* L, WorldObject* obj)
     {
-        float x = Eluna::CHECKVAL<float>(L, 2);
-        float y = Eluna::CHECKVAL<float>(L, 3);
-        float dist = Eluna::CHECKVAL<float>(L, 4);
-        Eluna::Push(L, obj->IsWithinDist2d(x, y, dist));
+        float x = Forge::CHECKVAL<float>(L, 2);
+        float y = Forge::CHECKVAL<float>(L, 3);
+        float dist = Forge::CHECKVAL<float>(L, 4);
+        Forge::Push(L, obj->IsWithinDist2d(x, y, dist));
         return 1;
     }
 
@@ -1012,10 +1012,10 @@ namespace LuaWorldObject
      */
     int IsWithinDist(lua_State* L, WorldObject* obj)
     {
-        WorldObject* target = Eluna::CHECKOBJ<WorldObject>(L, 2, true);
-        float distance = Eluna::CHECKVAL<float>(L, 3);
-        bool is3D = Eluna::CHECKVAL<bool>(L, 4, true);
-        Eluna::Push(L, obj->IsWithinDist(target, distance, is3D));
+        WorldObject* target = Forge::CHECKOBJ<WorldObject>(L, 2, true);
+        float distance = Forge::CHECKVAL<float>(L, 3);
+        bool is3D = Forge::CHECKVAL<bool>(L, 4, true);
+        Forge::Push(L, obj->IsWithinDist(target, distance, is3D));
         return 1;
     }
 
@@ -1031,11 +1031,11 @@ namespace LuaWorldObject
      */
     int IsWithinDistInMap(lua_State* L, WorldObject* obj)
     {
-        WorldObject* target = Eluna::CHECKOBJ<WorldObject>(L, 2);
-        float distance = Eluna::CHECKVAL<float>(L, 3);
-        bool is3D = Eluna::CHECKVAL<bool>(L, 4, true);
+        WorldObject* target = Forge::CHECKOBJ<WorldObject>(L, 2);
+        float distance = Forge::CHECKVAL<float>(L, 3);
+        bool is3D = Forge::CHECKVAL<bool>(L, 4, true);
 
-        Eluna::Push(L, obj->IsWithinDistInMap(target, distance, is3D));
+        Forge::Push(L, obj->IsWithinDistInMap(target, distance, is3D));
         return 1;
     }
 
@@ -1052,12 +1052,12 @@ namespace LuaWorldObject
      */
     int IsInRange(lua_State* L, WorldObject* obj)
     {
-        WorldObject* target = Eluna::CHECKOBJ<WorldObject>(L, 2);
-        float minrange = Eluna::CHECKVAL<float>(L, 3);
-        float maxrange = Eluna::CHECKVAL<float>(L, 4);
-        bool is3D = Eluna::CHECKVAL<bool>(L, 5, true);
+        WorldObject* target = Forge::CHECKOBJ<WorldObject>(L, 2);
+        float minrange = Forge::CHECKVAL<float>(L, 3);
+        float maxrange = Forge::CHECKVAL<float>(L, 4);
+        bool is3D = Forge::CHECKVAL<bool>(L, 5, true);
 
-        Eluna::Push(L, obj->IsInRange(target, minrange, maxrange, is3D));
+        Forge::Push(L, obj->IsInRange(target, minrange, maxrange, is3D));
         return 1;
     }
 
@@ -1074,12 +1074,12 @@ namespace LuaWorldObject
      */
     int IsInRange2d(lua_State* L, WorldObject* obj)
     {
-        float x = Eluna::CHECKVAL<float>(L, 2);
-        float y = Eluna::CHECKVAL<float>(L, 3);
-        float minrange = Eluna::CHECKVAL<float>(L, 4);
-        float maxrange = Eluna::CHECKVAL<float>(L, 5);
+        float x = Forge::CHECKVAL<float>(L, 2);
+        float y = Forge::CHECKVAL<float>(L, 3);
+        float minrange = Forge::CHECKVAL<float>(L, 4);
+        float maxrange = Forge::CHECKVAL<float>(L, 5);
 
-        Eluna::Push(L, obj->IsInRange2d(x, y, minrange, maxrange));
+        Forge::Push(L, obj->IsInRange2d(x, y, minrange, maxrange));
         return 1;
     }
 
@@ -1097,13 +1097,13 @@ namespace LuaWorldObject
      */
     int IsInRange3d(lua_State* L, WorldObject* obj)
     {
-        float x = Eluna::CHECKVAL<float>(L, 2);
-        float y = Eluna::CHECKVAL<float>(L, 3);
-        float z = Eluna::CHECKVAL<float>(L, 4);
-        float minrange = Eluna::CHECKVAL<float>(L, 5);
-        float maxrange = Eluna::CHECKVAL<float>(L, 6);
+        float x = Forge::CHECKVAL<float>(L, 2);
+        float y = Forge::CHECKVAL<float>(L, 3);
+        float z = Forge::CHECKVAL<float>(L, 4);
+        float minrange = Forge::CHECKVAL<float>(L, 5);
+        float maxrange = Forge::CHECKVAL<float>(L, 6);
 
-        Eluna::Push(L, obj->IsInRange3d(x, y, z, minrange, maxrange));
+        Forge::Push(L, obj->IsInRange3d(x, y, z, minrange, maxrange));
         return 1;
     }
 
@@ -1116,13 +1116,13 @@ namespace LuaWorldObject
      */
     int IsInFront(lua_State* L, WorldObject* obj)
     {
-        WorldObject* target = Eluna::CHECKOBJ<WorldObject>(L, 2);
-        float arc = Eluna::CHECKVAL<float>(L, 3, static_cast<float>(M_PI));
+        WorldObject* target = Forge::CHECKOBJ<WorldObject>(L, 2);
+        float arc = Forge::CHECKVAL<float>(L, 3, static_cast<float>(M_PI));
 
 #ifdef MANGOS
-        Eluna::Push(L, obj->IsInFront(target, arc));
+        Forge::Push(L, obj->IsInFront(target, arc));
 #else
-        Eluna::Push(L, obj->isInFront(target, arc));
+        Forge::Push(L, obj->isInFront(target, arc));
 #endif
         return 1;
     }
@@ -1136,13 +1136,13 @@ namespace LuaWorldObject
      */
     int IsInBack(lua_State* L, WorldObject* obj)
     {
-        WorldObject* target = Eluna::CHECKOBJ<WorldObject>(L, 2);
-        float arc = Eluna::CHECKVAL<float>(L, 3, static_cast<float>(M_PI));
+        WorldObject* target = Forge::CHECKOBJ<WorldObject>(L, 2);
+        float arc = Forge::CHECKVAL<float>(L, 3, static_cast<float>(M_PI));
 
 #ifdef MANGOS
-        Eluna::Push(L, obj->IsInBack(target, arc));
+        Forge::Push(L, obj->IsInBack(target, arc));
 #else
-        Eluna::Push(L, obj->isInBack(target, arc));
+        Forge::Push(L, obj->isInBack(target, arc));
 #endif
         return 1;
     }
@@ -1160,8 +1160,8 @@ namespace LuaWorldObject
      */
     int PlayMusic(lua_State* L, WorldObject* obj)
     {
-        uint32 musicid = Eluna::CHECKVAL<uint32>(L, 2);
-        Player* player = Eluna::CHECKOBJ<Player>(L, 3, false);
+        uint32 musicid = Forge::CHECKVAL<uint32>(L, 2);
+        Player* player = Forge::CHECKOBJ<Player>(L, 3, false);
 
         WorldPacket data(SMSG_PLAY_MUSIC, 4);
         data << uint32(musicid);
@@ -1192,8 +1192,8 @@ namespace LuaWorldObject
      */
     int PlayDirectSound(lua_State* L, WorldObject* obj)
     {
-        uint32 soundId = Eluna::CHECKVAL<uint32>(L, 2);
-        Player* player = Eluna::CHECKOBJ<Player>(L, 3, false);
+        uint32 soundId = Forge::CHECKVAL<uint32>(L, 2);
+        Player* player = Forge::CHECKOBJ<Player>(L, 3, false);
         if (!sSoundEntriesStore.LookupEntry(soundId))
             return 0;
 
@@ -1218,8 +1218,8 @@ namespace LuaWorldObject
      */
     int PlayDistanceSound(lua_State* L, WorldObject* obj)
     {
-        uint32 soundId = Eluna::CHECKVAL<uint32>(L, 2);
-        Player* player = Eluna::CHECKOBJ<Player>(L, 3, false);
+        uint32 soundId = Forge::CHECKVAL<uint32>(L, 2);
+        Player* player = Forge::CHECKOBJ<Player>(L, 3, false);
         if (!sSoundEntriesStore.LookupEntry(soundId))
             return 0;
 

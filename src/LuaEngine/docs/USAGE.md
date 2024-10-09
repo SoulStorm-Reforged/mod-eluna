@@ -1,9 +1,9 @@
-# Using Eluna
-Eluna is a lua engine implementation for world of warcraft emulators.
+# Using Forge
+Forge is a lua engine implementation for world of warcraft emulators.
 It can be used to create different kind of scripts from AI to events.
-This article helps you to get started with Eluna. We go through adding a simple script, where to get information from and a few language basics.
+This article helps you to get started with Forge. We go through adding a simple script, where to get information from and a few language basics.
 
-This article assumes you have already installed Eluna successfully. If you have not, see [installation](INSTALL.md).
+This article assumes you have already installed Forge successfully. If you have not, see [installation](INSTALL.md).
 
 ## Basic script
 Here is a simple "Hello world" example.
@@ -22,7 +22,7 @@ If you now restart your server and log in game you are greeted with "Hello world
 ### What happened
 As you have witnessed here no core compiling was needed and your script runs from the file you just created.
 
-The file is compiled and run by the lua engine when the server starts up or Eluna is reloaded.
+The file is compiled and run by the lua engine when the server starts up or Forge is reloaded.
 The code in the file registers a function to be run when a player logs in and the function sends a message to the player that logged in.
 
 ## Lua basics
@@ -53,20 +53,20 @@ Table functions and tutorials:
 - prefer local variables over global. While global variables may work they can create issues with other scripts that use same variable names.
 All local variables outside of functions in a script are shared by everything running the same script - the variables are locally global.
 
-## Eluna basics
-It is good to know where you can find information about Eluna and Eluna's API as well as the basic elements of a script. Here are links to the main sources of information:
+## Forge basics
+It is good to know where you can find information about Forge and Forge's API as well as the basic elements of a script. Here are links to the main sources of information:
 
-- Eluna features [Eluna details](IMPL_DETAILS.md)
-- Eluna documentation http://elunaluaengine.github.io/
+- Forge features [Forge details](IMPL_DETAILS.md)
+- Forge documentation http://forgeluaengine.github.io/
 
 ### Error messages
-If Eluna is installed correctly, the default installation should make errors output to the console as well as a log file in the server folder. If you can not get your script to work, be sure to check the log file for any errors you might have missed.
+If Forge is installed correctly, the default installation should make errors output to the console as well as a log file in the server folder. If you can not get your script to work, be sure to check the log file for any errors you might have missed.
 
 Check out the configuration file for settings if you want to tweak the logging settings.
 
 ### Global functions
 Global functions are functions you can run from anywhere in a script file and they do not require any object to be run.
-In addition to normal global functions lua provides like `print` Eluna has it's own gobal functions. You can find them in the documentation under `global` class: [global functions](http://elunaluaengine.github.io/Global/index.html).
+In addition to normal global functions lua provides like `print` Forge has it's own gobal functions. You can find them in the documentation under `global` class: [global functions](http://forgeluaengine.github.io/Global/index.html).
 
 ```lua
 -- print the return value of GetLuaEngine function
@@ -74,9 +74,9 @@ print(GetLuaEngine())
 ```
 
 ### Member functions
-Member functions, also called methods, are functions that require an userdata object to run. There are several different classes of objects that have different member functions. You can find all the member functions and their documentations from the [Eluna documentation](http://elunaluaengine.github.io/).
+Member functions, also called methods, are functions that require an userdata object to run. There are several different classes of objects that have different member functions. You can find all the member functions and their documentations from the [Forge documentation](http://forgeluaengine.github.io/).
 
-Classes in C++ inherit each other. In Eluna member functions are also inherited. For example objects of classes `Player` and `Creature` inherit all methods from `Unit` class.
+Classes in C++ inherit each other. In Forge member functions are also inherited. For example objects of classes `Player` and `Creature` inherit all methods from `Unit` class.
 
 Methods are called by using `:` notation on the object. For example to get the player name you can call the GetName methods like this: `player:GetName()`
 
@@ -95,16 +95,16 @@ RegisterCreatureEvent(entry, on_combat, OnCombat)
 
 ### Registering functions to events
 Scripts register functions to events and the functions are executed when the event happens.
-There are special global functions in Eluna API for registering functions for events.
-You should be able to find all such functions from [Eluna documentation](http://elunaluaengine.github.io/) by searching `register`.
+There are special global functions in Forge API for registering functions for events.
+You should be able to find all such functions from [Forge documentation](http://forgeluaengine.github.io/) by searching `register`.
 
 Functions used to register other functions for events need the ID of the event you want the hook to be registered for passed to them. You can find these ID numbers from the registering function documentation page.
 
-Eluna passes some arguments to the functions executed. The arguments are always in same order. You can name them in any way you want. In the above script example the event `PLAYER_EVENT_ON_LOGIN` passes the event id and the player who logs in to the registered function. This is why the registered function has these parameters defined: `(event, player)`.
+Forge passes some arguments to the functions executed. The arguments are always in same order. You can name them in any way you want. In the above script example the event `PLAYER_EVENT_ON_LOGIN` passes the event id and the player who logs in to the registered function. This is why the registered function has these parameters defined: `(event, player)`.
 
 Some events allow the registered function to return different values. Sometimes you can return more than one value. The possibility to return is documented on the registering function's documentation page. Simply using the `return` keyword returns normally as if the function would end.
 
-For example in this script we register the function `OnCombat` to be run on event `1`, which triggers on combat, for the creature entry `6`. All needed information can be found here: http://elunaluaengine.github.io/Global/RegisterCreatureEvent.html
+For example in this script we register the function `OnCombat` to be run on event `1`, which triggers on combat, for the creature entry `6`. All needed information can be found here: http://forgeluaengine.github.io/Global/RegisterCreatureEvent.html
 ```lua
 local entry = 6
 local on_combat = 1

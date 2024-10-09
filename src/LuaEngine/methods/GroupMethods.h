@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
@@ -20,8 +20,8 @@ namespace LuaGroup
      */
     int IsLeader(lua_State* L, Group* group)
     {
-        ObjectGuid guid = Eluna::CHECKVAL<ObjectGuid>(L, 2);
-        Eluna::Push(L, group->IsLeader(guid));
+        ObjectGuid guid = Forge::CHECKVAL<ObjectGuid>(L, 2);
+        Forge::Push(L, group->IsLeader(guid));
         return 1;
     }
 
@@ -32,7 +32,7 @@ namespace LuaGroup
      */
     int IsFull(lua_State* L, Group* group)
     {
-        Eluna::Push(L, group->IsFull());
+        Forge::Push(L, group->IsFull());
         return 1;
     }
 
@@ -43,7 +43,7 @@ namespace LuaGroup
      */
     int IsLFGGroup(lua_State* L, Group* group)
     {
-        Eluna::Push(L, group->isLFGGroup());
+        Forge::Push(L, group->isLFGGroup());
         return 1;
     }
 
@@ -54,7 +54,7 @@ namespace LuaGroup
      */
     int IsRaidGroup(lua_State* L, Group* group)
     {
-        Eluna::Push(L, group->isRaidGroup());
+        Forge::Push(L, group->isRaidGroup());
         return 1;
     }
 
@@ -65,7 +65,7 @@ namespace LuaGroup
      */
     int IsBGGroup(lua_State* L, Group* group)
     {
-        Eluna::Push(L, group->isBGGroup());
+        Forge::Push(L, group->isBGGroup());
         return 1;
     }
 
@@ -77,8 +77,8 @@ namespace LuaGroup
      */
     int IsMember(lua_State* L, Group* group)
     {
-        ObjectGuid guid = Eluna::CHECKVAL<ObjectGuid>(L, 2);
-        Eluna::Push(L, group->IsMember(guid));
+        ObjectGuid guid = Forge::CHECKVAL<ObjectGuid>(L, 2);
+        Forge::Push(L, group->IsMember(guid));
         return 1;
     }
 
@@ -90,8 +90,8 @@ namespace LuaGroup
      */
     int IsAssistant(lua_State* L, Group* group)
     {
-        ObjectGuid guid = Eluna::CHECKVAL<ObjectGuid>(L, 2);
-        Eluna::Push(L, group->IsAssistant(guid));
+        ObjectGuid guid = Forge::CHECKVAL<ObjectGuid>(L, 2);
+        Forge::Push(L, group->IsAssistant(guid));
         return 1;
     }
 
@@ -104,9 +104,9 @@ namespace LuaGroup
      */
     int SameSubGroup(lua_State* L, Group* group)
     {
-        Player* player1 = Eluna::CHECKOBJ<Player>(L, 2);
-        Player* player2 = Eluna::CHECKOBJ<Player>(L, 3);
-        Eluna::Push(L, group->SameSubGroup(player1, player2));
+        Player* player1 = Forge::CHECKOBJ<Player>(L, 2);
+        Player* player2 = Forge::CHECKOBJ<Player>(L, 3);
+        Forge::Push(L, group->SameSubGroup(player1, player2));
         return 1;
     }
 
@@ -118,7 +118,7 @@ namespace LuaGroup
      */
     int HasFreeSlotSubGroup(lua_State* L, Group* group)
     {
-        uint8 subGroup = Eluna::CHECKVAL<uint8>(L, 2);
+        uint8 subGroup = Forge::CHECKVAL<uint8>(L, 2);
 
         if (subGroup >= MAX_RAID_SUBGROUPS)
         {
@@ -126,7 +126,7 @@ namespace LuaGroup
             return 0;
         }
 
-        Eluna::Push(L, group->HasFreeSlotSubGroup(subGroup));
+        Forge::Push(L, group->HasFreeSlotSubGroup(subGroup));
         return 1;
     }
 
@@ -138,11 +138,11 @@ namespace LuaGroup
      */
     int AddMember(lua_State* L, Group* group)
     {
-        Player* player = Eluna::CHECKOBJ<Player>(L, 2);
+        Player* player = Forge::CHECKOBJ<Player>(L, 2);
 
         if (player->GetGroup() || !group->IsCreated() || group->IsFull())
         {
-            Eluna::Push(L, false);
+            Forge::Push(L, false);
             return 1;
         }
 
@@ -157,19 +157,19 @@ namespace LuaGroup
         bool success = group->AddMember(player->GetObjectGuid(), player->GetName());
 #endif
 
-        Eluna::Push(L, success);
+        Forge::Push(L, success);
         return 1;
     }
 
     /*int IsLFGGroup(lua_State* L, Group* group) // TODO: Implementation
     {
-        Eluna::Push(L, group->isLFGGroup());
+        Forge::Push(L, group->isLFGGroup());
         return 1;
     }*/
 
     /*int IsBFGroup(lua_State* L, Group* group) // TODO: Implementation
     {
-        Eluna::Push(L, group->isBFGroup());
+        Forge::Push(L, group->isBFGroup());
         return 1;
     }*/
 
@@ -195,7 +195,7 @@ namespace LuaGroup
             if (!member || !member->GetSession())
                 continue;
 
-            Eluna::Push(L, member);
+            Forge::Push(L, member);
             lua_rawseti(L, tbl, ++i);
         }
 
@@ -211,9 +211,9 @@ namespace LuaGroup
     int GetLeaderGUID(lua_State* L, Group* group)
     {
 #if defined TRINITY || AZEROTHCORE
-        Eluna::Push(L, group->GetLeaderGUID());
+        Forge::Push(L, group->GetLeaderGUID());
 #else
-        Eluna::Push(L, group->GetLeaderGuid());
+        Forge::Push(L, group->GetLeaderGuid());
 #endif
         return 1;
     }
@@ -226,9 +226,9 @@ namespace LuaGroup
     int GetGUID(lua_State* L, Group* group)
     {
 #ifdef CLASSIC
-        Eluna::Push(L, group->GetId());
+        Forge::Push(L, group->GetId());
 #else
-        Eluna::Push(L, group->GET_GUID());
+        Forge::Push(L, group->GET_GUID());
 #endif
         return 1;
     }
@@ -241,11 +241,11 @@ namespace LuaGroup
      */
     int GetMemberGUID(lua_State* L, Group* group)
     {
-        const char* name = Eluna::CHECKVAL<const char*>(L, 2);
+        const char* name = Forge::CHECKVAL<const char*>(L, 2);
 #if defined TRINITY || AZEROTHCORE
-        Eluna::Push(L, group->GetMemberGUID(name));
+        Forge::Push(L, group->GetMemberGUID(name));
 #else
-        Eluna::Push(L, group->GetMemberGuid(name));
+        Forge::Push(L, group->GetMemberGuid(name));
 #endif
         return 1;
     }
@@ -257,7 +257,7 @@ namespace LuaGroup
      */
     int GetMembersCount(lua_State* L, Group* group)
     {
-        Eluna::Push(L, group->GetMembersCount());
+        Forge::Push(L, group->GetMembersCount());
         return 1;
     }
 
@@ -279,7 +279,7 @@ namespace LuaGroup
      */
     int GetGroupType(lua_State* L, Group* group)
     {
-        Eluna::Push(L, group->GetGroupType());
+        Forge::Push(L, group->GetGroupType());
         return 1;
     }
 
@@ -291,8 +291,8 @@ namespace LuaGroup
      */
     int GetMemberGroup(lua_State* L, Group* group)
     {
-        ObjectGuid guid = Eluna::CHECKVAL<ObjectGuid>(L, 2);
-        Eluna::Push(L, group->GetMemberGroup(guid));
+        ObjectGuid guid = Forge::CHECKVAL<ObjectGuid>(L, 2);
+        Forge::Push(L, group->GetMemberGroup(guid));
         return 1;
     }
 
@@ -303,7 +303,7 @@ namespace LuaGroup
      */
     int SetLeader(lua_State* L, Group* group)
     {
-        ObjectGuid guid = Eluna::CHECKVAL<ObjectGuid>(L, 2);
+        ObjectGuid guid = Forge::CHECKVAL<ObjectGuid>(L, 2);
         group->ChangeLeader(guid);
         group->SendUpdate();
         return 0;
@@ -318,9 +318,9 @@ namespace LuaGroup
      */
     int SendPacket(lua_State* L, Group* group)
     {
-        WorldPacket* data = Eluna::CHECKOBJ<WorldPacket>(L, 2);
-        bool ignorePlayersInBg = Eluna::CHECKVAL<bool>(L, 3);
-        ObjectGuid ignore = Eluna::CHECKVAL<ObjectGuid>(L, 4);
+        WorldPacket* data = Forge::CHECKOBJ<WorldPacket>(L, 2);
+        bool ignorePlayersInBg = Forge::CHECKVAL<bool>(L, 3);
+        ObjectGuid ignore = Forge::CHECKVAL<ObjectGuid>(L, 4);
 
 #ifdef CMANGOS
         group->BroadcastPacket(*data, ignorePlayersInBg, -1, ignore);
@@ -349,13 +349,13 @@ namespace LuaGroup
      */
     int RemoveMember(lua_State* L, Group* group)
     {
-        ObjectGuid guid = Eluna::CHECKVAL<ObjectGuid>(L, 2);
-        uint32 method = Eluna::CHECKVAL<uint32>(L, 3, 0);
+        ObjectGuid guid = Forge::CHECKVAL<ObjectGuid>(L, 2);
+        uint32 method = Forge::CHECKVAL<uint32>(L, 3, 0);
 
 #if defined TRINITY || AZEROTHCORE
-        Eluna::Push(L, group->RemoveMember(guid, (RemoveMethod)method));
+        Forge::Push(L, group->RemoveMember(guid, (RemoveMethod)method));
 #else
-        Eluna::Push(L, group->RemoveMember(guid, method));
+        Forge::Push(L, group->RemoveMember(guid, method));
 #endif
         return 1;
     }
@@ -388,8 +388,8 @@ namespace LuaGroup
      */
     int SetMembersGroup(lua_State* L, Group* group)
     {
-        ObjectGuid guid = Eluna::CHECKVAL<ObjectGuid>(L, 2);
-        uint8 subGroup = Eluna::CHECKVAL<uint8>(L, 3);
+        ObjectGuid guid = Forge::CHECKVAL<ObjectGuid>(L, 2);
+        uint8 subGroup = Forge::CHECKVAL<uint8>(L, 3);
 
         if (subGroup >= MAX_RAID_SUBGROUPS)
         {
@@ -413,9 +413,9 @@ namespace LuaGroup
      */
     int SetTargetIcon(lua_State* L, Group* group)
     {
-        uint8 icon = Eluna::CHECKVAL<uint8>(L, 2);
-        ObjectGuid target = Eluna::CHECKVAL<ObjectGuid>(L, 3);
-        ObjectGuid setter = Eluna::CHECKVAL<ObjectGuid>(L, 4, ObjectGuid());
+        uint8 icon = Forge::CHECKVAL<uint8>(L, 2);
+        ObjectGuid target = Forge::CHECKVAL<ObjectGuid>(L, 3);
+        ObjectGuid setter = Forge::CHECKVAL<ObjectGuid>(L, 4, ObjectGuid());
 
         if (icon >= TARGETICONCOUNT)
             return luaL_argerror(L, 2, "valid target icon expected");
@@ -446,9 +446,9 @@ namespace LuaGroup
      */
     int SetMemberFlag(lua_State* L, Group* group)
     {
-        ObjectGuid target = Eluna::CHECKVAL<ObjectGuid>(L, 2);
-        bool apply = Eluna::CHECKVAL<bool>(L, 3);
-        GroupMemberFlags flag = static_cast<GroupMemberFlags>(Eluna::CHECKVAL<uint32>(L, 4));
+        ObjectGuid target = Forge::CHECKVAL<ObjectGuid>(L, 2);
+        bool apply = Forge::CHECKVAL<bool>(L, 3);
+        GroupMemberFlags flag = static_cast<GroupMemberFlags>(Forge::CHECKVAL<uint32>(L, 4));
 
         group->SetGroupMemberFlag(target, apply, flag);
         return 0;

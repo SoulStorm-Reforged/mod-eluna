@@ -6,7 +6,7 @@ on:
 
 jobs:
 
-  AC-Eluna:
+  AC-Forge:
     strategy:
       fail-fast: false
     runs-on: ubuntu-20.04
@@ -19,11 +19,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: false
-          repository: azerothcore/mod-eluna-lua-engine
-          path: modules/mod-eluna-lua-engine
+          repository: azerothcore/mod-forge-lua-engine
+          path: modules/mod-forge-lua-engine
       - uses: actions/checkout@v2
         with:
-          path: modules/mod-eluna-lua-engine/LuaEngine
+          path: modules/mod-forge-lua-engine/LuaEngine
       - name: Configure OS
         run: |
           # Copy paste of https://github.com/azerothcore/azerothcore-wotlk/blob/master/apps/ci/ci-install.sh

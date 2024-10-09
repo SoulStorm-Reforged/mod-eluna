@@ -1,10 +1,10 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
 
-#include "ElunaUtility.h"
+#include "ForgeUtility.h"
 #include "World.h"
 #include "Object.h"
 #include "Unit.h"
@@ -14,34 +14,34 @@
 #include "Timer.h"
 #endif
 
-uint32 ElunaUtil::GetCurrTime()
+uint32 ForgeUtil::GetCurrTime()
 {
     return getMSTime();
 }
 
-uint32 ElunaUtil::GetTimeDiff(uint32 oldMSTime)
+uint32 ForgeUtil::GetTimeDiff(uint32 oldMSTime)
 {
     return GetMSTimeDiffToNow(oldMSTime);
 }
 
-ElunaUtil::ObjectGUIDCheck::ObjectGUIDCheck(ObjectGuid guid) : _guid(guid)
+ForgeUtil::ObjectGUIDCheck::ObjectGUIDCheck(ObjectGuid guid) : _guid(guid)
 {
 }
 
-bool ElunaUtil::ObjectGUIDCheck::operator()(WorldObject* object)
+bool ForgeUtil::ObjectGUIDCheck::operator()(WorldObject* object)
 {
     return object->GET_GUID() == _guid;
 }
 
-ElunaUtil::ObjectDistanceOrderPred::ObjectDistanceOrderPred(WorldObject const* pRefObj, bool ascending) : m_refObj(pRefObj), m_ascending(ascending)
+ForgeUtil::ObjectDistanceOrderPred::ObjectDistanceOrderPred(WorldObject const* pRefObj, bool ascending) : m_refObj(pRefObj), m_ascending(ascending)
 {
 }
-bool ElunaUtil::ObjectDistanceOrderPred::operator()(WorldObject const* pLeft, WorldObject const* pRight) const
+bool ForgeUtil::ObjectDistanceOrderPred::operator()(WorldObject const* pLeft, WorldObject const* pRight) const
 {
     return m_ascending ? m_refObj->GetDistanceOrder(pLeft, pRight) : !m_refObj->GetDistanceOrder(pLeft, pRight);
 }
 
-ElunaUtil::WorldObjectInRangeCheck::WorldObjectInRangeCheck(bool nearest, WorldObject const* obj, float range,
+ForgeUtil::WorldObjectInRangeCheck::WorldObjectInRangeCheck(bool nearest, WorldObject const* obj, float range,
     uint16 typeMask, uint32 entry, uint32 hostile, uint32 dead) :
     i_obj(obj), i_obj_unit(nullptr), i_obj_fact(nullptr), i_hostile(hostile), i_entry(entry), i_range(range), i_typeMask(typeMask), i_dead(dead), i_nearest(nearest)
 {
@@ -52,11 +52,11 @@ ElunaUtil::WorldObjectInRangeCheck::WorldObjectInRangeCheck(bool nearest, WorldO
     if (!i_obj_unit)
         i_obj_fact = sFactionTemplateStore.LookupEntry(14);
 }
-WorldObject const& ElunaUtil::WorldObjectInRangeCheck::GetFocusObject() const
+WorldObject const& ForgeUtil::WorldObjectInRangeCheck::GetFocusObject() const
 {
     return *i_obj;
 }
-bool ElunaUtil::WorldObjectInRangeCheck::operator()(WorldObject* u)
+bool ForgeUtil::WorldObjectInRangeCheck::operator()(WorldObject* u)
 {
     if (i_typeMask && !u->isType(TypeMask(i_typeMask)))
         return false;
@@ -122,7 +122,7 @@ static void build_decoding_table()
         decoding_table[(unsigned char)encoding_table[i]] = i;
 }
 
-void ElunaUtil::EncodeData(const unsigned char* data, size_t input_length, std::string& output)
+void ForgeUtil::EncodeData(const unsigned char* data, size_t input_length, std::string& output)
 {
     size_t output_length = 4 * ((input_length + 2) / 3);
     char* buffer = new char[output_length];
@@ -148,7 +148,7 @@ void ElunaUtil::EncodeData(const unsigned char* data, size_t input_length, std::
     delete[] buffer;
 }
 
-unsigned char* ElunaUtil::DecodeData(const char *data, size_t *output_length)
+unsigned char* ForgeUtil::DecodeData(const char *data, size_t *output_length)
 {
     if (decoding_table[(unsigned char)'B'] == 0)
         build_decoding_table();

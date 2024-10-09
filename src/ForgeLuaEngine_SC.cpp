@@ -16,7 +16,7 @@
  */
 
 #include "Chat.h"
-#include "ElunaEventMgr.h"
+#include "ForgeEventMgr.h"
 #include "Log.h"
 #include "LuaEngine.h"
 #include "Pet.h"
@@ -24,15 +24,15 @@
 #include "ScriptMgr.h"
 #include "ScriptedGossip.h"
 
-class Eluna_AllCreatureScript : public AllCreatureScript
+class Forge_AllCreatureScript : public AllCreatureScript
 {
 public:
-    Eluna_AllCreatureScript() : AllCreatureScript("Eluna_AllCreatureScript") { }
+    Forge_AllCreatureScript() : AllCreatureScript("Forge_AllCreatureScript") { }
 
     // Creature
     bool CanCreatureGossipHello(Player* player, Creature* creature) override
     {
-        if (sEluna->OnGossipHello(player, creature))
+        if (sForge->OnGossipHello(player, creature))
             return true;
 
         return false;
@@ -40,7 +40,7 @@ public:
 
     bool CanCreatureGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
     {
-        if (sEluna->OnGossipSelect(player, creature, sender, action))
+        if (sForge->OnGossipSelect(player, creature, sender, action))
             return true;
 
         return false;
@@ -48,7 +48,7 @@ public:
 
     bool CanCreatureGossipSelectCode(Player* player, Creature* creature, uint32 sender, uint32 action, const char* code) override
     {
-        if (sEluna->OnGossipSelectCode(player, creature, sender, action, code))
+        if (sForge->OnGossipSelectCode(player, creature, sender, action, code))
             return true;
 
         return false;
@@ -56,26 +56,26 @@ public:
 
     void OnCreatureAddWorld(Creature* creature) override
     {
-        sEluna->OnAddToWorld(creature);
+        sForge->OnAddToWorld(creature);
 
         if (creature->IsGuardian() && creature->ToTempSummon() && creature->ToTempSummon()->GetSummonerGUID().IsPlayer())
-            sEluna->OnPetAddedToWorld(creature->ToTempSummon()->GetSummonerUnit()->ToPlayer(), creature);
+            sForge->OnPetAddedToWorld(creature->ToTempSummon()->GetSummonerUnit()->ToPlayer(), creature);
     }
 
     void OnCreatureRemoveWorld(Creature* creature) override
     {
-        sEluna->OnRemoveFromWorld(creature);
+        sForge->OnRemoveFromWorld(creature);
     }
 
     bool CanCreatureQuestAccept(Player* player, Creature* creature, Quest const* quest) override
     {
-        sEluna->OnQuestAccept(player, creature, quest);
+        sForge->OnQuestAccept(player, creature, quest);
         return false;
     }
 
     bool CanCreatureQuestReward(Player* player, Creature* creature, Quest const* quest, uint32 opt) override
     {
-        if (sEluna->OnQuestReward(player, creature, quest, opt))
+        if (sForge->OnQuestReward(player, creature, quest, opt))
         {
             ClearGossipMenuFor(player);
             return true;
@@ -86,39 +86,39 @@ public:
 
     CreatureAI* GetCreatureAI(Creature* creature) const override
     {
-        if (CreatureAI* luaAI = sEluna->GetAI(creature))
+        if (CreatureAI* luaAI = sForge->GetAI(creature))
             return luaAI;
 
         return nullptr;
     }
 };
 
-class Eluna_AllGameObjectScript : public AllGameObjectScript
+class Forge_AllGameObjectScript : public AllGameObjectScript
 {
 public:
-    Eluna_AllGameObjectScript() : AllGameObjectScript("Eluna_AllGameObjectScript") { }
+    Forge_AllGameObjectScript() : AllGameObjectScript("Forge_AllGameObjectScript") { }
 
     void OnGameObjectAddWorld(GameObject* go) override
     {
-        sEluna->OnAddToWorld(go);
+        sForge->OnAddToWorld(go);
     }
 
     void OnGameObjectRemoveWorld(GameObject* go) override
     {
-        sEluna->OnRemoveFromWorld(go);
+        sForge->OnRemoveFromWorld(go);
     }
 
     void OnGameObjectUpdate(GameObject* go, uint32 diff) override
     {
-        sEluna->UpdateAI(go, diff);
+        sForge->UpdateAI(go, diff);
     }
 
     bool CanGameObjectGossipHello(Player* player, GameObject* go) override
     {
-        if (sEluna->OnGossipHello(player, go))
+        if (sForge->OnGossipHello(player, go))
             return true;
 
-        if (sEluna->OnGameObjectUse(player, go))
+        if (sForge->OnGameObjectUse(player, go))
             return true;
 
         return false;
@@ -126,33 +126,33 @@ public:
 
     void OnGameObjectDamaged(GameObject* go, Player* player) override
     {
-        sEluna->OnDamaged(go, player);
+        sForge->OnDamaged(go, player);
     }
 
     void OnGameObjectDestroyed(GameObject* go, Player* player) override
     {
-        sEluna->OnDestroyed(go, player);
+        sForge->OnDestroyed(go, player);
     }
 
     void OnGameObjectLootStateChanged(GameObject* go, uint32 state, Unit* /*unit*/) override
     {
-        sEluna->OnLootStateChanged(go, state);
+        sForge->OnLootStateChanged(go, state);
     }
 
     void OnGameObjectStateChanged(GameObject* go, uint32 state) override
     {
-        sEluna->OnGameObjectStateChanged(go, state);
+        sForge->OnGameObjectStateChanged(go, state);
     }
 
     bool CanGameObjectQuestAccept(Player* player, GameObject* go, Quest const* quest) override
     {
-        sEluna->OnQuestAccept(player, go, quest);
+        sForge->OnQuestAccept(player, go, quest);
         return false;
     }
 
     bool CanGameObjectGossipSelect(Player* player, GameObject* go, uint32 sender, uint32 action) override
     {
-        if (sEluna->OnGossipSelect(player, go, sender, action))
+        if (sForge->OnGossipSelect(player, go, sender, action))
             return true;
 
         return false;
@@ -160,7 +160,7 @@ public:
 
     bool CanGameObjectGossipSelectCode(Player* player, GameObject* go, uint32 sender, uint32 action, const char* code) override
     {
-        if (sEluna->OnGossipSelectCode(player, go, sender, action, code))
+        if (sForge->OnGossipSelectCode(player, go, sender, action, code))
             return true;
 
         return false;
@@ -168,10 +168,10 @@ public:
 
     bool CanGameObjectQuestReward(Player* player, GameObject* go, Quest const* quest, uint32 opt) override
     {
-        if (sEluna->OnQuestAccept(player, go, quest))
+        if (sForge->OnQuestAccept(player, go, quest))
             return false;
 
-        if (sEluna->OnQuestReward(player, go, quest, opt))
+        if (sForge->OnQuestReward(player, go, quest, opt))
             return false;
 
         return true;
@@ -179,19 +179,19 @@ public:
 
     GameObjectAI* GetGameObjectAI(GameObject* go) const override
     {
-        sEluna->OnSpawn(go);
+        sForge->OnSpawn(go);
         return nullptr;
     }
 };
 
-class Eluna_AllItemScript : public AllItemScript
+class Forge_AllItemScript : public AllItemScript
 {
 public:
-    Eluna_AllItemScript() : AllItemScript("Eluna_AllItemScript") { }
+    Forge_AllItemScript() : AllItemScript("Forge_AllItemScript") { }
 
     bool CanItemQuestAccept(Player* player, Item* item, Quest const* quest) override
     {
-        if (sEluna->OnQuestAccept(player, item, quest))
+        if (sForge->OnQuestAccept(player, item, quest))
             return false;
 
         return true;
@@ -199,7 +199,7 @@ public:
 
     bool CanItemUse(Player* player, Item* item, SpellCastTargets const& targets) override
     {
-        if (!sEluna->OnUse(player, item, targets))
+        if (!sForge->OnUse(player, item, targets))
             return true;
 
         return false;
@@ -207,7 +207,7 @@ public:
 
     bool CanItemExpire(Player* player, ItemTemplate const* proto) override
     {
-        if (sEluna->OnExpire(player, proto))
+        if (sForge->OnExpire(player, proto))
             return false;
 
         return true;
@@ -215,7 +215,7 @@ public:
 
     bool CanItemRemove(Player* player, Item* item) override
     {
-        if (sEluna->OnRemove(player, item))
+        if (sForge->OnRemove(player, item))
             return false;
 
         return true;
@@ -223,117 +223,117 @@ public:
 
     void OnItemGossipSelect(Player* player, Item* item, uint32 sender, uint32 action) override
     {
-        sEluna->HandleGossipSelectOption(player, item, sender, action, "");
+        sForge->HandleGossipSelectOption(player, item, sender, action, "");
     }
 
     void OnItemGossipSelectCode(Player* player, Item* item, uint32 sender, uint32 action, const char* code) override
     {
-        sEluna->HandleGossipSelectOption(player, item, sender, action, code);
+        sForge->HandleGossipSelectOption(player, item, sender, action, code);
     }
 };
 
-class Eluna_AllMapScript : public AllMapScript
+class Forge_AllMapScript : public AllMapScript
 {
 public:
-    Eluna_AllMapScript() : AllMapScript("Eluna_AllMapScript") { }
+    Forge_AllMapScript() : AllMapScript("Forge_AllMapScript") { }
 
     void OnBeforeCreateInstanceScript(InstanceMap* instanceMap, InstanceScript** instanceData, bool /*load*/, std::string /*data*/, uint32 /*completedEncounterMask*/) override
     {
         if (instanceData)
-            *instanceData = sEluna->GetInstanceData(instanceMap);
+            *instanceData = sForge->GetInstanceData(instanceMap);
     }
 
     void OnDestroyInstance(MapInstanced* /*mapInstanced*/, Map* map) override
     {
-        sEluna->FreeInstanceId(map->GetInstanceId());
+        sForge->FreeInstanceId(map->GetInstanceId());
     }
 
     void OnCreateMap(Map* map) override
     {
-        sEluna->OnCreate(map);
+        sForge->OnCreate(map);
     }
 
     void OnDestroyMap(Map* map) override
     {
-        sEluna->OnDestroy(map);
+        sForge->OnDestroy(map);
     }
 
     void OnPlayerEnterAll(Map* map, Player* player) override
     {
-        sEluna->OnPlayerEnter(map, player);
+        sForge->OnPlayerEnter(map, player);
     }
 
     void OnPlayerLeaveAll(Map* map, Player* player) override
     {
-        sEluna->OnPlayerLeave(map, player);
+        sForge->OnPlayerLeave(map, player);
     }
 
     void OnMapUpdate(Map* map, uint32 diff) override
     {
-        sEluna->OnUpdate(map, diff);
+        sForge->OnUpdate(map, diff);
     }
 };
 
-class Eluna_AuctionHouseScript : public AuctionHouseScript
+class Forge_AuctionHouseScript : public AuctionHouseScript
 {
 public:
-    Eluna_AuctionHouseScript() : AuctionHouseScript("Eluna_AuctionHouseScript") { }
+    Forge_AuctionHouseScript() : AuctionHouseScript("Forge_AuctionHouseScript") { }
 
     void OnAuctionAdd(AuctionHouseObject* ah, AuctionEntry* entry) override
     {
-        sEluna->OnAdd(ah, entry);
+        sForge->OnAdd(ah, entry);
     }
 
     void OnAuctionRemove(AuctionHouseObject* ah, AuctionEntry* entry) override
     {
-        sEluna->OnRemove(ah, entry);
+        sForge->OnRemove(ah, entry);
     }
 
     void OnAuctionSuccessful(AuctionHouseObject* ah, AuctionEntry* entry) override
     {
-        sEluna->OnSuccessful(ah, entry);
+        sForge->OnSuccessful(ah, entry);
     }
 
     void OnAuctionExpire(AuctionHouseObject* ah, AuctionEntry* entry) override
     {
-        sEluna->OnExpire(ah, entry);
+        sForge->OnExpire(ah, entry);
     }
 };
 
-class Eluna_BGScript : public BGScript
+class Forge_BGScript : public BGScript
 {
 public:
-    Eluna_BGScript() : BGScript("Eluna_BGScript") { }
+    Forge_BGScript() : BGScript("Forge_BGScript") { }
 
     void OnBattlegroundStart(Battleground* bg) override
     {
-        sEluna->OnBGStart(bg, bg->GetBgTypeID(), bg->GetInstanceID());
+        sForge->OnBGStart(bg, bg->GetBgTypeID(), bg->GetInstanceID());
     }
 
     void OnBattlegroundEnd(Battleground* bg, TeamId winnerTeam) override
     {
-        sEluna->OnBGEnd(bg, bg->GetBgTypeID(), bg->GetInstanceID(), winnerTeam);
+        sForge->OnBGEnd(bg, bg->GetBgTypeID(), bg->GetInstanceID(), winnerTeam);
     }
 
     void OnBattlegroundDestroy(Battleground* bg) override
     {
-        sEluna->OnBGDestroy(bg, bg->GetBgTypeID(), bg->GetInstanceID());
+        sForge->OnBGDestroy(bg, bg->GetBgTypeID(), bg->GetInstanceID());
     }
 
     void OnBattlegroundCreate(Battleground* bg) override
     {
-        sEluna->OnBGCreate(bg, bg->GetBgTypeID(), bg->GetInstanceID());
+        sForge->OnBGCreate(bg, bg->GetBgTypeID(), bg->GetInstanceID());
     }
 };
 
-class Eluna_CommandSC : public CommandSC
+class Forge_CommandSC : public CommandSC
 {
 public:
-    Eluna_CommandSC() : CommandSC("Eluna_CommandSC") { }
+    Forge_CommandSC() : CommandSC("Forge_CommandSC") { }
 
     bool OnTryExecuteCommand(ChatHandler& handler, std::string_view cmdStr) override
     {
-        if (!sEluna->OnCommand(handler, std::string(cmdStr).c_str()))
+        if (!sForge->OnCommand(handler, std::string(cmdStr).c_str()))
         {
             return false;
         }
@@ -342,185 +342,185 @@ public:
     }
 };
 
-class Eluna_ElunaScript : public ElunaScript
+class Forge_ForgeScript : public ForgeScript
 {
 public:
-    Eluna_ElunaScript() : ElunaScript("Eluna_ElunaScript") { }
+    Forge_ForgeScript() : ForgeScript("Forge_ForgeScript") { }
 
     // Weather
     void OnWeatherChange(Weather* weather, WeatherState state, float grade) override
     {
-        sEluna->OnChange(weather, weather->GetZone(), state, grade);
+        sForge->OnChange(weather, weather->GetZone(), state, grade);
     }
 
     // AreaTriger
     bool CanAreaTrigger(Player* player, AreaTrigger const* trigger) override
     {
-        if (sEluna->OnAreaTrigger(player, trigger))
+        if (sForge->OnAreaTrigger(player, trigger))
             return true;
 
         return false;
     }
 };
 
-class Eluna_GameEventScript : public GameEventScript
+class Forge_GameEventScript : public GameEventScript
 {
 public:
-    Eluna_GameEventScript() : GameEventScript("Eluna_GameEventScript") { }
+    Forge_GameEventScript() : GameEventScript("Forge_GameEventScript") { }
 
     void OnStart(uint16 eventID) override
     {
-        sEluna->OnGameEventStart(eventID);
+        sForge->OnGameEventStart(eventID);
     }
 
     void OnStop(uint16 eventID) override
     {
-        sEluna->OnGameEventStop(eventID);
+        sForge->OnGameEventStop(eventID);
     }
 };
 
-class Eluna_GroupScript : public GroupScript
+class Forge_GroupScript : public GroupScript
 {
 public:
-    Eluna_GroupScript() : GroupScript("Eluna_GroupScript") { }
+    Forge_GroupScript() : GroupScript("Forge_GroupScript") { }
 
     void OnAddMember(Group* group, ObjectGuid guid) override
     {
-        sEluna->OnAddMember(group, guid);
+        sForge->OnAddMember(group, guid);
     }
 
     void OnInviteMember(Group* group, ObjectGuid guid) override
     {
-        sEluna->OnInviteMember(group, guid);
+        sForge->OnInviteMember(group, guid);
     }
 
     void OnRemoveMember(Group* group, ObjectGuid guid, RemoveMethod method, ObjectGuid /* kicker */, const char* /* reason */) override
     {
-        sEluna->OnRemoveMember(group, guid, method);
+        sForge->OnRemoveMember(group, guid, method);
     }
 
     void OnChangeLeader(Group* group, ObjectGuid newLeaderGuid, ObjectGuid oldLeaderGuid) override
     {
-        sEluna->OnChangeLeader(group, newLeaderGuid, oldLeaderGuid);
+        sForge->OnChangeLeader(group, newLeaderGuid, oldLeaderGuid);
     }
 
     void OnDisband(Group* group) override
     {
-        sEluna->OnDisband(group);
+        sForge->OnDisband(group);
     }
 
     void OnCreate(Group* group, Player* leader) override
     {
-        sEluna->OnCreate(group, leader->GetGUID(), group->GetGroupType());
+        sForge->OnCreate(group, leader->GetGUID(), group->GetGroupType());
     }
 };
 
-class Eluna_GuildScript : public GuildScript
+class Forge_GuildScript : public GuildScript
 {
 public:
-    Eluna_GuildScript() : GuildScript("Eluna_GuildScript") { }
+    Forge_GuildScript() : GuildScript("Forge_GuildScript") { }
 
     void OnAddMember(Guild* guild, Player* player, uint8& plRank) override
     {
-        sEluna->OnAddMember(guild, player, plRank);
+        sForge->OnAddMember(guild, player, plRank);
     }
 
     void OnRemoveMember(Guild* guild, Player* player, bool isDisbanding, bool /*isKicked*/) override
     {
-        sEluna->OnRemoveMember(guild, player, isDisbanding);
+        sForge->OnRemoveMember(guild, player, isDisbanding);
     }
 
     void OnMOTDChanged(Guild* guild, const std::string& newMotd) override
     {
-        sEluna->OnMOTDChanged(guild, newMotd);
+        sForge->OnMOTDChanged(guild, newMotd);
     }
 
     void OnInfoChanged(Guild* guild, const std::string& newInfo) override
     {
-        sEluna->OnInfoChanged(guild, newInfo);
+        sForge->OnInfoChanged(guild, newInfo);
     }
 
     void OnCreate(Guild* guild, Player* leader, const std::string& name) override
     {
-        sEluna->OnCreate(guild, leader, name);
+        sForge->OnCreate(guild, leader, name);
     }
 
     void OnDisband(Guild* guild) override
     {
-        sEluna->OnDisband(guild);
+        sForge->OnDisband(guild);
     }
 
     void OnMemberWitdrawMoney(Guild* guild, Player* player, uint32& amount, bool isRepair) override
     {
-        sEluna->OnMemberWitdrawMoney(guild, player, amount, isRepair);
+        sForge->OnMemberWitdrawMoney(guild, player, amount, isRepair);
     }
 
     void OnMemberDepositMoney(Guild* guild, Player* player, uint32& amount) override
     {
-        sEluna->OnMemberDepositMoney(guild, player, amount);
+        sForge->OnMemberDepositMoney(guild, player, amount);
     }
 
     void OnItemMove(Guild* guild, Player* player, Item* pItem, bool isSrcBank, uint8 srcContainer, uint8 srcSlotId,
         bool isDestBank, uint8 destContainer, uint8 destSlotId) override
     {
-        sEluna->OnItemMove(guild, player, pItem, isSrcBank, srcContainer, srcSlotId, isDestBank, destContainer, destSlotId);
+        sForge->OnItemMove(guild, player, pItem, isSrcBank, srcContainer, srcSlotId, isDestBank, destContainer, destSlotId);
     }
 
     void OnEvent(Guild* guild, uint8 eventType, ObjectGuid::LowType playerGuid1, ObjectGuid::LowType playerGuid2, uint8 newRank) override
     {
-        sEluna->OnEvent(guild, eventType, playerGuid1, playerGuid2, newRank);
+        sForge->OnEvent(guild, eventType, playerGuid1, playerGuid2, newRank);
     }
 
     void OnBankEvent(Guild* guild, uint8 eventType, uint8 tabId, ObjectGuid::LowType playerGuid, uint32 itemOrMoney, uint16 itemStackCount, uint8 destTabId) override
     {
-        sEluna->OnBankEvent(guild, eventType, tabId, playerGuid, itemOrMoney, itemStackCount, destTabId);
+        sForge->OnBankEvent(guild, eventType, tabId, playerGuid, itemOrMoney, itemStackCount, destTabId);
     }
 };
 
-class Eluna_LootScript : public LootScript
+class Forge_LootScript : public LootScript
 {
 public:
-    Eluna_LootScript() : LootScript("Eluna_LootScript") { }
+    Forge_LootScript() : LootScript("Forge_LootScript") { }
 
     void OnLootMoney(Player* player, uint32 gold) override
     {
-        sEluna->OnLootMoney(player, gold);
+        sForge->OnLootMoney(player, gold);
     }
 };
 
-class Eluna_MiscScript : public MiscScript
+class Forge_MiscScript : public MiscScript
 {
 public:
-    Eluna_MiscScript() : MiscScript("Eluna_MiscScript") { }
+    Forge_MiscScript() : MiscScript("Forge_MiscScript") { }
 
     void GetDialogStatus(Player* player, Object* questgiver) override
     {
         if (questgiver->GetTypeId() == TYPEID_GAMEOBJECT)
-            sEluna->GetDialogStatus(player, questgiver->ToGameObject());
+            sForge->GetDialogStatus(player, questgiver->ToGameObject());
         else if (questgiver->GetTypeId() == TYPEID_UNIT)
-            sEluna->GetDialogStatus(player, questgiver->ToCreature());
+            sForge->GetDialogStatus(player, questgiver->ToCreature());
     }
 };
 
-class Eluna_PetScript : public PetScript
+class Forge_PetScript : public PetScript
 {
 public:
-    Eluna_PetScript() : PetScript("Eluna_PetScript") { }
+    Forge_PetScript() : PetScript("Forge_PetScript") { }
 
     void OnPetAddToWorld(Pet* pet) override
     {
-        sEluna->OnPetAddedToWorld(pet->GetOwner(), pet);
+        sForge->OnPetAddedToWorld(pet->GetOwner(), pet);
     }
 };
 
-class Eluna_PlayerScript : public PlayerScript
+class Forge_PlayerScript : public PlayerScript
 {
 public:
-    Eluna_PlayerScript() : PlayerScript("Eluna_PlayerScript") { }
+    Forge_PlayerScript() : PlayerScript("Forge_PlayerScript") { }
 
     void OnPlayerResurrect(Player* player, float /*restore_percent*/, bool /*applySickness*/) override
     {
-        sEluna->OnResurrect(player);
+        sForge->OnResurrect(player);
     }
 
     bool CanPlayerUseChat(Player* player, uint32 type, uint32 lang, std::string& msg) override
@@ -528,7 +528,7 @@ public:
         if (type != CHAT_MSG_SAY && type != CHAT_MSG_YELL && type != CHAT_MSG_EMOTE)
             return true;
 
-        if (!sEluna->OnChat(player, type, lang, msg))
+        if (!sForge->OnChat(player, type, lang, msg))
             return false;
 
         return true;
@@ -536,7 +536,7 @@ public:
 
     bool CanPlayerUseChat(Player* player, uint32 type, uint32 lang, std::string& msg, Player* target) override
     {
-        if (!sEluna->OnChat(player, type, lang, msg, target))
+        if (!sForge->OnChat(player, type, lang, msg, target))
             return false;
 
         return true;
@@ -544,7 +544,7 @@ public:
 
     bool CanPlayerUseChat(Player* player, uint32 type, uint32 lang, std::string& msg, Group* group) override
     {
-        if (!sEluna->OnChat(player, type, lang, msg, group))
+        if (!sForge->OnChat(player, type, lang, msg, group))
             return false;
 
         return true;
@@ -552,7 +552,7 @@ public:
 
     bool CanPlayerUseChat(Player* player, uint32 type, uint32 lang, std::string& msg, Guild* guild) override
     {
-        if (!sEluna->OnChat(player, type, lang, msg, guild))
+        if (!sForge->OnChat(player, type, lang, msg, guild))
             return false;
 
         return true;
@@ -560,7 +560,7 @@ public:
 
     bool CanPlayerUseChat(Player* player, uint32 type, uint32 lang, std::string& msg, Channel* channel) override
     {
-        if (!sEluna->OnChat(player, type, lang, msg, channel))
+        if (!sForge->OnChat(player, type, lang, msg, channel))
             return false;
 
         return true;
@@ -568,260 +568,260 @@ public:
 
     void OnLootItem(Player* player, Item* item, uint32 count, ObjectGuid lootguid) override
     {
-        sEluna->OnLootItem(player, item, count, lootguid);
+        sForge->OnLootItem(player, item, count, lootguid);
     }
 
     void OnPlayerLearnTalents(Player* player, uint32 talentId, uint32 talentRank, uint32 spellid) override
     {
-        sEluna->OnLearnTalents(player, talentId, talentRank, spellid);
+        sForge->OnLearnTalents(player, talentId, talentRank, spellid);
     }
 
     bool CanUseItem(Player* player, ItemTemplate const* proto, InventoryResult& result) override
     {
-        result = sEluna->OnCanUseItem(player, proto->ItemId);
+        result = sForge->OnCanUseItem(player, proto->ItemId);
         return result != EQUIP_ERR_OK ? false : true;
     }
 
     void OnEquip(Player* player, Item* it, uint8 bag, uint8 slot, bool /*update*/) override
     {
-        sEluna->OnEquip(player, it, bag, slot);
+        sForge->OnEquip(player, it, bag, slot);
     }
 
     void OnPlayerEnterCombat(Player* player, Unit* enemy) override
     {
-        sEluna->OnPlayerEnterCombat(player, enemy);
+        sForge->OnPlayerEnterCombat(player, enemy);
     }
 
     void OnPlayerLeaveCombat(Player* player) override
     {
-        sEluna->OnPlayerLeaveCombat(player);
+        sForge->OnPlayerLeaveCombat(player);
     }
 
     bool CanRepopAtGraveyard(Player* player) override
     {
-        sEluna->OnRepop(player);
+        sForge->OnRepop(player);
         return true;
     }
 
     void OnQuestAbandon(Player* player, uint32 questId) override
     {
-        sEluna->OnQuestAbandon(player, questId);
+        sForge->OnQuestAbandon(player, questId);
     }
 
     void OnMapChanged(Player* player) override
     {
-        sEluna->OnMapChanged(player);
+        sForge->OnMapChanged(player);
     }
 
     void OnGossipSelect(Player* player, uint32 menu_id, uint32 sender, uint32 action) override
     {
-        sEluna->HandleGossipSelectOption(player, menu_id, sender, action, "");
+        sForge->HandleGossipSelectOption(player, menu_id, sender, action, "");
     }
 
     void OnGossipSelectCode(Player* player, uint32 menu_id, uint32 sender, uint32 action, const char* code) override
     {
-        sEluna->HandleGossipSelectOption(player, menu_id, sender, action, code);
+        sForge->HandleGossipSelectOption(player, menu_id, sender, action, code);
     }
 
     void OnPVPKill(Player* killer, Player* killed) override
     {
-        sEluna->OnPVPKill(killer, killed);
+        sForge->OnPVPKill(killer, killed);
     }
 
     void OnCreatureKill(Player* killer, Creature* killed) override
     {
-        sEluna->OnCreatureKill(killer, killed);
+        sForge->OnCreatureKill(killer, killed);
     }
 
     void OnPlayerKilledByCreature(Creature* killer, Player* killed) override
     {
-        sEluna->OnPlayerKilledByCreature(killer, killed);
+        sForge->OnPlayerKilledByCreature(killer, killed);
     }
 
     void OnLevelChanged(Player* player, uint8 oldLevel) override
     {
-        sEluna->OnLevelChanged(player, oldLevel);
+        sForge->OnLevelChanged(player, oldLevel);
     }
 
     void OnFreeTalentPointsChanged(Player* player, uint32 points) override
     {
-        sEluna->OnFreeTalentPointsChanged(player, points);
+        sForge->OnFreeTalentPointsChanged(player, points);
     }
 
     void OnTalentsReset(Player* player, bool noCost) override
     {
-        sEluna->OnTalentsReset(player, noCost);
+        sForge->OnTalentsReset(player, noCost);
     }
 
     void OnMoneyChanged(Player* player, int32& amount) override
     {
-        sEluna->OnMoneyChanged(player, amount);
+        sForge->OnMoneyChanged(player, amount);
     }
 
     void OnGiveXP(Player* player, uint32& amount, Unit* victim, uint8 xpSource) override
     {
-        sEluna->OnGiveXP(player, amount, victim, xpSource);
+        sForge->OnGiveXP(player, amount, victim, xpSource);
     }
 
     bool OnReputationChange(Player* player, uint32 factionID, int32& standing, bool incremental) override
     {
-        return sEluna->OnReputationChange(player, factionID, standing, incremental);
+        return sForge->OnReputationChange(player, factionID, standing, incremental);
     }
 
     void OnDuelRequest(Player* target, Player* challenger) override
     {
-        sEluna->OnDuelRequest(target, challenger);
+        sForge->OnDuelRequest(target, challenger);
     }
 
     void OnDuelStart(Player* player1, Player* player2) override
     {
-        sEluna->OnDuelStart(player1, player2);
+        sForge->OnDuelStart(player1, player2);
     }
 
     void OnDuelEnd(Player* winner, Player* loser, DuelCompleteType type) override
     {
-        sEluna->OnDuelEnd(winner, loser, type);
+        sForge->OnDuelEnd(winner, loser, type);
     }
 
     void OnEmote(Player* player, uint32 emote) override
     {
-        sEluna->OnEmote(player, emote);
+        sForge->OnEmote(player, emote);
     }
 
     void OnTextEmote(Player* player, uint32 textEmote, uint32 emoteNum, ObjectGuid guid) override
     {
-        sEluna->OnTextEmote(player, textEmote, emoteNum, guid);
+        sForge->OnTextEmote(player, textEmote, emoteNum, guid);
     }
 
     void OnSpellCast(Player* player, Spell* spell, bool skipCheck) override
     {
-        sEluna->OnSpellCast(player, spell, skipCheck);
+        sForge->OnSpellCast(player, spell, skipCheck);
     }
 
     void OnLogin(Player* player) override
     {
-        sEluna->OnLogin(player);
+        sForge->OnLogin(player);
     }
 
     void OnLogout(Player* player) override
     {
-        sEluna->OnLogout(player);
+        sForge->OnLogout(player);
     }
 
     void OnCreate(Player* player) override
     {
-        sEluna->OnCreate(player);
+        sForge->OnCreate(player);
     }
 
     void OnSave(Player* player) override
     {
-        sEluna->OnSave(player);
+        sForge->OnSave(player);
     }
 
     void OnDelete(ObjectGuid guid, uint32 /*accountId*/) override
     {
-        sEluna->OnDelete(guid.GetCounter());
+        sForge->OnDelete(guid.GetCounter());
     }
 
     void OnBindToInstance(Player* player, Difficulty difficulty, uint32 mapid, bool permanent) override
     {
-        sEluna->OnBindToInstance(player, difficulty, mapid, permanent);
+        sForge->OnBindToInstance(player, difficulty, mapid, permanent);
     }
 
     void OnUpdateArea(Player* player, uint32 oldArea, uint32 newArea) override
     {
-        sEluna->OnUpdateArea(player, oldArea, newArea);
+        sForge->OnUpdateArea(player, oldArea, newArea);
     }
 
     void OnUpdateZone(Player* player, uint32 newZone, uint32 newArea) override
     {
-        sEluna->OnUpdateZone(player, newZone, newArea);
+        sForge->OnUpdateZone(player, newZone, newArea);
     }
 
     void OnFirstLogin(Player* player) override
     {
-        sEluna->OnFirstLogin(player);
+        sForge->OnFirstLogin(player);
     }
 
     void OnLearnSpell(Player* player, uint32 spellId) override
     {
-        sEluna->OnLearnSpell(player, spellId);
+        sForge->OnLearnSpell(player, spellId);
     }
 
     void OnAchiComplete(Player* player, AchievementEntry const* achievement) override
     {
-        sEluna->OnAchiComplete(player, achievement);
+        sForge->OnAchiComplete(player, achievement);
     }
 
     void OnFfaPvpStateUpdate(Player* player, bool IsFlaggedForFfaPvp) override
     {
-        sEluna->OnFfaPvpStateUpdate(player, IsFlaggedForFfaPvp);
+        sForge->OnFfaPvpStateUpdate(player, IsFlaggedForFfaPvp);
     }
 
     bool CanInitTrade(Player* player, Player* target) override
     {
-        return sEluna->OnCanInitTrade(player, target);
+        return sForge->OnCanInitTrade(player, target);
     }
 
     bool CanSendMail(Player* player, ObjectGuid receiverGuid, ObjectGuid mailbox, std::string& subject, std::string& body, uint32 money, uint32 cod, Item* item) override
     {
-        return sEluna->OnCanSendMail(player, receiverGuid, mailbox, subject, body, money, cod, item);
+        return sForge->OnCanSendMail(player, receiverGuid, mailbox, subject, body, money, cod, item);
     }
 
     bool CanJoinLfg(Player* player, uint8 roles, lfg::LfgDungeonSet& dungeons, const std::string& comment) override
     {
-        return sEluna->OnCanJoinLfg(player, roles, dungeons, comment);
+        return sForge->OnCanJoinLfg(player, roles, dungeons, comment);
     }
 
     void OnQuestRewardItem(Player* player, Item* item, uint32 count) override
     {
-        sEluna->OnQuestRewardItem(player, item, count);
+        sForge->OnQuestRewardItem(player, item, count);
     }
 
     void OnGroupRollRewardItem(Player* player, Item* item, uint32 count, RollVote voteType, Roll* roll) override
     {
-        sEluna->OnGroupRollRewardItem(player, item, count, voteType, roll);
+        sForge->OnGroupRollRewardItem(player, item, count, voteType, roll);
     }
 
     void OnCreateItem(Player* player, Item* item, uint32 count) override
     {
-        sEluna->OnCreateItem(player, item, count);
+        sForge->OnCreateItem(player, item, count);
     }
 
     void OnStoreNewItem(Player* player, Item* item, uint32 count) override
     {
-        sEluna->OnStoreNewItem(player, item, count);
+        sForge->OnStoreNewItem(player, item, count);
     }
 
     void OnPlayerCompleteQuest(Player* player, Quest const* quest) override
     {
-        sEluna->OnPlayerCompleteQuest(player, quest);
+        sForge->OnPlayerCompleteQuest(player, quest);
     }
 
     bool CanGroupInvite(Player* player, std::string& memberName) override
     {
-        return sEluna->OnCanGroupInvite(player, memberName);
+        return sForge->OnCanGroupInvite(player, memberName);
     }
 
     void OnBattlegroundDesertion(Player* player, const BattlegroundDesertionType type) override
     {
-        sEluna->OnBattlegroundDesertion(player, type);
+        sForge->OnBattlegroundDesertion(player, type);
     }
 
     void OnCreatureKilledByPet(Player* player, Creature* killed) override
     {
-        sEluna->OnCreatureKilledByPet(player, killed);
+        sForge->OnCreatureKilledByPet(player, killed);
     }
 };
 
-class Eluna_ServerScript : public ServerScript
+class Forge_ServerScript : public ServerScript
 {
 public:
-    Eluna_ServerScript() : ServerScript("Eluna_ServerScript") { }
+    Forge_ServerScript() : ServerScript("Forge_ServerScript") { }
 
     bool CanPacketSend(WorldSession* session, WorldPacket& packet) override
     {
-        if (!sEluna->OnPacketSend(session, packet))
+        if (!sForge->OnPacketSend(session, packet))
             return false;
 
         return true;
@@ -829,112 +829,112 @@ public:
 
     bool CanPacketReceive(WorldSession* session, WorldPacket& packet) override
     {
-        if (!sEluna->OnPacketReceive(session, packet))
+        if (!sForge->OnPacketReceive(session, packet))
             return false;
 
         return true;
     }
 };
 
-class Eluna_SpellSC : public SpellSC
+class Forge_SpellSC : public SpellSC
 {
 public:
-    Eluna_SpellSC() : SpellSC("Eluna_SpellSC") { }
+    Forge_SpellSC() : SpellSC("Forge_SpellSC") { }
 
     void OnDummyEffect(WorldObject* caster, uint32 spellID, SpellEffIndex effIndex, GameObject* gameObjTarget) override
     {
-        sEluna->OnDummyEffect(caster, spellID, effIndex, gameObjTarget);
+        sForge->OnDummyEffect(caster, spellID, effIndex, gameObjTarget);
     }
 
     void OnDummyEffect(WorldObject* caster, uint32 spellID, SpellEffIndex effIndex, Creature* creatureTarget) override
     {
-        sEluna->OnDummyEffect(caster, spellID, effIndex, creatureTarget);
+        sForge->OnDummyEffect(caster, spellID, effIndex, creatureTarget);
     }
 
     void OnDummyEffect(WorldObject* caster, uint32 spellID, SpellEffIndex effIndex, Item* itemTarget) override
     {
-        sEluna->OnDummyEffect(caster, spellID, effIndex, itemTarget);
+        sForge->OnDummyEffect(caster, spellID, effIndex, itemTarget);
     }
 };
 
-class Eluna_UnitScript : public UnitScript
+class Forge_UnitScript : public UnitScript
 {
 public:
-    Eluna_UnitScript() : UnitScript("Eluna_UnitScript") { }
+    Forge_UnitScript() : UnitScript("Forge_UnitScript") { }
 
     void OnUnitUpdate(Unit* unit, uint32 diff) override
     {
-        unit->elunaEvents->Update(diff);
+        unit->forgeEvents->Update(diff);
     }
 };
 
-class Eluna_VehicleScript : public VehicleScript
+class Forge_VehicleScript : public VehicleScript
 {
 public:
-    Eluna_VehicleScript() : VehicleScript("Eluna_VehicleScript") { }
+    Forge_VehicleScript() : VehicleScript("Forge_VehicleScript") { }
 
     void OnInstall(Vehicle* veh) override
     {
-        sEluna->OnInstall(veh);
+        sForge->OnInstall(veh);
     }
 
     void OnUninstall(Vehicle* veh) override
     {
-        sEluna->OnUninstall(veh);
+        sForge->OnUninstall(veh);
     }
 
     void OnInstallAccessory(Vehicle* veh, Creature* accessory) override
     {
-        sEluna->OnInstallAccessory(veh, accessory);
+        sForge->OnInstallAccessory(veh, accessory);
     }
 
     void OnAddPassenger(Vehicle* veh, Unit* passenger, int8 seatId) override
     {
-        sEluna->OnAddPassenger(veh, passenger, seatId);
+        sForge->OnAddPassenger(veh, passenger, seatId);
     }
 
     void OnRemovePassenger(Vehicle* veh, Unit* passenger) override
     {
-        sEluna->OnRemovePassenger(veh, passenger);
+        sForge->OnRemovePassenger(veh, passenger);
     }
 };
 
-class Eluna_WorldObjectScript : public WorldObjectScript
+class Forge_WorldObjectScript : public WorldObjectScript
 {
 public:
-    Eluna_WorldObjectScript() : WorldObjectScript("Eluna_WorldObjectScript") { }
+    Forge_WorldObjectScript() : WorldObjectScript("Forge_WorldObjectScript") { }
 
     void OnWorldObjectDestroy(WorldObject* object) override
     {
-        delete object->elunaEvents;
-        object->elunaEvents = nullptr;
+        delete object->forgeEvents;
+        object->forgeEvents = nullptr;
     }
 
     void OnWorldObjectCreate(WorldObject* object) override
     {
-        object->elunaEvents = nullptr;
+        object->forgeEvents = nullptr;
     }
 
     void OnWorldObjectSetMap(WorldObject* object, Map* /*map*/) override
     {
-        if (!object->elunaEvents)
-            object->elunaEvents = new ElunaEventProcessor(&Eluna::GEluna, object);
+        if (!object->forgeEvents)
+            object->forgeEvents = new ForgeEventProcessor(&Forge::GForge, object);
     }
 
     void OnWorldObjectUpdate(WorldObject* object, uint32 diff) override
     {
-        object->elunaEvents->Update(diff);
+        object->forgeEvents->Update(diff);
     }
 };
 
-class Eluna_WorldScript : public WorldScript
+class Forge_WorldScript : public WorldScript
 {
 public:
-    Eluna_WorldScript() : WorldScript("Eluna_WorldScript") { }
+    Forge_WorldScript() : WorldScript("Forge_WorldScript") { }
 
     void OnOpenStateChange(bool open) override
     {
-        sEluna->OnOpenStateChange(open);
+        sForge->OnOpenStateChange(open);
     }
 
     void OnBeforeConfigLoad(bool reload) override
@@ -942,79 +942,79 @@ public:
         if (!reload)
         {
             ///- Initialize Lua Engine
-            LOG_INFO("eluna", "Initialize Eluna Lua Engine...");
-            Eluna::Initialize();
+            LOG_INFO("forge", "Initialize Forge Lua Engine...");
+            Forge::Initialize();
         }
 
-        sEluna->OnConfigLoad(reload, true);
+        sForge->OnConfigLoad(reload, true);
     }
 
     void OnAfterConfigLoad(bool reload) override
     {
-        sEluna->OnConfigLoad(reload, false);
+        sForge->OnConfigLoad(reload, false);
     }
 
     void OnShutdownInitiate(ShutdownExitCode code, ShutdownMask mask) override
     {
-        sEluna->OnShutdownInitiate(code, mask);
+        sForge->OnShutdownInitiate(code, mask);
     }
 
     void OnShutdownCancel() override
     {
-        sEluna->OnShutdownCancel();
+        sForge->OnShutdownCancel();
     }
 
     void OnUpdate(uint32 diff) override
     {
-        sEluna->OnWorldUpdate(diff);
+        sForge->OnWorldUpdate(diff);
     }
 
     void OnStartup() override
     {
-        sEluna->OnStartup();
+        sForge->OnStartup();
     }
 
     void OnShutdown() override
     {
-        sEluna->OnShutdown();
+        sForge->OnShutdown();
     }
 
     void OnAfterUnloadAllMaps() override
     {
-        Eluna::Uninitialize();
+        Forge::Uninitialize();
     }
 
     void OnBeforeWorldInitialized() override
     {
-        ///- Run eluna scripts.
+        ///- Run forge scripts.
         // in multithread foreach: run scripts
-        sEluna->RunScripts();
-        sEluna->OnConfigLoad(false, false); // Must be done after Eluna is initialized and scripts have run.
+        sForge->RunScripts();
+        sForge->OnConfigLoad(false, false); // Must be done after Forge is initialized and scripts have run.
     }
 };
 
 // Group all custom scripts
-void AddSC_ElunaLuaEngine()
+void AddSC_ForgeLuaEngine()
 {
-    new Eluna_AllCreatureScript();
-    new Eluna_AllGameObjectScript();
-    new Eluna_AllItemScript();
-    new Eluna_AllMapScript();
-    new Eluna_AuctionHouseScript();
-    new Eluna_BGScript();
-    new Eluna_CommandSC();
-    new Eluna_ElunaScript();
-    new Eluna_GameEventScript();
-    new Eluna_GroupScript();
-    new Eluna_GuildScript();
-    new Eluna_LootScript();
-    new Eluna_MiscScript();
-    new Eluna_PetScript();
-    new Eluna_PlayerScript();
-    new Eluna_ServerScript();
-    new Eluna_SpellSC();
-    new Eluna_UnitScript();
-    new Eluna_VehicleScript();
-    new Eluna_WorldObjectScript();
-    new Eluna_WorldScript();
+    new Forge_AllCreatureScript();
+    new Forge_AllGameObjectScript();
+    new Forge_AllItemScript();
+    new Forge_AllMapScript();
+    new Forge_AuctionHouseScript();
+    new Forge_BGScript();
+    new Forge_CommandSC();
+    new Forge_ForgeScript();
+    new Forge_GameEventScript();
+    new Forge_GroupScript();
+    new Forge_GuildScript();
+    new Forge_LootScript();
+    new Forge_MiscScript();
+    new Forge_PetScript();
+    new Forge_PlayerScript();
+    new Forge_ServerScript();
+    new Forge_SpellSC();
+    new Forge_UnitScript();
+    new Forge_VehicleScript();
+    new Forge_WorldObjectScript();
+    new Forge_WorldScript();
 }

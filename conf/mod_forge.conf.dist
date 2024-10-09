@@ -1,34 +1,34 @@
 [worldserver]
 
 ###################################################################################################
-#  ELUNA SETTINGS
+#  FORGE SETTINGS
 #
-#   Eluna.Enabled
-#       Description: Enable or disable Eluna LuaEngine
+#   Forge.Enabled
+#       Description: Enable or disable Forge LuaEngine
 #       Default:    true  - (enabled)
 #                   false - (disabled)
 #
-#   Eluna.TraceBack
+#   Forge.TraceBack
 #       Description: Sets whether to use debug.traceback function on a lua error or not.
 #                    Notice that you can redefine the function.
 #       Default:    false - (use default error output)
 #                   true  - (use debug.traceback function)
 #
-#   Eluna.ScriptPath
+#   Forge.ScriptPath
 #       Description: Sets the location of the script folder to load scripts from
 #                    The path can be relative or absolute.
 #       Default:    "lua_scripts"
 #
-#   Eluna.PlayerAnnounceReload
+#   Forge.PlayerAnnounceReload
 #       Description: Enable or disable whether the reload announcement is sent to players (Lowest security level).
 #       Default:    false - (disabled)
 #                   true  - (enabled)
 #
 
-Eluna.Enabled = true
-Eluna.TraceBack = false
-Eluna.ScriptPath = "lua_scripts"
-Eluna.PlayerAnnounceReload = false
+Forge.Enabled = true
+Forge.TraceBack = false
+Forge.ScriptPath = "lua_scripts"
+Forge.PlayerAnnounceReload = false
 
 
 ###################################################################################################
@@ -97,8 +97,8 @@ Eluna.PlayerAnnounceReload = false
 #                         NOTE: Does not work with dynamic filenames.
 #                         Example:  536870912 (512 MB)
 #
-Appender.ElunaLog=2,5,0,eluna.log,w
-Appender.ElunaConsole=1,4,0,"0 9 0 3 5 0"
+Appender.ForgeLog=2,5,0,forge.log,w
+Appender.ForgeConsole=1,4,0,"0 9 0 3 5 0"
 
 #  Logger config values: Given a logger "name"
 #    Logger.name
@@ -117,4 +117,4 @@ Appender.ElunaConsole=1,4,0,"0 9 0 3 5 0"
 #                     AppenderList: List of appenders linked to logger
 #                     (Using spaces as separator).
 #
-Logger.eluna=6,ElunaLog ElunaConsole
+Logger.forge=6,ForgeLog ForgeConsole

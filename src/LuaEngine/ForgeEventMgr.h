@@ -1,13 +1,13 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
 
-#ifndef _ELUNA_EVENT_MGR_H
-#define _ELUNA_EVENT_MGR_H
+#ifndef _FORGE_EVENT_MGR_H
+#define _FORGE_EVENT_MGR_H
 
-#include "ElunaUtility.h"
+#include "ForgeUtility.h"
 #include "Common.h"
 #ifdef TRINITY
 #include "Random.h"
@@ -22,9 +22,9 @@
 #include "Platform/Define.h"
 #endif
 
-class Eluna;
+class Forge;
 class EventMgr;
-class ElunaEventProcessor;
+class ForgeEventProcessor;
 class WorldObject;
 
 enum LuaEventState
@@ -60,7 +60,7 @@ struct LuaEvent
     LuaEventState state;    // State for next call
 };
 
-class ElunaEventProcessor
+class ForgeEventProcessor
 {
     friend class EventMgr;
 
@@ -68,8 +68,8 @@ public:
     typedef std::multimap<uint64, LuaEvent*> EventList;
     typedef std::unordered_map<int, LuaEvent*> EventMap;
 
-    ElunaEventProcessor(Eluna** _E, WorldObject* _obj);
-    ~ElunaEventProcessor();
+    ForgeEventProcessor(Forge** _E, WorldObject* _obj);
+    ~ForgeEventProcessor();
 
     void Update(uint32 diff);
     // removes all timed events on next tick or at tick end
@@ -86,18 +86,18 @@ private:
     EventList eventList;
     uint64 m_time;
     WorldObject* obj;
-    Eluna** E;
+    Forge** E;
 };
 
-class EventMgr : public ElunaUtil::Lockable
+class EventMgr : public ForgeUtil::Lockable
 {
 public:
-    typedef std::unordered_set<ElunaEventProcessor*> ProcessorSet;
+    typedef std::unordered_set<ForgeEventProcessor*> ProcessorSet;
     ProcessorSet processors;
-    ElunaEventProcessor* globalProcessor;
-    Eluna** E;
+    ForgeEventProcessor* globalProcessor;
+    Forge** E;
 
-    EventMgr(Eluna** _E);
+    EventMgr(Forge** _E);
     ~EventMgr();
 
     // Set the state of all timed events

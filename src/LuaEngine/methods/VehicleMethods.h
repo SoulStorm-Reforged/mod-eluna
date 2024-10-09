@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
@@ -22,11 +22,11 @@ namespace LuaVehicle
      */
     int IsOnBoard(lua_State* L, Vehicle* vehicle)
     {
-        Unit* passenger = Eluna::CHECKOBJ<Unit>(L, 2);
+        Unit* passenger = Forge::CHECKOBJ<Unit>(L, 2);
 #if defined TRINITY || AZEROTHCORE
-        Eluna::Push(L, passenger->IsOnVehicle(vehicle->GetBase()));
+        Forge::Push(L, passenger->IsOnVehicle(vehicle->GetBase()));
 #else
-        Eluna::Push(L, vehicle->HasOnBoard(passenger));
+        Forge::Push(L, vehicle->HasOnBoard(passenger));
 #endif
         return 1;
     }
@@ -39,9 +39,9 @@ namespace LuaVehicle
     int GetOwner(lua_State* L, Vehicle* vehicle)
     {
 #if defined TRINITY || AZEROTHCORE
-        Eluna::Push(L, vehicle->GetBase());
+        Forge::Push(L, vehicle->GetBase());
 #else
-        Eluna::Push(L, vehicle->GetOwner());
+        Forge::Push(L, vehicle->GetOwner());
 #endif
         return 1;
     }
@@ -54,11 +54,11 @@ namespace LuaVehicle
     int GetEntry(lua_State* L, Vehicle* vehicle)
     {
 #ifdef TRINITY
-        Eluna::Push(L, vehicle->GetVehicleInfo()->ID);
+        Forge::Push(L, vehicle->GetVehicleInfo()->ID);
 #elif AZEROTHCORE
-        Eluna::Push(L, vehicle->GetVehicleInfo()->m_ID);
+        Forge::Push(L, vehicle->GetVehicleInfo()->m_ID);
 #else
-        Eluna::Push(L, vehicle->GetVehicleEntry()->m_ID);
+        Forge::Push(L, vehicle->GetVehicleEntry()->m_ID);
 #endif
         return 1;
     }
@@ -71,8 +71,8 @@ namespace LuaVehicle
      */
     int GetPassenger(lua_State* L, Vehicle* vehicle)
     {
-        int8 seatId = Eluna::CHECKVAL<int8>(L, 2);
-        Eluna::Push(L, vehicle->GetPassenger(seatId));
+        int8 seatId = Forge::CHECKVAL<int8>(L, 2);
+        Forge::Push(L, vehicle->GetPassenger(seatId));
         return 1;
     }
 
@@ -84,8 +84,8 @@ namespace LuaVehicle
      */
     int AddPassenger(lua_State* L, Vehicle* vehicle)
     {
-        Unit* passenger = Eluna::CHECKOBJ<Unit>(L, 2);
-        int8 seatId = Eluna::CHECKVAL<int8>(L, 3);
+        Unit* passenger = Forge::CHECKOBJ<Unit>(L, 2);
+        int8 seatId = Forge::CHECKVAL<int8>(L, 3);
 #if defined TRINITY || AZEROTHCORE
         vehicle->AddPassenger(passenger, seatId);
 #else
@@ -102,7 +102,7 @@ namespace LuaVehicle
      */
     int RemovePassenger(lua_State* L, Vehicle* vehicle)
     {
-        Unit* passenger = Eluna::CHECKOBJ<Unit>(L, 2);
+        Unit* passenger = Forge::CHECKOBJ<Unit>(L, 2);
 #if defined TRINITY || AZEROTHCORE
         vehicle->RemovePassenger(passenger);
 #else

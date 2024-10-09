@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
@@ -22,9 +22,9 @@ namespace LuaCorpse
     int GetOwnerGUID(lua_State* L, Corpse* corpse)
     {
 #if defined TRINITY || AZEROTHCORE
-        Eluna::Push(L, corpse->GetOwnerGUID());
+        Forge::Push(L, corpse->GetOwnerGUID());
 #else
-        Eluna::Push(L, corpse->GetOwnerGuid());
+        Forge::Push(L, corpse->GetOwnerGuid());
 #endif
         return 1;
     }
@@ -36,7 +36,7 @@ namespace LuaCorpse
      */
     int GetGhostTime(lua_State* L, Corpse* corpse)
     {
-        Eluna::Push(L, corpse->GetGhostTime());
+        Forge::Push(L, corpse->GetGhostTime());
         return 1;
     }
 
@@ -54,7 +54,7 @@ namespace LuaCorpse
      */
     int GetType(lua_State* L, Corpse* corpse)
     {
-        Eluna::Push(L, corpse->GetType());
+        Forge::Push(L, corpse->GetType());
         return 1;
     }
 

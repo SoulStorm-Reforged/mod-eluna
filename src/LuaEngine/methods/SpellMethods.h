@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
@@ -21,7 +21,7 @@ namespace LuaSpell
      */
     int IsAutoRepeat(lua_State* L, Spell* spell)
     {
-        Eluna::Push(L, spell->IsAutoRepeat());
+        Forge::Push(L, spell->IsAutoRepeat());
         return 1;
     }
 
@@ -32,7 +32,7 @@ namespace LuaSpell
      */
     int GetCaster(lua_State* L, Spell* spell)
     {
-        Eluna::Push(L, spell->GetCaster());
+        Forge::Push(L, spell->GetCaster());
         return 1;
     }
 
@@ -43,7 +43,7 @@ namespace LuaSpell
      */
     int GetCastTime(lua_State* L, Spell* spell)
     {
-        Eluna::Push(L, spell->GetCastTime());
+        Forge::Push(L, spell->GetCastTime());
         return 1;
     }
 
@@ -54,7 +54,7 @@ namespace LuaSpell
      */
     int GetEntry(lua_State* L, Spell* spell)
     {
-        Eluna::Push(L, spell->m_spellInfo->Id);
+        Forge::Push(L, spell->m_spellInfo->Id);
         return 1;
     }
 
@@ -65,7 +65,7 @@ namespace LuaSpell
      */
     int GetPowerCost(lua_State* L, Spell* spell)
     {
-        Eluna::Push(L, spell->GetPowerCost());
+        Forge::Push(L, spell->GetPowerCost());
         return 1;
     }
 
@@ -86,8 +86,8 @@ namespace LuaSpell
                 continue;
             auto reagent = eObjectMgr->GetItemTemplate(reagents[i]);
             auto count = reagentCounts[i];
-            Eluna::Push(L, reagent);
-            Eluna::Push(L, count);
+            Forge::Push(L, reagent);
+            Forge::Push(L, count);
             lua_settable(L, -3);
         }
         return 1;
@@ -101,9 +101,9 @@ namespace LuaSpell
     int GetDuration(lua_State* L, Spell* spell)
     {
 #if defined TRINITY || AZEROTHCORE
-        Eluna::Push(L, spell->GetSpellInfo()->GetDuration());
+        Forge::Push(L, spell->GetSpellInfo()->GetDuration());
 #else
-        Eluna::Push(L, GetSpellDuration(spell->m_spellInfo));
+        Forge::Push(L, GetSpellDuration(spell->m_spellInfo));
 #endif
         return 1;
     }
@@ -128,9 +128,9 @@ namespace LuaSpell
         float x, y, z;
         spell->m_targets.getDestination(x, y, z);
 #endif
-        Eluna::Push(L, x);
-        Eluna::Push(L, y);
-        Eluna::Push(L, z);
+        Forge::Push(L, x);
+        Forge::Push(L, y);
+        Forge::Push(L, z);
         return 3;
     }
 
@@ -150,24 +150,24 @@ namespace LuaSpell
     {
 #if defined TRINITY || AZEROTHCORE
         if (GameObject* target = spell->m_targets.GetGOTarget())
-            Eluna::Push(L, target);
+            Forge::Push(L, target);
         else if (Item* target = spell->m_targets.GetItemTarget())
-            Eluna::Push(L, target);
+            Forge::Push(L, target);
         else if (Corpse* target = spell->m_targets.GetCorpseTarget())
-            Eluna::Push(L, target);
+            Forge::Push(L, target);
         else if (Unit* target = spell->m_targets.GetUnitTarget())
-            Eluna::Push(L, target);
+            Forge::Push(L, target);
         else if (WorldObject* target = spell->m_targets.GetObjectTarget())
-            Eluna::Push(L, target);
+            Forge::Push(L, target);
 #else
         if (GameObject* target = spell->m_targets.getGOTarget())
-            Eluna::Push(L, target);
+            Forge::Push(L, target);
         else if (Item* target = spell->m_targets.getItemTarget())
-            Eluna::Push(L, target);
+            Forge::Push(L, target);
         else if (Corpse* target = spell->GetCaster()->GetMap()->GetCorpse(spell->m_targets.getCorpseTargetGuid()))
-            Eluna::Push(L, target);
+            Forge::Push(L, target);
         else if (Unit* target = spell->m_targets.getUnitTarget())
-            Eluna::Push(L, target);
+            Forge::Push(L, target);
 #endif
         return 1;
     }
@@ -179,7 +179,7 @@ namespace LuaSpell
      */
     int SetAutoRepeat(lua_State* L, Spell* spell)
     {
-        bool repeat = Eluna::CHECKVAL<bool>(L, 2);
+        bool repeat = Forge::CHECKVAL<bool>(L, 2);
         spell->SetAutoRepeat(repeat);
         return 0;
     }
@@ -191,7 +191,7 @@ namespace LuaSpell
      */
     int Cast(lua_State* L, Spell* spell)
     {
-        bool skipCheck = Eluna::CHECKVAL<bool>(L, 2, false);
+        bool skipCheck = Forge::CHECKVAL<bool>(L, 2, false);
         spell->cast(skipCheck);
         return 0;
     }
@@ -221,7 +221,7 @@ namespace LuaSpell
      */
     int GetSpellInfo(lua_State* L, Spell* spell)
     {
-        Eluna::Push(L, spell->GetSpellInfo());
+        Forge::Push(L, spell->GetSpellInfo());
         return 1;
     }
 
@@ -426,12 +426,12 @@ namespace LuaSpell
      */
     int SendCastResult(lua_State* L, Spell* spell)
     {
-        uint8 result = Eluna::CHECKVAL<uint8>(L, 2);
+        uint8 result = Forge::CHECKVAL<uint8>(L, 2);
         spell->SendCastResult((SpellCastResult)result);
         return 0;
     }
 
-    ElunaRegister<Spell> SpellMethods[] =
+    ForgeRegister<Spell> SpellMethods[] =
     {
         // Getters
         { "GetCaster", &LuaSpell::GetCaster },

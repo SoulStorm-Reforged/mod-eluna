@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
+* Copyright (C) 2010 - 2024 Forge Lua Engine <https://forgeluaengine.github.io/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
@@ -16,23 +16,23 @@ namespace LuaSpellEffectInfo
 {
     int GetMiscValue(lua_State* L, SpellEffectInfo* spell_effect_info)
     {
-        Eluna::Push(L, spell_effect_info->MiscValue);
+        Forge::Push(L, spell_effect_info->MiscValue);
         return 1;
     }
 
     int GetMiscValueB(lua_State* L, SpellEffectInfo* spell_effect_info)
     {
-        Eluna::Push(L, spell_effect_info->MiscValueB);
+        Forge::Push(L, spell_effect_info->MiscValueB);
         return 1;
     }
 
     int GetEffect(lua_State* L, SpellEffectInfo* spell_effect_info)
     {
-        Eluna::Push(L, spell_effect_info->Effect);
+        Forge::Push(L, spell_effect_info->Effect);
         return 1;
     }
 
-    ElunaRegister<SpellEffectInfo> SpellEffectInfoMethods[] =
+    ForgeRegister<SpellEffectInfo> SpellEffectInfoMethods[] =
     {
         // Getters
         { "GetMiscValue", &LuaSpellEffectInfo::GetMiscValue },

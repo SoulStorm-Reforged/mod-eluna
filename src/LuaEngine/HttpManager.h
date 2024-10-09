@@ -1,5 +1,5 @@
-#ifndef ELUNA_HTTP_MANAGER_H
-#define ELUNA_HTTP_MANAGER_H
+#ifndef FORGE_HTTP_MANAGER_H
+#define FORGE_HTTP_MANAGER_H
 
 #include <regex>
 
@@ -58,4 +58,4 @@ private:
     std::regex parseUrlRegex;
 };
 
-#endif // #ifndef ELUNA_HTTP_MANAGER_H
+#endif // #ifndef FORGE_HTTP_MANAGER_H

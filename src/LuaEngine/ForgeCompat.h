@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2010 - 2022 Eluna Lua Engine <https://elunaluaengine.github.io/>
+ * Copyright (C) 2010 - 2022 Forge Lua Engine <https://forgeluaengine.github.io/>
  * This program is free software licensed under GPL version 3
  * Please see the included DOCS/LICENSE.md for more information
  */
 
-#ifndef ELUNACOMPAT_H
-#define ELUNACOMPAT_H
+#ifndef FORGECOMPAT_H
+#define FORGECOMPAT_H
 
 extern "C"
 {

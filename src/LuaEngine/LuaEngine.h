@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
@@ -20,7 +20,7 @@
 #include "Hooks.h"
 #include "LFG.h"
 #include "LootMgr.h"
-#include "ElunaUtility.h"
+#include "ForgeUtility.h"
 #include "HttpManager.h"
 #include "EventEmitter.h"
 #include <mutex>
@@ -71,7 +71,7 @@ typedef InstanceScript InstanceData;
 #else
 class InstanceData;
 #endif
-class ElunaInstanceAI;
+class ForgeInstanceAI;
 class Item;
 class Pet;
 class Player;
@@ -101,8 +101,8 @@ typedef VehicleInfo Vehicle;
 
 struct lua_State;
 class EventMgr;
-class ElunaObject;
-template<typename T> class ElunaTemplate;
+class ForgeObject;
+template<typename T> class ForgeTemplate;
 
 template<typename K> class BindingMap;
 template<typename T> struct EventKey;
@@ -117,18 +117,18 @@ struct LuaScript
     std::string modulepath;
 };
 
-#define ELUNA_STATE_PTR "Eluna State Ptr"
-#define LOCK_ELUNA Eluna::Guard __guard(Eluna::GetLock())
+#define FORGE_STATE_PTR "Forge State Ptr"
+#define LOCK_FORGE Forge::Guard __guard(Forge::GetLock())
 
 #if defined(TRINITY)
-#define ELUNA_GAME_API TC_GAME_API
+#define FORGE_GAME_API TC_GAME_API
 #elif defined(AZEROTHCORE)
-#define ELUNA_GAME_API AC_GAME_API
+#define FORGE_GAME_API AC_GAME_API
 #else
-#define ELUNA_GAME_API
+#define FORGE_GAME_API
 #endif
 
-class ELUNA_GAME_API Eluna
+class FORGE_GAME_API Forge
 {
 public:
     typedef std::list<LuaScript> ScriptList;
@@ -173,12 +173,12 @@ private:
     // Map from map ID -> Lua table ref
     std::unordered_map<uint32, int> continentDataRefs;
 
-    Eluna();
-    ~Eluna();
+    Forge();
+    ~Forge();
 
     // Prevent copy
-    Eluna(Eluna const&) = delete;
-    Eluna& operator=(const Eluna&) = delete;
+    Forge(Forge const&) = delete;
+    Forge& operator=(const Forge&) = delete;
 
     void OpenLua();
     void CloseLua();
@@ -186,9 +186,9 @@ private:
     void CreateBindStores();
     void InvalidateObjects();
 
-    // Use ReloadEluna() to make eluna reload
-    // This is called on world update to reload eluna
-    static void _ReloadEluna();
+    // Use ReloadForge() to make forge reload
+    // This is called on world update to reload forge
+    static void _ReloadForge();
     static void LoadScriptPaths();
     static void GetScripts(std::string path);
     static void AddScriptPath(std::string filename, const std::string& fullpath);
@@ -239,7 +239,7 @@ private:
     void Push(T const* ptr)                     { Push(L, ptr); ++push_counter; }
 
 public:
-    static Eluna* GEluna;
+    static Forge* GForge;
 
     lua_State* L;
     EventMgr* eventMgr;
@@ -269,17 +269,17 @@ public:
 
     static void Initialize();
     static void Uninitialize();
-    // This function is used to make eluna reload
-    static void ReloadEluna() { LOCK_ELUNA; reload = true; }
+    // This function is used to make forge reload
+    static void ReloadForge() { LOCK_FORGE; reload = true; }
     static LockType& GetLock() { return lock; };
     static bool IsInitialized() { return initialized; }
     // Never returns nullptr
-    static Eluna* GetEluna(lua_State* L)
+    static Forge* GetForge(lua_State* L)
     {
-        lua_pushstring(L, ELUNA_STATE_PTR);
+        lua_pushstring(L, FORGE_STATE_PTR);
         lua_rawget(L, LUA_REGISTRYINDEX);
         ASSERT(lua_islightuserdata(L, -1));
-        Eluna* E = static_cast<Eluna*>(lua_touserdata(L, -1));
+        Forge* E = static_cast<Forge*>(lua_touserdata(L, -1));
         lua_pop(L, 1);
         ASSERT(E);
         return E;
@@ -308,13 +308,13 @@ public:
     template<typename T>
     static void Push(lua_State* luastate, T const* ptr)
     {
-        ElunaTemplate<T>::Push(luastate, ptr);
+        ForgeTemplate<T>::Push(luastate, ptr);
     }
 
     bool ExecuteCall(int params, int res);
 
     /*
-     * Returns `true` if Eluna has instance data for `map`.
+     * Returns `true` if Forge has instance data for `map`.
      */
     bool HasInstanceData(Map const* map);
 
@@ -328,14 +328,14 @@ public:
      * Retrieve the instance data for the `Map` scripted by `ai` and push it
      *   onto the stack.
      *
-     * An `ElunaInstanceAI` is needed because the instance data might
-     *   not exist (i.e. Eluna has been reloaded).
+     * An `ForgeInstanceAI` is needed because the instance data might
+     *   not exist (i.e. Forge has been reloaded).
      *
      * In that case, the AI is "reloaded" (new instance data table is created
      *   and loaded with the last known save state, and `Load`/`Initialize`
      *   hooks are called).
      */
-    void PushInstanceData(lua_State* L, ElunaInstanceAI* ai, bool incrementCounter = true);
+    void PushInstanceData(lua_State* L, ForgeInstanceAI* ai, bool incrementCounter = true);
 
     void RunScripts();
     bool ShouldReload() const { return reload; }
@@ -352,9 +352,9 @@ public:
     }
     template<typename T> static T* CHECKOBJ(lua_State* luastate, int narg, bool error = true)
     {
-        return ElunaTemplate<T>::Check(luastate, narg, error);
+        return ForgeTemplate<T>::Check(luastate, narg, error);
     }
-    static ElunaObject* CHECKTYPE(lua_State* luastate, int narg, const char *tname, bool error = true);
+    static ForgeObject* CHECKTYPE(lua_State* luastate, int narg, const char *tname, bool error = true);
 
     CreatureAI* GetAI(Creature* creature);
     InstanceData* GetInstanceData(Map* map);
@@ -554,13 +554,13 @@ public:
     void OnRemove(GameObject* gameobject);
 
     /* Instance */
-    void OnInitialize(ElunaInstanceAI* ai);
-    void OnLoad(ElunaInstanceAI* ai);
-    void OnUpdateInstance(ElunaInstanceAI* ai, uint32 diff);
-    void OnPlayerEnterInstance(ElunaInstanceAI* ai, Player* player);
-    void OnCreatureCreate(ElunaInstanceAI* ai, Creature* creature);
-    void OnGameObjectCreate(ElunaInstanceAI* ai, GameObject* gameobject);
-    bool OnCheckEncounterInProgress(ElunaInstanceAI* ai);
+    void OnInitialize(ForgeInstanceAI* ai);
+    void OnLoad(ForgeInstanceAI* ai);
+    void OnUpdateInstance(ForgeInstanceAI* ai, uint32 diff);
+    void OnPlayerEnterInstance(ForgeInstanceAI* ai, Player* player);
+    void OnCreatureCreate(ForgeInstanceAI* ai, Creature* creature);
+    void OnGameObjectCreate(ForgeInstanceAI* ai, GameObject* gameobject);
+    bool OnCheckEncounterInProgress(ForgeInstanceAI* ai);
 
     /* World */
     void OnOpenStateChange(bool open);
@@ -586,10 +586,10 @@ public:
     void OnBGCreate(BattleGround* bg, BattleGroundTypeId bgId, uint32 instanceId);
     void OnBGDestroy(BattleGround* bg, BattleGroundTypeId bgId, uint32 instanceId);
 };
-template<> Unit* Eluna::CHECKOBJ<Unit>(lua_State* L, int narg, bool error);
-template<> Object* Eluna::CHECKOBJ<Object>(lua_State* L, int narg, bool error);
-template<> WorldObject* Eluna::CHECKOBJ<WorldObject>(lua_State* L, int narg, bool error);
-template<> ElunaObject* Eluna::CHECKOBJ<ElunaObject>(lua_State* L, int narg, bool error);
+template<> Unit* Forge::CHECKOBJ<Unit>(lua_State* L, int narg, bool error);
+template<> Object* Forge::CHECKOBJ<Object>(lua_State* L, int narg, bool error);
+template<> WorldObject* Forge::CHECKOBJ<WorldObject>(lua_State* L, int narg, bool error);
+template<> ForgeObject* Forge::CHECKOBJ<ForgeObject>(lua_State* L, int narg, bool error);
 
-#define sEluna Eluna::GEluna
+#define sForge Forge::GForge
 #endif

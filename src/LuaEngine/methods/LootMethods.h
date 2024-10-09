@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
+* Copyright (C) 2010 - 2024 Forge Lua Engine <https://forgeluaengine.github.io/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
@@ -19,7 +19,7 @@ namespace LuaLoot
      */
     int IsLooted(lua_State* L, Loot* loot)
     {
-        Eluna::Push(L, loot->isLooted());
+        Forge::Push(L, loot->isLooted());
         return 1;
     }
 
@@ -36,13 +36,13 @@ namespace LuaLoot
      */
     int AddItem(lua_State* L, Loot* loot)
     {
-        uint32 itemid = Eluna::CHECKVAL<uint32>(L, 2);
-        float chance = Eluna::CHECKVAL<float>(L, 3);
-        bool needs_quest = Eluna::CHECKVAL<bool>(L, 4);
-        uint16 lootmode = Eluna::CHECKVAL<uint16>(L, 5);
-        uint8 groupid = Eluna::CHECKVAL<uint8>(L, 6);
-        int32 mincount = Eluna::CHECKVAL<int32>(L, 7);
-        uint8 maxcount = Eluna::CHECKVAL<uint8>(L, 8);
+        uint32 itemid = Forge::CHECKVAL<uint32>(L, 2);
+        float chance = Forge::CHECKVAL<float>(L, 3);
+        bool needs_quest = Forge::CHECKVAL<bool>(L, 4);
+        uint16 lootmode = Forge::CHECKVAL<uint16>(L, 5);
+        uint8 groupid = Forge::CHECKVAL<uint8>(L, 6);
+        int32 mincount = Forge::CHECKVAL<int32>(L, 7);
+        uint8 maxcount = Forge::CHECKVAL<uint8>(L, 8);
 
         for (LootItem& lootitem : loot->items)
         {
@@ -68,8 +68,8 @@ namespace LuaLoot
      */
     int HasItem(lua_State* L, Loot* loot)
     {
-        uint32 itemid = Eluna::CHECKVAL<uint32>(L, 2, false);
-        uint32 count = Eluna::CHECKVAL<uint32>(L, 3, 0);
+        uint32 itemid = Forge::CHECKVAL<uint32>(L, 2, false);
+        uint32 count = Forge::CHECKVAL<uint32>(L, 3, 0);
 
         bool hasItem = false;
 
@@ -96,7 +96,7 @@ namespace LuaLoot
             }
         }
 
-        Eluna::Push(L, hasItem);
+        Forge::Push(L, hasItem);
         return 1;
     }
 
@@ -109,9 +109,9 @@ namespace LuaLoot
      */
     int RemoveItem(lua_State* L, Loot* loot)
     {
-        uint32 itemid = Eluna::CHECKVAL<uint32>(L, 2);
-        bool isCountSpecified = Eluna::CHECKVAL<uint32>(L, 3, false);
-        uint32 count = isCountSpecified ? Eluna::CHECKVAL<uint32>(L, 3) : 0;
+        uint32 itemid = Forge::CHECKVAL<uint32>(L, 2);
+        bool isCountSpecified = Forge::CHECKVAL<uint32>(L, 3, false);
+        uint32 count = isCountSpecified ? Forge::CHECKVAL<uint32>(L, 3) : 0;
 
         for (auto it = loot->items.begin(); it != loot->items.end();)
         {
@@ -146,7 +146,7 @@ namespace LuaLoot
      */
     int GetMoney(lua_State* L, Loot* loot)
     {
-        Eluna::Push(L, loot->gold);
+        Forge::Push(L, loot->gold);
         return 1;
     }
 
@@ -157,7 +157,7 @@ namespace LuaLoot
      */
     int SetMoney(lua_State* L, Loot* loot)
     {
-        uint32 copper_amount = Eluna::CHECKVAL<uint32>(L, 2);
+        uint32 copper_amount = Forge::CHECKVAL<uint32>(L, 2);
         loot->gold = copper_amount;
 
         return 0;
@@ -171,8 +171,8 @@ namespace LuaLoot
      */
     int GenerateMoney(lua_State* L, Loot* loot)
     {
-        uint32 min_amount = Eluna::CHECKVAL<uint32>(L, 2);
-        uint32 max_amount = Eluna::CHECKVAL<uint32>(L, 3);
+        uint32 min_amount = Forge::CHECKVAL<uint32>(L, 2);
+        uint32 max_amount = Forge::CHECKVAL<uint32>(L, 3);
         loot->generateMoneyLoot(min_amount, max_amount);
 
         return 0;
@@ -194,7 +194,7 @@ namespace LuaLoot
      */
     int SetUnlootedCount(lua_State* L, Loot* loot)
     {
-        uint32 unlootedcount = Eluna::CHECKVAL<uint32>(L, 2);
+        uint32 unlootedcount = Forge::CHECKVAL<uint32>(L, 2);
 
         loot->unlootedCount = unlootedcount;
         return 0;
@@ -207,7 +207,7 @@ namespace LuaLoot
      */
     int GetUnlootedCount(lua_State* L, Loot* loot)
     {
-        Eluna::Push(L, loot->unlootedCount);
+        Forge::Push(L, loot->unlootedCount);
         return 1;
     }
 
@@ -225,22 +225,22 @@ namespace LuaLoot
         {
             lua_newtable(L);
 
-            Eluna::Push(L, loot->items[i].itemid);
+            Forge::Push(L, loot->items[i].itemid);
             lua_setfield(L, -2, "id");
 
-            Eluna::Push(L, loot->items[i].itemIndex);
+            Forge::Push(L, loot->items[i].itemIndex);
             lua_setfield(L, -2, "index");
 
-            Eluna::Push(L, loot->items[i].count);
+            Forge::Push(L, loot->items[i].count);
             lua_setfield(L, -2, "count");
 
-            Eluna::Push(L, loot->items[i].needs_quest);
+            Forge::Push(L, loot->items[i].needs_quest);
             lua_setfield(L, -2, "needs_quest");
 
-            Eluna::Push(L, loot->items[i].is_looted);
+            Forge::Push(L, loot->items[i].is_looted);
             lua_setfield(L, -2, "is_looted");
 
-            Eluna::Push(L, loot->items[i].rollWinnerGUID);
+            Forge::Push(L, loot->items[i].rollWinnerGUID);
             lua_setfield(L, -2, "rollWinnerGUID");
 
             lua_rawseti(L, tbl, i + 1);
@@ -271,8 +271,8 @@ namespace LuaLoot
      */
     int SetItemLooted(lua_State* L, Loot* loot)
     {
-        uint32 itemid = Eluna::CHECKVAL<uint32>(L, 2);
-        uint32 count = Eluna::CHECKVAL<uint32>(L, 3, 0);
+        uint32 itemid = Forge::CHECKVAL<uint32>(L, 2);
+        uint32 count = Forge::CHECKVAL<uint32>(L, 3, 0);
 
         for (auto& lootItem : loot->items)
         {
@@ -286,7 +286,7 @@ namespace LuaLoot
         return 0;
     }
 
-    ElunaRegister<Loot> LootMethods[] =
+    ForgeRegister<Loot> LootMethods[] =
     {
         // Getters
         { "GetMoney", &LuaLoot::GetMoney },

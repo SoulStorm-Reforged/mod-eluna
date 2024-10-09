@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+ * Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
  * This program is free software licensed under GPL version 3
  * Please see the included DOCS/LICENSE.md for more information
  */
@@ -8,8 +8,8 @@
 #include "HookHelpers.h"
 #include "LuaEngine.h"
 #include "BindingMap.h"
-#include "ElunaIncludes.h"
-#include "ElunaTemplate.h"
+#include "ForgeIncludes.h"
+#include "ForgeTemplate.h"
 
 using namespace Hooks;
 
@@ -19,7 +19,7 @@ using namespace Hooks;
     auto key = EventKey<PlayerEvents>(EVENT);\
     if (!PlayerEventBindings->HasBindingsFor(key))\
         return;\
-    LOCK_ELUNA
+    LOCK_FORGE
 
 #define START_HOOK_WITH_RETVAL(EVENT, RETVAL) \
     if (!IsEnabled())\
@@ -27,9 +27,9 @@ using namespace Hooks;
     auto key = EventKey<PlayerEvents>(EVENT);\
     if (!PlayerEventBindings->HasBindingsFor(key))\
         return RETVAL;\
-    LOCK_ELUNA
+    LOCK_FORGE
 
-void Eluna::OnLearnTalents(Player* pPlayer, uint32 talentId, uint32 talentRank, uint32 spellid)
+void Forge::OnLearnTalents(Player* pPlayer, uint32 talentId, uint32 talentRank, uint32 spellid)
 {
     START_HOOK(PLAYER_EVENT_ON_LEARN_TALENTS);
     Push(pPlayer);
@@ -39,7 +39,7 @@ void Eluna::OnLearnTalents(Player* pPlayer, uint32 talentId, uint32 talentRank, 
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-bool Eluna::OnCommand(ChatHandler& handler, const char* text)
+bool Forge::OnCommand(ChatHandler& handler, const char* text)
 {
     Player* player = handler.IsConsole() ? nullptr : handler.GetSession()->GetPlayer();
     // If from console, player is NULL
@@ -47,9 +47,9 @@ bool Eluna::OnCommand(ChatHandler& handler, const char* text)
     {
         std::string reload = text;
         std::transform(reload.begin(), reload.end(), reload.begin(), ::tolower);
-        if (reload.find("reload eluna") == 0)
+        if (reload.find("reload forge") == 0)
         {
-            ReloadEluna();
+            ReloadForge();
             return false;
         }
     }
@@ -61,7 +61,7 @@ bool Eluna::OnCommand(ChatHandler& handler, const char* text)
     return CallAllFunctionsBool(PlayerEventBindings, key, true);
 }
 
-void Eluna::OnLootItem(Player* pPlayer, Item* pItem, uint32 count, ObjectGuid guid)
+void Forge::OnLootItem(Player* pPlayer, Item* pItem, uint32 count, ObjectGuid guid)
 {
     START_HOOK(PLAYER_EVENT_ON_LOOT_ITEM);
     Push(pPlayer);
@@ -71,7 +71,7 @@ void Eluna::OnLootItem(Player* pPlayer, Item* pItem, uint32 count, ObjectGuid gu
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnLootMoney(Player* pPlayer, uint32 amount)
+void Forge::OnLootMoney(Player* pPlayer, uint32 amount)
 {
     START_HOOK(PLAYER_EVENT_ON_LOOT_MONEY);
     Push(pPlayer);
@@ -79,28 +79,28 @@ void Eluna::OnLootMoney(Player* pPlayer, uint32 amount)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnFirstLogin(Player* pPlayer)
+void Forge::OnFirstLogin(Player* pPlayer)
 {
     START_HOOK(PLAYER_EVENT_ON_FIRST_LOGIN);
     Push(pPlayer);
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnRepop(Player* pPlayer)
+void Forge::OnRepop(Player* pPlayer)
 {
     START_HOOK(PLAYER_EVENT_ON_REPOP);
     Push(pPlayer);
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnResurrect(Player* pPlayer)
+void Forge::OnResurrect(Player* pPlayer)
 {
     START_HOOK(PLAYER_EVENT_ON_RESURRECT);
     Push(pPlayer);
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnQuestAbandon(Player* pPlayer, uint32 questId)
+void Forge::OnQuestAbandon(Player* pPlayer, uint32 questId)
 {
     START_HOOK(PLAYER_EVENT_ON_QUEST_ABANDON);
     Push(pPlayer);
@@ -108,7 +108,7 @@ void Eluna::OnQuestAbandon(Player* pPlayer, uint32 questId)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnEquip(Player* pPlayer, Item* pItem, uint8 bag, uint8 slot)
+void Forge::OnEquip(Player* pPlayer, Item* pItem, uint8 bag, uint8 slot)
 {
     START_HOOK(PLAYER_EVENT_ON_EQUIP);
     Push(pPlayer);
@@ -118,7 +118,7 @@ void Eluna::OnEquip(Player* pPlayer, Item* pItem, uint8 bag, uint8 slot)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-InventoryResult Eluna::OnCanUseItem(const Player* pPlayer, uint32 itemEntry)
+InventoryResult Forge::OnCanUseItem(const Player* pPlayer, uint32 itemEntry)
 {
     START_HOOK_WITH_RETVAL(PLAYER_EVENT_ON_CAN_USE_ITEM, EQUIP_ERR_OK);
     InventoryResult result = EQUIP_ERR_OK;
@@ -139,7 +139,7 @@ InventoryResult Eluna::OnCanUseItem(const Player* pPlayer, uint32 itemEntry)
     CleanUpStack(2);
     return result;
 }
-void Eluna::OnPlayerEnterCombat(Player* pPlayer, Unit* pEnemy)
+void Forge::OnPlayerEnterCombat(Player* pPlayer, Unit* pEnemy)
 {
     START_HOOK(PLAYER_EVENT_ON_ENTER_COMBAT);
     Push(pPlayer);
@@ -147,14 +147,14 @@ void Eluna::OnPlayerEnterCombat(Player* pPlayer, Unit* pEnemy)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnPlayerLeaveCombat(Player* pPlayer)
+void Forge::OnPlayerLeaveCombat(Player* pPlayer)
 {
     START_HOOK(PLAYER_EVENT_ON_LEAVE_COMBAT);
     Push(pPlayer);
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnPVPKill(Player* pKiller, Player* pKilled)
+void Forge::OnPVPKill(Player* pKiller, Player* pKilled)
 {
     START_HOOK(PLAYER_EVENT_ON_KILL_PLAYER);
     Push(pKiller);
@@ -162,7 +162,7 @@ void Eluna::OnPVPKill(Player* pKiller, Player* pKilled)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnCreatureKill(Player* pKiller, Creature* pKilled)
+void Forge::OnCreatureKill(Player* pKiller, Creature* pKilled)
 {
     START_HOOK(PLAYER_EVENT_ON_KILL_CREATURE);
     Push(pKiller);
@@ -170,7 +170,7 @@ void Eluna::OnCreatureKill(Player* pKiller, Creature* pKilled)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnPlayerKilledByCreature(Creature* pKiller, Player* pKilled)
+void Forge::OnPlayerKilledByCreature(Creature* pKiller, Player* pKilled)
 {
     START_HOOK(PLAYER_EVENT_ON_KILLED_BY_CREATURE);
     Push(pKiller);
@@ -178,7 +178,7 @@ void Eluna::OnPlayerKilledByCreature(Creature* pKiller, Player* pKilled)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnLevelChanged(Player* pPlayer, uint8 oldLevel)
+void Forge::OnLevelChanged(Player* pPlayer, uint8 oldLevel)
 {
     START_HOOK(PLAYER_EVENT_ON_LEVEL_CHANGE);
     Push(pPlayer);
@@ -186,7 +186,7 @@ void Eluna::OnLevelChanged(Player* pPlayer, uint8 oldLevel)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnFreeTalentPointsChanged(Player* pPlayer, uint32 newPoints)
+void Forge::OnFreeTalentPointsChanged(Player* pPlayer, uint32 newPoints)
 {
     START_HOOK(PLAYER_EVENT_ON_TALENTS_CHANGE);
     Push(pPlayer);
@@ -194,7 +194,7 @@ void Eluna::OnFreeTalentPointsChanged(Player* pPlayer, uint32 newPoints)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnTalentsReset(Player* pPlayer, bool noCost)
+void Forge::OnTalentsReset(Player* pPlayer, bool noCost)
 {
     START_HOOK(PLAYER_EVENT_ON_TALENTS_RESET);
     Push(pPlayer);
@@ -202,7 +202,7 @@ void Eluna::OnTalentsReset(Player* pPlayer, bool noCost)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnMoneyChanged(Player* pPlayer, int32& amount)
+void Forge::OnMoneyChanged(Player* pPlayer, int32& amount)
 {
     START_HOOK(PLAYER_EVENT_ON_MONEY_CHANGE);
     Push(pPlayer);
@@ -227,7 +227,7 @@ void Eluna::OnMoneyChanged(Player* pPlayer, int32& amount)
     CleanUpStack(2);
 }
 
-void Eluna::OnGiveXP(Player* pPlayer, uint32& amount, Unit* pVictim, uint8 xpSource)
+void Forge::OnGiveXP(Player* pPlayer, uint32& amount, Unit* pVictim, uint8 xpSource)
 {
     START_HOOK(PLAYER_EVENT_ON_GIVE_XP);
     Push(pPlayer);
@@ -254,7 +254,7 @@ void Eluna::OnGiveXP(Player* pPlayer, uint32& amount, Unit* pVictim, uint8 xpSou
     CleanUpStack(4);
 }
 
-bool Eluna::OnReputationChange(Player* pPlayer, uint32 factionID, int32& standing, bool incremental)
+bool Forge::OnReputationChange(Player* pPlayer, uint32 factionID, int32& standing, bool incremental)
 {
     START_HOOK_WITH_RETVAL(PLAYER_EVENT_ON_REPUTATION_CHANGE, true);
     bool result = true;
@@ -285,7 +285,7 @@ bool Eluna::OnReputationChange(Player* pPlayer, uint32 factionID, int32& standin
     return result;
 }
 
-void Eluna::OnDuelRequest(Player* pTarget, Player* pChallenger)
+void Forge::OnDuelRequest(Player* pTarget, Player* pChallenger)
 {
     START_HOOK(PLAYER_EVENT_ON_DUEL_REQUEST);
     Push(pTarget);
@@ -293,7 +293,7 @@ void Eluna::OnDuelRequest(Player* pTarget, Player* pChallenger)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnDuelStart(Player* pStarter, Player* pChallenger)
+void Forge::OnDuelStart(Player* pStarter, Player* pChallenger)
 {
     START_HOOK(PLAYER_EVENT_ON_DUEL_START);
     Push(pStarter);
@@ -301,7 +301,7 @@ void Eluna::OnDuelStart(Player* pStarter, Player* pChallenger)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnDuelEnd(Player* pWinner, Player* pLoser, DuelCompleteType type)
+void Forge::OnDuelEnd(Player* pWinner, Player* pLoser, DuelCompleteType type)
 {
     START_HOOK(PLAYER_EVENT_ON_DUEL_END);
     Push(pWinner);
@@ -310,7 +310,7 @@ void Eluna::OnDuelEnd(Player* pWinner, Player* pLoser, DuelCompleteType type)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnEmote(Player* pPlayer, uint32 emote)
+void Forge::OnEmote(Player* pPlayer, uint32 emote)
 {
     START_HOOK(PLAYER_EVENT_ON_EMOTE);
     Push(pPlayer);
@@ -318,7 +318,7 @@ void Eluna::OnEmote(Player* pPlayer, uint32 emote)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnTextEmote(Player* pPlayer, uint32 textEmote, uint32 emoteNum, ObjectGuid guid)
+void Forge::OnTextEmote(Player* pPlayer, uint32 textEmote, uint32 emoteNum, ObjectGuid guid)
 {
     START_HOOK(PLAYER_EVENT_ON_TEXT_EMOTE);
     Push(pPlayer);
@@ -328,7 +328,7 @@ void Eluna::OnTextEmote(Player* pPlayer, uint32 textEmote, uint32 emoteNum, Obje
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnSpellCast(Player* pPlayer, Spell* pSpell, bool skipCheck)
+void Forge::OnSpellCast(Player* pPlayer, Spell* pSpell, bool skipCheck)
 {
     START_HOOK(PLAYER_EVENT_ON_SPELL_CAST);
     Push(pPlayer);
@@ -337,42 +337,42 @@ void Eluna::OnSpellCast(Player* pPlayer, Spell* pSpell, bool skipCheck)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnLogin(Player* pPlayer)
+void Forge::OnLogin(Player* pPlayer)
 {
     START_HOOK(PLAYER_EVENT_ON_LOGIN);
     Push(pPlayer);
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnLogout(Player* pPlayer)
+void Forge::OnLogout(Player* pPlayer)
 {
     START_HOOK(PLAYER_EVENT_ON_LOGOUT);
     Push(pPlayer);
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnCreate(Player* pPlayer)
+void Forge::OnCreate(Player* pPlayer)
 {
     START_HOOK(PLAYER_EVENT_ON_CHARACTER_CREATE);
     Push(pPlayer);
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnDelete(uint32 guidlow)
+void Forge::OnDelete(uint32 guidlow)
 {
     START_HOOK(PLAYER_EVENT_ON_CHARACTER_DELETE);
     Push(guidlow);
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnSave(Player* pPlayer)
+void Forge::OnSave(Player* pPlayer)
 {
     START_HOOK(PLAYER_EVENT_ON_SAVE);
     Push(pPlayer);
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnBindToInstance(Player* pPlayer, Difficulty difficulty, uint32 mapid, bool permanent)
+void Forge::OnBindToInstance(Player* pPlayer, Difficulty difficulty, uint32 mapid, bool permanent)
 {
     START_HOOK(PLAYER_EVENT_ON_BIND_TO_INSTANCE);
     Push(pPlayer);
@@ -382,7 +382,7 @@ void Eluna::OnBindToInstance(Player* pPlayer, Difficulty difficulty, uint32 mapi
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnUpdateArea(Player* pPlayer, uint32 oldArea, uint32 newArea)
+void Forge::OnUpdateArea(Player* pPlayer, uint32 oldArea, uint32 newArea)
 {
     START_HOOK(PLAYER_EVENT_ON_UPDATE_AREA);
     Push(pPlayer);
@@ -391,7 +391,7 @@ void Eluna::OnUpdateArea(Player* pPlayer, uint32 oldArea, uint32 newArea)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnUpdateZone(Player* pPlayer, uint32 newZone, uint32 newArea)
+void Forge::OnUpdateZone(Player* pPlayer, uint32 newZone, uint32 newArea)
 {
     START_HOOK(PLAYER_EVENT_ON_UPDATE_ZONE);
     Push(pPlayer);
@@ -400,14 +400,14 @@ void Eluna::OnUpdateZone(Player* pPlayer, uint32 newZone, uint32 newArea)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnMapChanged(Player* player)
+void Forge::OnMapChanged(Player* player)
 {
     START_HOOK(PLAYER_EVENT_ON_MAP_CHANGE);
     Push(player);
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-bool Eluna::OnChat(Player* pPlayer, uint32 type, uint32 lang, std::string& msg)
+bool Forge::OnChat(Player* pPlayer, uint32 type, uint32 lang, std::string& msg)
 {
     if (lang == LANG_ADDON)
         return OnAddonMessage(pPlayer, type, msg, NULL, NULL, NULL, NULL);
@@ -437,7 +437,7 @@ bool Eluna::OnChat(Player* pPlayer, uint32 type, uint32 lang, std::string& msg)
     return result;
 }
 
-bool Eluna::OnChat(Player* pPlayer, uint32 type, uint32 lang, std::string& msg, Group* pGroup)
+bool Forge::OnChat(Player* pPlayer, uint32 type, uint32 lang, std::string& msg, Group* pGroup)
 {
     if (lang == LANG_ADDON)
         return OnAddonMessage(pPlayer, type, msg, NULL, NULL, pGroup, NULL);
@@ -468,7 +468,7 @@ bool Eluna::OnChat(Player* pPlayer, uint32 type, uint32 lang, std::string& msg, 
     return result;
 }
 
-bool Eluna::OnChat(Player* pPlayer, uint32 type, uint32 lang, std::string& msg, Guild* pGuild)
+bool Forge::OnChat(Player* pPlayer, uint32 type, uint32 lang, std::string& msg, Guild* pGuild)
 {
     if (lang == LANG_ADDON)
         return OnAddonMessage(pPlayer, type, msg, NULL, pGuild, NULL, NULL);
@@ -499,7 +499,7 @@ bool Eluna::OnChat(Player* pPlayer, uint32 type, uint32 lang, std::string& msg, 
     return result;
 }
 
-bool Eluna::OnChat(Player* pPlayer, uint32 type, uint32 lang, std::string& msg, Channel* pChannel)
+bool Forge::OnChat(Player* pPlayer, uint32 type, uint32 lang, std::string& msg, Channel* pChannel)
 {
     if (lang == LANG_ADDON)
         return OnAddonMessage(pPlayer, type, msg, NULL, NULL, NULL, pChannel);
@@ -530,7 +530,7 @@ bool Eluna::OnChat(Player* pPlayer, uint32 type, uint32 lang, std::string& msg, 
     return result;
 }
 
-bool Eluna::OnChat(Player* pPlayer, uint32 type, uint32 lang, std::string& msg, Player* pReceiver)
+bool Forge::OnChat(Player* pPlayer, uint32 type, uint32 lang, std::string& msg, Player* pReceiver)
 {
     if (lang == LANG_ADDON)
         return OnAddonMessage(pPlayer, type, msg, pReceiver, NULL, NULL, NULL);
@@ -561,7 +561,7 @@ bool Eluna::OnChat(Player* pPlayer, uint32 type, uint32 lang, std::string& msg, 
     return result;
 }
 
-void Eluna::OnPetAddedToWorld(Player* player, Creature* pet)
+void Forge::OnPetAddedToWorld(Player* player, Creature* pet)
 {
     START_HOOK(PLAYER_EVENT_ON_PET_ADDED_TO_WORLD);
     Push(player);
@@ -569,7 +569,7 @@ void Eluna::OnPetAddedToWorld(Player* player, Creature* pet)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnLearnSpell(Player* player, uint32 spellId)
+void Forge::OnLearnSpell(Player* player, uint32 spellId)
 {
     START_HOOK(PLAYER_EVENT_ON_LEARN_SPELL);
     Push(player);
@@ -577,7 +577,7 @@ void Eluna::OnLearnSpell(Player* player, uint32 spellId)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnAchiComplete(Player* player, AchievementEntry const* achievement)
+void Forge::OnAchiComplete(Player* player, AchievementEntry const* achievement)
 {
     START_HOOK(PLAYER_EVENT_ON_ACHIEVEMENT_COMPLETE);
     Push(player);
@@ -585,7 +585,7 @@ void Eluna::OnAchiComplete(Player* player, AchievementEntry const* achievement)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnFfaPvpStateUpdate(Player* player, bool hasFfaPvp)
+void Forge::OnFfaPvpStateUpdate(Player* player, bool hasFfaPvp)
 {
     START_HOOK(PLAYER_EVENT_ON_FFAPVP_CHANGE);
     Push(player);
@@ -593,7 +593,7 @@ void Eluna::OnFfaPvpStateUpdate(Player* player, bool hasFfaPvp)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-bool Eluna::OnCanInitTrade(Player* player, Player* target)
+bool Forge::OnCanInitTrade(Player* player, Player* target)
 {
     START_HOOK_WITH_RETVAL(PLAYER_EVENT_ON_CAN_INIT_TRADE, true);
     Push(player);
@@ -601,7 +601,7 @@ bool Eluna::OnCanInitTrade(Player* player, Player* target)
     return CallAllFunctionsBool(PlayerEventBindings, key);
 }
 
-bool Eluna::OnCanSendMail(Player* player, ObjectGuid receiverGuid, ObjectGuid mailbox, std::string& subject, std::string& body, uint32 money, uint32 cod, Item* item)
+bool Forge::OnCanSendMail(Player* player, ObjectGuid receiverGuid, ObjectGuid mailbox, std::string& subject, std::string& body, uint32 money, uint32 cod, Item* item)
 {
     START_HOOK_WITH_RETVAL(PLAYER_EVENT_ON_CAN_SEND_MAIL, true);
     Push(player);
@@ -615,7 +615,7 @@ bool Eluna::OnCanSendMail(Player* player, ObjectGuid receiverGuid, ObjectGuid ma
     return CallAllFunctionsBool(PlayerEventBindings, key);
 }
 
-bool Eluna::OnCanJoinLfg(Player* player, uint8 roles, lfg::LfgDungeonSet& dungeons, const std::string& comment)
+bool Forge::OnCanJoinLfg(Player* player, uint8 roles, lfg::LfgDungeonSet& dungeons, const std::string& comment)
 {
     START_HOOK_WITH_RETVAL(PLAYER_EVENT_ON_CAN_JOIN_LFG, true);
     Push(player);
@@ -626,7 +626,7 @@ bool Eluna::OnCanJoinLfg(Player* player, uint8 roles, lfg::LfgDungeonSet& dungeo
     uint32 counter = 1;
     for (uint32 dungeon : dungeons)
     {
-        Eluna::Push(L, dungeon);
+        Forge::Push(L, dungeon);
         lua_rawseti(L, table, counter);
         ++counter;
     }
@@ -637,7 +637,7 @@ bool Eluna::OnCanJoinLfg(Player* player, uint8 roles, lfg::LfgDungeonSet& dungeo
     return CallAllFunctionsBool(PlayerEventBindings, key);
 }
 
-void Eluna::OnQuestRewardItem(Player* player, Item* item, uint32 count)
+void Forge::OnQuestRewardItem(Player* player, Item* item, uint32 count)
 {
     START_HOOK(PLAYER_EVENT_ON_QUEST_REWARD_ITEM);
     Push(player);
@@ -646,7 +646,7 @@ void Eluna::OnQuestRewardItem(Player* player, Item* item, uint32 count)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnCreateItem(Player* player, Item* item, uint32 count)
+void Forge::OnCreateItem(Player* player, Item* item, uint32 count)
 {
     START_HOOK(PLAYER_EVENT_ON_CREATE_ITEM);
     Push(player);
@@ -655,7 +655,7 @@ void Eluna::OnCreateItem(Player* player, Item* item, uint32 count)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnStoreNewItem(Player* player, Item* item, uint32 count)
+void Forge::OnStoreNewItem(Player* player, Item* item, uint32 count)
 {
     START_HOOK(PLAYER_EVENT_ON_STORE_NEW_ITEM);
     Push(player);
@@ -664,7 +664,7 @@ void Eluna::OnStoreNewItem(Player* player, Item* item, uint32 count)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnPlayerCompleteQuest(Player* player, Quest const* quest)
+void Forge::OnPlayerCompleteQuest(Player* player, Quest const* quest)
 {
     START_HOOK(PLAYER_EVENT_ON_COMPLETE_QUEST);
     Push(player);
@@ -672,7 +672,7 @@ void Eluna::OnPlayerCompleteQuest(Player* player, Quest const* quest)
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-bool Eluna::OnCanGroupInvite(Player* player, std::string& memberName)
+bool Forge::OnCanGroupInvite(Player* player, std::string& memberName)
 {
     START_HOOK_WITH_RETVAL(PLAYER_EVENT_ON_CAN_GROUP_INVITE, true);
     Push(player);
@@ -680,7 +680,7 @@ bool Eluna::OnCanGroupInvite(Player* player, std::string& memberName)
     return CallAllFunctionsBool(PlayerEventBindings, key);
 }
 
-void Eluna::OnGroupRollRewardItem(Player* player, Item* item, uint32 count, RollVote voteType, Roll* roll)
+void Forge::OnGroupRollRewardItem(Player* player, Item* item, uint32 count, RollVote voteType, Roll* roll)
 {
     START_HOOK(PLAYER_EVENT_ON_GROUP_ROLL_REWARD_ITEM);
     Push(player);
@@ -691,7 +691,7 @@ void Eluna::OnGroupRollRewardItem(Player* player, Item* item, uint32 count, Roll
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnBattlegroundDesertion(Player* player, const BattlegroundDesertionType type)
+void Forge::OnBattlegroundDesertion(Player* player, const BattlegroundDesertionType type)
 {
     START_HOOK(PLAYER_EVENT_ON_BG_DESERTION);
     Push(player);
@@ -699,7 +699,7 @@ void Eluna::OnBattlegroundDesertion(Player* player, const BattlegroundDesertionT
     CallAllFunctions(PlayerEventBindings, key);
 }
 
-void Eluna::OnCreatureKilledByPet(Player* player, Creature* killed)
+void Forge::OnCreatureKilledByPet(Player* player, Creature* killed)
 {
     START_HOOK(PLAYER_EVENT_ON_PET_KILL);
     Push(player);

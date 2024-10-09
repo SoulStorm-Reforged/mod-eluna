@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
@@ -7,7 +7,7 @@
 #ifndef MAPMETHODS_H
 #define MAPMETHODS_H
 
-#include "ElunaInstanceAI.h"
+#include "ForgeInstanceAI.h"
 
 /***
  * A game map, e.g. Azeroth, Eastern Kingdoms, the Molten Core, etc.
@@ -25,7 +25,7 @@ namespace LuaMap
      */
     int IsArena(lua_State* L, Map* map)
     {
-        Eluna::Push(L, map->IsBattleArena());
+        Forge::Push(L, map->IsBattleArena());
         return 1;
     }
 #endif
@@ -38,9 +38,9 @@ namespace LuaMap
     int IsBattleground(lua_State* L, Map* map)
     {
 #if defined TRINITY || AZEROTHCORE
-        Eluna::Push(L, map->IsBattleground());
+        Forge::Push(L, map->IsBattleground());
 #else
-        Eluna::Push(L, map->IsBattleGround());
+        Forge::Push(L, map->IsBattleGround());
 #endif
         return 1;
     }
@@ -52,7 +52,7 @@ namespace LuaMap
      */
     int IsDungeon(lua_State* L, Map* map)
     {
-        Eluna::Push(L, map->IsDungeon());
+        Forge::Push(L, map->IsDungeon());
         return 1;
     }
 
@@ -63,7 +63,7 @@ namespace LuaMap
      */
     int IsEmpty(lua_State* L, Map* map)
     {
-        Eluna::Push(L, map->IsEmpty());
+        Forge::Push(L, map->IsEmpty());
         return 1;
     }
 
@@ -75,7 +75,7 @@ namespace LuaMap
      */
     int IsHeroic(lua_State* L, Map* map)
     {
-        Eluna::Push(L, map->IsHeroic());
+        Forge::Push(L, map->IsHeroic());
         return 1;
     }
 #endif
@@ -87,7 +87,7 @@ namespace LuaMap
      */
     int IsRaid(lua_State* L, Map* map)
     {
-        Eluna::Push(L, map->IsRaid());
+        Forge::Push(L, map->IsRaid());
         return 1;
     }
 
@@ -98,7 +98,7 @@ namespace LuaMap
      */
     int GetName(lua_State* L, Map* map)
     {
-        Eluna::Push(L, map->GetMapName());
+        Forge::Push(L, map->GetMapName());
         return 1;
     }
 
@@ -113,16 +113,16 @@ namespace LuaMap
      */
     int GetHeight(lua_State* L, Map* map)
     {
-        float x = Eluna::CHECKVAL<float>(L, 2);
-        float y = Eluna::CHECKVAL<float>(L, 3);
+        float x = Forge::CHECKVAL<float>(L, 2);
+        float y = Forge::CHECKVAL<float>(L, 3);
 #if (defined(TBC) || defined(CLASSIC))
         float z = map->GetHeight(x, y, MAX_HEIGHT);
 #else
-        uint32 phasemask = Eluna::CHECKVAL<uint32>(L, 4, 1);
+        uint32 phasemask = Forge::CHECKVAL<uint32>(L, 4, 1);
         float z = map->GetHeight(phasemask, x, y, MAX_HEIGHT);
 #endif
         if (z != INVALID_HEIGHT)
-            Eluna::Push(L, z);
+            Forge::Push(L, z);
         return 1;
     }
 
@@ -136,9 +136,9 @@ namespace LuaMap
     int GetDifficulty(lua_State* L, Map* map)
     {
 #ifndef CLASSIC
-        Eluna::Push(L, map->GetDifficulty());
+        Forge::Push(L, map->GetDifficulty());
 #else
-        Eluna::Push(L, (Difficulty)0);
+        Forge::Push(L, (Difficulty)0);
 #endif
         return 1;
     }
@@ -150,7 +150,7 @@ namespace LuaMap
      */
     int GetInstanceId(lua_State* L, Map* map)
     {
-        Eluna::Push(L, map->GetInstanceId());
+        Forge::Push(L, map->GetInstanceId());
         return 1;
     }
 
@@ -161,7 +161,7 @@ namespace LuaMap
      */
     int GetPlayerCount(lua_State* L, Map* map)
     {
-        Eluna::Push(L, map->GetPlayersCountExceptGMs());
+        Forge::Push(L, map->GetPlayersCountExceptGMs());
         return 1;
     }
 
@@ -172,7 +172,7 @@ namespace LuaMap
      */
     int GetMapId(lua_State* L, Map* map)
     {
-        Eluna::Push(L, map->GetId());
+        Forge::Push(L, map->GetId());
         return 1;
     }
 
@@ -187,15 +187,15 @@ namespace LuaMap
      */
     int GetAreaId(lua_State* L, Map* map)
     {
-        float x = Eluna::CHECKVAL<float>(L, 2);
-        float y = Eluna::CHECKVAL<float>(L, 3);
-        float z = Eluna::CHECKVAL<float>(L, 4);
+        float x = Forge::CHECKVAL<float>(L, 2);
+        float y = Forge::CHECKVAL<float>(L, 3);
+        float z = Forge::CHECKVAL<float>(L, 4);
 #if defined TRINITY || defined AZEROTHCORE
-        float phasemask = Eluna::CHECKVAL<uint32>(L, 5, PHASEMASK_NORMAL);
+        float phasemask = Forge::CHECKVAL<uint32>(L, 5, PHASEMASK_NORMAL);
 
-        Eluna::Push(L, map->GetAreaId(phasemask, x, y, z));
+        Forge::Push(L, map->GetAreaId(phasemask, x, y, z));
 #else
-        Eluna::Push(L, map->GetTerrain()->GetAreaId(x, y, z));
+        Forge::Push(L, map->GetTerrain()->GetAreaId(x, y, z));
 #endif
         return 1;
     }
@@ -208,37 +208,37 @@ namespace LuaMap
      */
     int GetWorldObject(lua_State* L, Map* map)
     {
-        ObjectGuid guid = Eluna::CHECKVAL<ObjectGuid>(L, 2);
+        ObjectGuid guid = Forge::CHECKVAL<ObjectGuid>(L, 2);
 
 #if defined TRINITY || AZEROTHCORE
         switch (guid.GetHigh())
         {
             case HIGHGUID_PLAYER:
-                Eluna::Push(L, eObjectAccessor()GetPlayer(map, guid));
+                Forge::Push(L, eObjectAccessor()GetPlayer(map, guid));
                 break;
             case HIGHGUID_TRANSPORT:
             case HIGHGUID_MO_TRANSPORT:
             case HIGHGUID_GAMEOBJECT:
-                Eluna::Push(L, map->GetGameObject(guid));
+                Forge::Push(L, map->GetGameObject(guid));
                 break;
             case HIGHGUID_VEHICLE:
             case HIGHGUID_UNIT:
-                Eluna::Push(L, map->GetCreature(guid));
+                Forge::Push(L, map->GetCreature(guid));
                 break;
             case HIGHGUID_PET:
-                Eluna::Push(L, map->GetPet(guid));
+                Forge::Push(L, map->GetPet(guid));
                 break;
             case HIGHGUID_DYNAMICOBJECT:
-                Eluna::Push(L, map->GetDynamicObject(guid));
+                Forge::Push(L, map->GetDynamicObject(guid));
                 break;
             case HIGHGUID_CORPSE:
-                Eluna::Push(L, map->GetCorpse(guid));
+                Forge::Push(L, map->GetCorpse(guid));
                 break;
             default:
                 break;
         }
 #else
-        Eluna::Push(L, map->GetWorldObject(guid));
+        Forge::Push(L, map->GetWorldObject(guid));
 #endif
         return 1;
     }
@@ -263,9 +263,9 @@ namespace LuaMap
     int SetWeather(lua_State* L, Map* map)
     {
         (void)map; // ensure that the variable is referenced in order to pass compiler checks
-        uint32 zoneId = Eluna::CHECKVAL<uint32>(L, 2);
-        uint32 weatherType = Eluna::CHECKVAL<uint32>(L, 3);
-        float grade = Eluna::CHECKVAL<float>(L, 4);
+        uint32 zoneId = Forge::CHECKVAL<uint32>(L, 2);
+        uint32 weatherType = Forge::CHECKVAL<uint32>(L, 3);
+        float grade = Forge::CHECKVAL<float>(L, 4);
 
 #if defined TRINITY
         if (Weather * weather = map->GetOrGenerateZoneDefaultWeather(zoneId))
@@ -286,7 +286,7 @@ namespace LuaMap
     /**
      * Gets the instance data table for the [Map], if it exists.
      *
-     * The instance must be scripted using Eluna for this to succeed.
+     * The instance must be scripted using Forge for this to succeed.
      * If the instance is scripted in C++ this will return `nil`.
      *
      * @return table instance_data : instance data table, or `nil`
@@ -294,17 +294,17 @@ namespace LuaMap
     int GetInstanceData(lua_State* L, Map* map)
     {
 #if defined TRINITY || AZEROTHCORE
-        ElunaInstanceAI* iAI = NULL;
+        ForgeInstanceAI* iAI = NULL;
         if (InstanceMap* inst = map->ToInstanceMap())
-            iAI = dynamic_cast<ElunaInstanceAI*>(inst->GetInstanceScript());
+            iAI = dynamic_cast<ForgeInstanceAI*>(inst->GetInstanceScript());
 #else
-        ElunaInstanceAI* iAI = dynamic_cast<ElunaInstanceAI*>(map->GetInstanceData());
+        ForgeInstanceAI* iAI = dynamic_cast<ForgeInstanceAI*>(map->GetInstanceData());
 #endif
 
         if (iAI)
-            Eluna::GetEluna(L)->PushInstanceData(L, iAI, false);
+            Forge::GetForge(L)->PushInstanceData(L, iAI, false);
         else
-            Eluna::Push(L); // nil
+            Forge::Push(L); // nil
 
         return 1;
     }
@@ -315,11 +315,11 @@ namespace LuaMap
     int SaveInstanceData(lua_State* /*L*/, Map* map)
     {
 #if defined TRINITY || AZEROTHCORE
-        ElunaInstanceAI* iAI = NULL;
+        ForgeInstanceAI* iAI = NULL;
         if (InstanceMap* inst = map->ToInstanceMap())
-            iAI = dynamic_cast<ElunaInstanceAI*>(inst->GetInstanceScript());
+            iAI = dynamic_cast<ForgeInstanceAI*>(inst->GetInstanceScript());
 #else
-        ElunaInstanceAI* iAI = dynamic_cast<ElunaInstanceAI*>(map->GetInstanceData());
+        ForgeInstanceAI* iAI = dynamic_cast<ForgeInstanceAI*>(map->GetInstanceData());
 #endif
 
         if (iAI)
@@ -343,7 +343,7 @@ namespace LuaMap
     */
     int GetPlayers(lua_State* L, Map* map)
     {
-        uint32 team = Eluna::CHECKVAL<uint32>(L, 2, TEAM_NEUTRAL);
+        uint32 team = Forge::CHECKVAL<uint32>(L, 2, TEAM_NEUTRAL);
 
         lua_newtable(L);
         int tbl = lua_gettop(L);
@@ -361,7 +361,7 @@ namespace LuaMap
                 continue;
             if (player->GetSession() && (team >= TEAM_NEUTRAL || player->GetTeamId() == team))
             {
-                Eluna::Push(L, player);
+                Forge::Push(L, player);
                 lua_rawseti(L, tbl, ++i);
             }
         }
@@ -372,7 +372,7 @@ namespace LuaMap
 
     int GetCreatureByAreaId(lua_State* L, Map* map)
     {
-        uint32 areaId = Eluna::CHECKVAL<uint32>(L, 2, -1);
+        uint32 areaId = Forge::CHECKVAL<uint32>(L, 2, -1);
         std::vector<Creature*> filteredCreatures;
 
         for (const auto& pair : map->GetCreatureBySpawnIdStore())
@@ -389,7 +389,7 @@ namespace LuaMap
 
         for (Creature* creature : filteredCreatures)
         {
-            Eluna::Push(L, creature);
+            Forge::Push(L, creature);
             lua_rawseti(L, tbl, creature->GetSpawnId());
         }
 
@@ -397,7 +397,7 @@ namespace LuaMap
         return 1;
     }
 
-    ElunaRegister<Map> MapMethods[] =
+    ForgeRegister<Map> MapMethods[] =
     {
         // Getters
         { "GetName", &LuaMap::GetName },

@@ -132,7 +132,7 @@ void HttpManager::HttpWorkerThread()
             std::string path;
 
             if (!ParseUrl(req->url, host, path)) {
-                ELUNA_LOG_ERROR("[Eluna]: Could not parse URL {}", req->url);
+                FORGE_LOG_ERROR("[Forge]: Could not parse URL {}", req->url);
                 continue;
             }
 
@@ -145,7 +145,7 @@ void HttpManager::HttpWorkerThread()
             httplib::Error err = res.error();
             if (err != httplib::Error::Success)
             {
-                ELUNA_LOG_ERROR("[Eluna]: HTTP request error: {}", httplib::to_string(err));
+                FORGE_LOG_ERROR("[Forge]: HTTP request error: {}", httplib::to_string(err));
                 continue;
             }
 
@@ -157,7 +157,7 @@ void HttpManager::HttpWorkerThread()
 
                 if (!ParseUrl(location, host, path))
                 {
-                    ELUNA_LOG_ERROR("[Eluna]: Could not parse URL after redirect: {}", location);
+                    FORGE_LOG_ERROR("[Forge]: Could not parse URL after redirect: {}", location);
                     continue;
                 }
                 httplib::Client cli2(host);
@@ -171,7 +171,7 @@ void HttpManager::HttpWorkerThread()
         }
         catch (const std::exception& ex)
         {
-            ELUNA_LOG_ERROR("[Eluna]: HTTP request error: {}", ex.what());
+            FORGE_LOG_ERROR("[Forge]: HTTP request error: {}", ex.what());
         }
 
         delete req;
@@ -210,7 +210,7 @@ httplib::Result HttpManager::DoRequest(httplib::Client& client, HttpWorkItem* re
         return client.Options(path, req->headers);
     }
 
-    ELUNA_LOG_ERROR("[Eluna]: HTTP request error: invalid HTTP verb {}", req->httpVerb);
+    FORGE_LOG_ERROR("[Forge]: HTTP request error: invalid HTTP verb {}", req->httpVerb);
     return client.Get(path, req->headers);
 }
 
@@ -249,25 +249,25 @@ void HttpManager::HandleHttpResponses()
             continue;
         }
 
-        LOCK_ELUNA;
+        LOCK_FORGE;
 
-        lua_State* L = Eluna::GEluna->L;
+        lua_State* L = Forge::GForge->L;
 
         // Get function
         lua_rawgeti(L, LUA_REGISTRYINDEX, res->funcRef);
 
         // Push parameters
-        Eluna::Push(L, res->statusCode);
-        Eluna::Push(L, res->body);
+        Forge::Push(L, res->statusCode);
+        Forge::Push(L, res->body);
         lua_newtable(L);
         for (const auto& item : res->headers) {
-            Eluna::Push(L, item.first);
-            Eluna::Push(L, item.second);
+            Forge::Push(L, item.first);
+            Forge::Push(L, item.second);
             lua_settable(L, -3);
         }
 
         // Call function
-        Eluna::GEluna->ExecuteCall(3, 0);
+        Forge::GForge->ExecuteCall(3, 0);
 
         luaL_unref(L, LUA_REGISTRYINDEX, res->funcRef);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+ * Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
  * This program is free software licensed under GPL version 3
  * Please see the included DOCS/LICENSE.md for more information
  */
@@ -8,8 +8,8 @@
 #include "HookHelpers.h"
 #include "LuaEngine.h"
 #include "BindingMap.h"
-#include "ElunaIncludes.h"
-#include "ElunaTemplate.h"
+#include "ForgeIncludes.h"
+#include "ForgeTemplate.h"
 
 using namespace Hooks;
 
@@ -19,7 +19,7 @@ using namespace Hooks;
     auto key = EventKey<ServerEvents>(EVENT);\
     if (!ServerEventBindings->HasBindingsFor(key))\
         return;\
-    LOCK_ELUNA
+    LOCK_FORGE
 
 #define START_HOOK_PACKET(EVENT, OPCODE) \
     if (!IsEnabled())\
@@ -27,9 +27,9 @@ using namespace Hooks;
     auto key = EntryKey<PacketEvents>(EVENT, OPCODE);\
     if (!PacketEventBindings->HasBindingsFor(key))\
         return;\
-    LOCK_ELUNA
+    LOCK_FORGE
 
-bool Eluna::OnPacketSend(WorldSession* session, const WorldPacket& packet)
+bool Forge::OnPacketSend(WorldSession* session, const WorldPacket& packet)
 {
     bool result = true;
     Player* player = NULL;
@@ -39,7 +39,7 @@ bool Eluna::OnPacketSend(WorldSession* session, const WorldPacket& packet)
     OnPacketSendOne(player, packet, result);
     return result;
 }
-void Eluna::OnPacketSendAny(Player* player, const WorldPacket& packet, bool& result)
+void Forge::OnPacketSendAny(Player* player, const WorldPacket& packet, bool& result)
 {
     START_HOOK_SERVER(SERVER_EVENT_ON_PACKET_SEND);
     Push(new WorldPacket(packet));
@@ -59,7 +59,7 @@ void Eluna::OnPacketSendAny(Player* player, const WorldPacket& packet, bool& res
     CleanUpStack(2);
 }
 
-void Eluna::OnPacketSendOne(Player* player, const WorldPacket& packet, bool& result)
+void Forge::OnPacketSendOne(Player* player, const WorldPacket& packet, bool& result)
 {
     START_HOOK_PACKET(PACKET_EVENT_ON_PACKET_SEND, packet.GetOpcode());
     Push(new WorldPacket(packet));
@@ -79,7 +79,7 @@ void Eluna::OnPacketSendOne(Player* player, const WorldPacket& packet, bool& res
     CleanUpStack(2);
 }
 
-bool Eluna::OnPacketReceive(WorldSession* session, WorldPacket& packet)
+bool Forge::OnPacketReceive(WorldSession* session, WorldPacket& packet)
 {
     bool result = true;
     Player* player = NULL;
@@ -90,7 +90,7 @@ bool Eluna::OnPacketReceive(WorldSession* session, WorldPacket& packet)
     return result;
 }
 
-void Eluna::OnPacketReceiveAny(Player* player, WorldPacket& packet, bool& result)
+void Forge::OnPacketReceiveAny(Player* player, WorldPacket& packet, bool& result)
 {
     START_HOOK_SERVER(SERVER_EVENT_ON_PACKET_RECEIVE);
     Push(new WorldPacket(packet));
@@ -114,7 +114,7 @@ void Eluna::OnPacketReceiveAny(Player* player, WorldPacket& packet, bool& result
     CleanUpStack(2);
 }
 
-void Eluna::OnPacketReceiveOne(Player* player, WorldPacket& packet, bool& result)
+void Forge::OnPacketReceiveOne(Player* player, WorldPacket& packet, bool& result)
 {
     START_HOOK_PACKET(PACKET_EVENT_ON_PACKET_RECEIVE, packet.GetOpcode());
     Push(new WorldPacket(packet));

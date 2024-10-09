@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
@@ -8,28 +8,28 @@
 #include "LuaEngine.h"
 #include "BindingMap.h"
 #include "Chat.h"
-#include "ElunaCompat.h"
-#include "ElunaEventMgr.h"
-#include "ElunaIncludes.h"
-#include "ElunaTemplate.h"
-#include "ElunaUtility.h"
-#include "ElunaCreatureAI.h"
-#include "ElunaInstanceAI.h"
+#include "ForgeCompat.h"
+#include "ForgeEventMgr.h"
+#include "ForgeIncludes.h"
+#include "ForgeTemplate.h"
+#include "ForgeUtility.h"
+#include "ForgeCreatureAI.h"
+#include "ForgeInstanceAI.h"
 
 #if defined(TRINITY_PLATFORM) && defined(TRINITY_PLATFORM_WINDOWS)
 #if TRINITY_PLATFORM == TRINITY_PLATFORM_WINDOWS
-#define ELUNA_WINDOWS
+#define FORGE_WINDOWS
 #endif
 #elif defined(AC_PLATFORM) && defined(AC_PLATFORM_WINDOWS)
 #if AC_PLATFORM == AC_PLATFORM_WINDOWS
-#define ELUNA_WINDOWS
+#define FORGE_WINDOWS
 #endif
 #elif defined(PLATFORM) && defined(PLATFORM_WINDOWS)
 #if PLATFORM == PLATFORM_WINDOWS
-#define ELUNA_WINDOWS
+#define FORGE_WINDOWS
 #endif
 #else
-#error Eluna could not determine platform
+#error Forge could not determine platform
 #endif
 
 // Some dummy includes containing BOOST_VERSION:
@@ -56,21 +56,21 @@ extern "C"
 // Additional lua libraries
 };
 
-Eluna::ScriptList Eluna::lua_scripts;
-Eluna::ScriptList Eluna::lua_extensions;
-std::string Eluna::lua_folderpath;
-std::string Eluna::m_requirePath;
-std::string Eluna::m_requirecPath;
-Eluna* Eluna::GEluna = NULL;
-bool Eluna::reload = false;
-bool Eluna::initialized = false;
-Eluna::LockType Eluna::lock;
+Forge::ScriptList Forge::lua_scripts;
+Forge::ScriptList Forge::lua_extensions;
+std::string Forge::lua_folderpath;
+std::string Forge::m_requirePath;
+std::string Forge::m_requirecPath;
+Forge* Forge::GForge = NULL;
+bool Forge::reload = false;
+bool Forge::initialized = false;
+Forge::LockType Forge::lock;
 
-extern void RegisterFunctions(Eluna* E);
+extern void RegisterFunctions(Forge* E);
 
-void Eluna::Initialize()
+void Forge::Initialize()
 {
-    LOCK_ELUNA;
+    LOCK_FORGE;
     ASSERT(!IsInitialized());
 
 #if defined TRINITY || AZEROTHCORE
@@ -81,21 +81,21 @@ void Eluna::Initialize()
 
     LoadScriptPaths();
 
-    // Must be before creating GEluna
-    // This is checked on Eluna creation
+    // Must be before creating GForge
+    // This is checked on Forge creation
     initialized = true;
 
-    // Create global eluna
-    GEluna = new Eluna();
+    // Create global forge
+    GForge = new Forge();
 }
 
-void Eluna::Uninitialize()
+void Forge::Uninitialize()
 {
-    LOCK_ELUNA;
+    LOCK_FORGE;
     ASSERT(IsInitialized());
 
-    delete GEluna;
-    GEluna = NULL;
+    delete GForge;
+    GForge = NULL;
 
     lua_scripts.clear();
     lua_extensions.clear();
@@ -103,23 +103,23 @@ void Eluna::Uninitialize()
     initialized = false;
 }
 
-void Eluna::LoadScriptPaths()
+void Forge::LoadScriptPaths()
 {
-    uint32 oldMSTime = ElunaUtil::GetCurrTime();
+    uint32 oldMSTime = ForgeUtil::GetCurrTime();
 
     lua_scripts.clear();
     lua_extensions.clear();
-    lua_folderpath = eConfigMgr->GetOption<std::string>("Eluna.ScriptPath", "lua_scripts");
-    const std::string& lua_path_extra = eConfigMgr->GetOption<std::string>("Eluna.RequirePaths", "");
-    const std::string& lua_cpath_extra = eConfigMgr->GetOption<std::string>("Eluna.RequireCPaths", "");
+    lua_folderpath = eConfigMgr->GetOption<std::string>("Forge.ScriptPath", "lua_scripts");
+    const std::string& lua_path_extra = eConfigMgr->GetOption<std::string>("Forge.RequirePaths", "");
+    const std::string& lua_cpath_extra = eConfigMgr->GetOption<std::string>("Forge.RequireCPaths", "");
 
-#ifndef ELUNA_WINDOWS
+#ifndef FORGE_WINDOWS
     if (lua_folderpath[0] == '~')
         if (const char* home = getenv("HOME"))
             lua_folderpath.replace(0, 1, home);
 #endif
 
-    ELUNA_LOG_INFO("[Eluna]: Searching scripts from `{}`", lua_folderpath);
+    FORGE_LOG_INFO("[Forge]: Searching scripts from `{}`", lua_folderpath);
 
     // clear all cache variables
     m_requirePath.clear();
@@ -141,38 +141,38 @@ void Eluna::LoadScriptPaths()
     if (!m_requirecPath.empty())
         m_requirecPath.erase(m_requirecPath.end() - 1);
 
-    ELUNA_LOG_DEBUG("[Eluna]: Loaded {} scripts in {} ms", lua_scripts.size() + lua_extensions.size(), ElunaUtil::GetTimeDiff(oldMSTime));
+    FORGE_LOG_DEBUG("[Forge]: Loaded {} scripts in {} ms", lua_scripts.size() + lua_extensions.size(), ForgeUtil::GetTimeDiff(oldMSTime));
 }
 
-void Eluna::_ReloadEluna()
+void Forge::_ReloadForge()
 {
-    LOCK_ELUNA;
+    LOCK_FORGE;
     ASSERT(IsInitialized());
 
-    if (eConfigMgr->GetOption<bool>("Eluna.PlayerAnnounceReload", false))
-        eWorld->SendServerMessage(SERVER_MSG_STRING, "Reloading Eluna...");
+    if (eConfigMgr->GetOption<bool>("Forge.PlayerAnnounceReload", false))
+        eWorld->SendServerMessage(SERVER_MSG_STRING, "Reloading Forge...");
     else
-        ChatHandler(nullptr).SendGMText(SERVER_MSG_STRING, "Reloading Eluna...");
+        ChatHandler(nullptr).SendGMText(SERVER_MSG_STRING, "Reloading Forge...");
 
     // Remove all timed events
-    sEluna->eventMgr->SetStates(LUAEVENT_STATE_ERASE);
+    sForge->eventMgr->SetStates(LUAEVENT_STATE_ERASE);
 
     // Close lua
-    sEluna->CloseLua();
+    sForge->CloseLua();
 
     // Reload script paths
     LoadScriptPaths();
 
     // Open new lua and libaraies
-    sEluna->OpenLua();
+    sForge->OpenLua();
 
     // Run scripts from laoded paths
-    sEluna->RunScripts();
+    sForge->RunScripts();
 
     reload = false;
 }
 
-Eluna::Eluna() :
+Forge::Forge() :
 event_level(0),
 push_counter(0),
 enabled(false),
@@ -208,12 +208,12 @@ CreatureUniqueBindings(NULL)
 
     // Replace this with map insert if making multithread version
 
-    // Set event manager. Must be after setting sEluna
+    // Set event manager. Must be after setting sForge
     // on multithread have a map of state pointers and here insert this pointer to the map and then save a pointer of that pointer to the EventMgr
-    eventMgr = new EventMgr(&Eluna::GEluna);
+    eventMgr = new EventMgr(&Forge::GForge);
 }
 
-Eluna::~Eluna()
+Forge::~Forge()
 {
     ASSERT(IsInitialized());
 
@@ -223,7 +223,7 @@ Eluna::~Eluna()
     eventMgr = NULL;
 }
 
-void Eluna::CloseLua()
+void Forge::CloseLua()
 {
     OnLuaStateClose();
 
@@ -238,24 +238,24 @@ void Eluna::CloseLua()
     continentDataRefs.clear();
 }
 
-void Eluna::OpenLua()
+void Forge::OpenLua()
 {
 #if defined(AZEROTHCORE)
-    enabled = eConfigMgr->GetOption<bool>("Eluna.Enabled", true);
+    enabled = eConfigMgr->GetOption<bool>("Forge.Enabled", true);
 #else
-    enabled = eConfigMgr->GetBoolDefault("Eluna.Enabled", true);
+    enabled = eConfigMgr->GetBoolDefault("Forge.Enabled", true);
 #endif
 
     if (!IsEnabled())
     {
-        ELUNA_LOG_INFO("[Eluna]: Eluna is disabled in config");
+        FORGE_LOG_INFO("[Forge]: Forge is disabled in config");
         return;
     }
 
     L = luaL_newstate();
 
     lua_pushlightuserdata(L, this);
-    lua_setfield(L, LUA_REGISTRYINDEX, ELUNA_STATE_PTR);
+    lua_setfield(L, LUA_REGISTRYINDEX, FORGE_STATE_PTR);
 
     CreateBindStores();
 
@@ -289,7 +289,7 @@ void Eluna::OpenLua()
     lua_pop(L, 1);
 }
 
-void Eluna::CreateBindStores()
+void Forge::CreateBindStores()
 {
     DestroyBindStores();
 
@@ -314,7 +314,7 @@ void Eluna::CreateBindStores()
     CreatureUniqueBindings   = new BindingMap< UniqueObjectKey<Hooks::CreatureEvents> >(L);
 }
 
-void Eluna::DestroyBindStores()
+void Forge::DestroyBindStores()
 {
     delete ServerEventBindings;
     delete PlayerEventBindings;
@@ -357,9 +357,9 @@ void Eluna::DestroyBindStores()
     CreatureUniqueBindings = NULL;
 }
 
-void Eluna::AddScriptPath(std::string filename, const std::string& fullpath)
+void Forge::AddScriptPath(std::string filename, const std::string& fullpath)
 {
-    ELUNA_LOG_DEBUG("[Eluna]: AddScriptPath Checking file `{}`", fullpath);
+    FORGE_LOG_DEBUG("[Forge]: AddScriptPath Checking file `{}`", fullpath);
 
     // split file name
     std::size_t extDot = filename.find_last_of('.');
@@ -382,13 +382,13 @@ void Eluna::AddScriptPath(std::string filename, const std::string& fullpath)
         lua_extensions.push_back(script);
     else
         lua_scripts.push_back(script);
-    ELUNA_LOG_DEBUG("[Eluna]: AddScriptPath add path `{}`", fullpath);
+    FORGE_LOG_DEBUG("[Forge]: AddScriptPath add path `{}`", fullpath);
 }
 
 // Finds lua script files from given path (including subdirectories) and pushes them to scripts
-void Eluna::GetScripts(std::string path)
+void Forge::GetScripts(std::string path)
 {
-    ELUNA_LOG_DEBUG("[Eluna]: GetScripts from path `{}`", path);
+    FORGE_LOG_DEBUG("[Forge]: GetScripts from path `{}`", path);
 
 #ifdef USING_BOOST
     boost::filesystem::path someDir(path);
@@ -410,7 +410,7 @@ void Eluna::GetScripts(std::string path)
             std::string fullpath = dir_iter->path().generic_string();
 
             // Check if file is hidden
-#ifdef ELUNA_WINDOWS
+#ifdef FORGE_WINDOWS
             DWORD dwAttrib = GetFileAttributes(fullpath.c_str());
             if (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_HIDDEN))
                 continue;
@@ -459,7 +459,7 @@ void Eluna::GetScripts(std::string path)
         std::string fullpath = path + "/" + directory->d_name;
 
         // Check if file is hidden
-#ifdef ELUNA_WINDOWS
+#ifdef FORGE_WINDOWS
         DWORD dwAttrib = GetFileAttributes(fullpath.c_str());
         if (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_HIDDEN))
             continue;
@@ -492,13 +492,13 @@ static bool ScriptPathComparator(const LuaScript& first, const LuaScript& second
     return first.filepath < second.filepath;
 }
 
-void Eluna::RunScripts()
+void Forge::RunScripts()
 {
-    LOCK_ELUNA;
+    LOCK_FORGE;
     if (!IsEnabled())
         return;
 
-    uint32 oldMSTime = ElunaUtil::GetCurrTime();
+    uint32 oldMSTime = ForgeUtil::GetCurrTime();
     uint32 count = 0;
 
     ScriptList scripts;
@@ -519,7 +519,7 @@ void Eluna::RunScripts()
         // Check that no duplicate names exist
         if (loaded.find(it->filename) != loaded.end())
         {
-            ELUNA_LOG_ERROR("[Eluna]: Error loading `{}`. File with same name already loaded from `{}`, rename either file", it->filepath, loaded[it->filename]);
+            FORGE_LOG_ERROR("[Forge]: Error loading `{}`. File with same name already loaded from `{}`, rename either file", it->filepath, loaded[it->filename]);
             continue;
         }
         loaded[it->filename] = it->filepath;
@@ -529,7 +529,7 @@ void Eluna::RunScripts()
         if (!lua_isnoneornil(L, -1))
         {
             lua_pop(L, 1);
-            ELUNA_LOG_DEBUG("[Eluna]: `{}` was already loaded or required", it->filepath);
+            FORGE_LOG_DEBUG("[Forge]: `{}` was already loaded or required", it->filepath);
             continue;
         }
         lua_pop(L, 1);
@@ -541,7 +541,7 @@ void Eluna::RunScripts()
             if (luaL_loadstring(L, str.c_str()) || lua_pcall(L, 0, LUA_MULTRET, 0))
             {
                 // Stack: package, modules, errmsg
-                ELUNA_LOG_ERROR("[Eluna]: Error loading MoonScript `{}`", it->filepath);
+                FORGE_LOG_ERROR("[Forge]: Error loading MoonScript `{}`", it->filepath);
                 Report(L);
                 // Stack: package, modules
                 continue;
@@ -552,7 +552,7 @@ void Eluna::RunScripts()
            if (luaL_loadfile(L, it->filepath.c_str()))
            {
                // Stack: package, modules, errmsg
-               ELUNA_LOG_ERROR("[Eluna]: Error loading `{}`", it->filepath);
+               FORGE_LOG_ERROR("[Forge]: Error loading `{}`", it->filepath);
                Report(L);
                // Stack: package, modules
                continue;
@@ -573,19 +573,19 @@ void Eluna::RunScripts()
             // Stack: package, modules
 
             // successfully loaded and ran file
-            ELUNA_LOG_DEBUG("[Eluna]: Successfully loaded `{}`", it->filepath);
+            FORGE_LOG_DEBUG("[Forge]: Successfully loaded `{}`", it->filepath);
             ++count;
             continue;
         }
     }
     // Stack: package, modules
     lua_pop(L, 2);
-    ELUNA_LOG_INFO("[Eluna]: Executed {} Lua scripts in {} ms", count, ElunaUtil::GetTimeDiff(oldMSTime));
+    FORGE_LOG_INFO("[Forge]: Executed {} Lua scripts in {} ms", count, ForgeUtil::GetTimeDiff(oldMSTime));
 
     OnLuaStateOpen();
 }
 
-void Eluna::InvalidateObjects()
+void Forge::InvalidateObjects()
 {
     ++callstackid;
 #ifdef TRINITY
@@ -595,15 +595,15 @@ void Eluna::InvalidateObjects()
 #endif
 }
 
-void Eluna::Report(lua_State* _L)
+void Forge::Report(lua_State* _L)
 {
     const char* msg = lua_tostring(_L, -1);
-    ELUNA_LOG_ERROR("{}", msg);
+    FORGE_LOG_ERROR("{}", msg);
     lua_pop(_L, 1);
 }
 
 // Borrowed from http://stackoverflow.com/questions/12256455/print-stacktrace-from-c-code-with-embedded-lua
-int Eluna::StackTrace(lua_State *_L)
+int Forge::StackTrace(lua_State *_L)
 {
     // Stack: errmsg
     if (!lua_isstring(_L, -1))  /* 'message' not a string? */
@@ -629,11 +629,11 @@ int Eluna::StackTrace(lua_State *_L)
 
     // dirty stack?
     // Stack: errmsg, debug, tracemsg
-    sEluna->OnError(std::string(lua_tostring(_L, -1)));
+    sForge->OnError(std::string(lua_tostring(_L, -1)));
     return 1;
 }
 
-bool Eluna::ExecuteCall(int params, int res)
+bool Forge::ExecuteCall(int params, int res)
 {
     int top = lua_gettop(L);
     int base = top - params;
@@ -644,14 +644,14 @@ bool Eluna::ExecuteCall(int params, int res)
     // Check function type
     if (!lua_isfunction(L, base))
     {
-        ELUNA_LOG_ERROR("[Eluna]: Cannot execute call: registered value is {}, not a function.", luaL_tolstring(L, base, NULL));
+        FORGE_LOG_ERROR("[Forge]: Cannot execute call: registered value is {}, not a function.", luaL_tolstring(L, base, NULL));
         ASSERT(false); // stack probably corrupt
     }
 
 #if defined(AZEROTHCORE)
-    bool usetrace = eConfigMgr->GetOption<bool>("Eluna.TraceBack", false);
+    bool usetrace = eConfigMgr->GetOption<bool>("Forge.TraceBack", false);
 #else
-    bool usetrace = eConfigMgr->GetBoolDefault("Eluna.TraceBack", false);
+    bool usetrace = eConfigMgr->GetBoolDefault("Forge.TraceBack", false);
 #endif
 
     if (usetrace)
@@ -695,63 +695,63 @@ bool Eluna::ExecuteCall(int params, int res)
     return true;
 }
 
-void Eluna::Push(lua_State* luastate)
+void Forge::Push(lua_State* luastate)
 {
     lua_pushnil(luastate);
 }
-void Eluna::Push(lua_State* luastate, const long long l)
+void Forge::Push(lua_State* luastate, const long long l)
 {
-    ElunaTemplate<long long>::Push(luastate, new long long(l));
+    ForgeTemplate<long long>::Push(luastate, new long long(l));
 }
-void Eluna::Push(lua_State* luastate, const unsigned long long l)
+void Forge::Push(lua_State* luastate, const unsigned long long l)
 {
-    ElunaTemplate<unsigned long long>::Push(luastate, new unsigned long long(l));
+    ForgeTemplate<unsigned long long>::Push(luastate, new unsigned long long(l));
 }
-void Eluna::Push(lua_State* luastate, const long l)
+void Forge::Push(lua_State* luastate, const long l)
 {
     Push(luastate, static_cast<long long>(l));
 }
-void Eluna::Push(lua_State* luastate, const unsigned long l)
+void Forge::Push(lua_State* luastate, const unsigned long l)
 {
     Push(luastate, static_cast<unsigned long long>(l));
 }
-void Eluna::Push(lua_State* luastate, const int i)
+void Forge::Push(lua_State* luastate, const int i)
 {
     lua_pushinteger(luastate, i);
 }
-void Eluna::Push(lua_State* luastate, const unsigned int u)
+void Forge::Push(lua_State* luastate, const unsigned int u)
 {
     lua_pushunsigned(luastate, u);
 }
-void Eluna::Push(lua_State* luastate, const double d)
+void Forge::Push(lua_State* luastate, const double d)
 {
     lua_pushnumber(luastate, d);
 }
-void Eluna::Push(lua_State* luastate, const float f)
+void Forge::Push(lua_State* luastate, const float f)
 {
     lua_pushnumber(luastate, f);
 }
-void Eluna::Push(lua_State* luastate, const bool b)
+void Forge::Push(lua_State* luastate, const bool b)
 {
     lua_pushboolean(luastate, b);
 }
-void Eluna::Push(lua_State* luastate, const std::string& str)
+void Forge::Push(lua_State* luastate, const std::string& str)
 {
     lua_pushstring(luastate, str.c_str());
 }
-void Eluna::Push(lua_State* luastate, const char* str)
+void Forge::Push(lua_State* luastate, const char* str)
 {
     lua_pushstring(luastate, str);
 }
-void Eluna::Push(lua_State* luastate, Pet const* pet)
+void Forge::Push(lua_State* luastate, Pet const* pet)
 {
     Push<Creature>(luastate, pet);
 }
-void Eluna::Push(lua_State* luastate, TempSummon const* summon)
+void Forge::Push(lua_State* luastate, TempSummon const* summon)
 {
     Push<Creature>(luastate, summon);
 }
-void Eluna::Push(lua_State* luastate, Unit const* unit)
+void Forge::Push(lua_State* luastate, Unit const* unit)
 {
     if (!unit)
     {
@@ -767,10 +767,10 @@ void Eluna::Push(lua_State* luastate, Unit const* unit)
             Push(luastate, unit->ToPlayer());
             break;
         default:
-            ElunaTemplate<Unit>::Push(luastate, unit);
+            ForgeTemplate<Unit>::Push(luastate, unit);
     }
 }
-void Eluna::Push(lua_State* luastate, WorldObject const* obj)
+void Forge::Push(lua_State* luastate, WorldObject const* obj)
 {
     if (!obj)
     {
@@ -792,10 +792,10 @@ void Eluna::Push(lua_State* luastate, WorldObject const* obj)
             Push(luastate, obj->ToCorpse());
             break;
         default:
-            ElunaTemplate<WorldObject>::Push(luastate, obj);
+            ForgeTemplate<WorldObject>::Push(luastate, obj);
     }
 }
-void Eluna::Push(lua_State* luastate, Object const* obj)
+void Forge::Push(lua_State* luastate, Object const* obj)
 {
     if (!obj)
     {
@@ -817,15 +817,15 @@ void Eluna::Push(lua_State* luastate, Object const* obj)
             Push(luastate, obj->ToCorpse());
             break;
         default:
-            ElunaTemplate<Object>::Push(luastate, obj);
+            ForgeTemplate<Object>::Push(luastate, obj);
     }
 }
-void Eluna::Push(lua_State* luastate, ObjectGuid const guid)
+void Forge::Push(lua_State* luastate, ObjectGuid const guid)
 {
-    ElunaTemplate<unsigned long long>::Push(luastate, new unsigned long long(guid.GetRawValue()));
+    ForgeTemplate<unsigned long long>::Push(luastate, new unsigned long long(guid.GetRawValue()));
 }
 
-void Eluna::Push(lua_State* luastate, SpellEffectInfo const& spellEffectInfo)
+void Forge::Push(lua_State* luastate, SpellEffectInfo const& spellEffectInfo)
 {
     Push(luastate, &spellEffectInfo);
 }
@@ -867,85 +867,85 @@ static unsigned int CheckUnsignedRange(lua_State* luastate, int narg, unsigned i
     return static_cast<unsigned int>(value);
 }
 
-template<> bool Eluna::CHECKVAL<bool>(lua_State* luastate, int narg)
+template<> bool Forge::CHECKVAL<bool>(lua_State* luastate, int narg)
 {
     return lua_toboolean(luastate, narg) != 0;
 }
-template<> float Eluna::CHECKVAL<float>(lua_State* luastate, int narg)
+template<> float Forge::CHECKVAL<float>(lua_State* luastate, int narg)
 {
     return static_cast<float>(luaL_checknumber(luastate, narg));
 }
-template<> double Eluna::CHECKVAL<double>(lua_State* luastate, int narg)
+template<> double Forge::CHECKVAL<double>(lua_State* luastate, int narg)
 {
     return luaL_checknumber(luastate, narg);
 }
-template<> signed char Eluna::CHECKVAL<signed char>(lua_State* luastate, int narg)
+template<> signed char Forge::CHECKVAL<signed char>(lua_State* luastate, int narg)
 {
     return CheckIntegerRange(luastate, narg, SCHAR_MIN, SCHAR_MAX);
 }
-template<> unsigned char Eluna::CHECKVAL<unsigned char>(lua_State* luastate, int narg)
+template<> unsigned char Forge::CHECKVAL<unsigned char>(lua_State* luastate, int narg)
 {
     return CheckUnsignedRange(luastate, narg, UCHAR_MAX);
 }
-template<> short Eluna::CHECKVAL<short>(lua_State* luastate, int narg)
+template<> short Forge::CHECKVAL<short>(lua_State* luastate, int narg)
 {
     return CheckIntegerRange(luastate, narg, SHRT_MIN, SHRT_MAX);
 }
-template<> unsigned short Eluna::CHECKVAL<unsigned short>(lua_State* luastate, int narg)
+template<> unsigned short Forge::CHECKVAL<unsigned short>(lua_State* luastate, int narg)
 {
     return CheckUnsignedRange(luastate, narg, USHRT_MAX);
 }
-template<> int Eluna::CHECKVAL<int>(lua_State* luastate, int narg)
+template<> int Forge::CHECKVAL<int>(lua_State* luastate, int narg)
 {
     return CheckIntegerRange(luastate, narg, INT_MIN, INT_MAX);
 }
-template<> unsigned int Eluna::CHECKVAL<unsigned int>(lua_State* luastate, int narg)
+template<> unsigned int Forge::CHECKVAL<unsigned int>(lua_State* luastate, int narg)
 {
     return CheckUnsignedRange(luastate, narg, UINT_MAX);
 }
-template<> const char* Eluna::CHECKVAL<const char*>(lua_State* luastate, int narg)
+template<> const char* Forge::CHECKVAL<const char*>(lua_State* luastate, int narg)
 {
     return luaL_checkstring(luastate, narg);
 }
-template<> std::string Eluna::CHECKVAL<std::string>(lua_State* luastate, int narg)
+template<> std::string Forge::CHECKVAL<std::string>(lua_State* luastate, int narg)
 {
     return luaL_checkstring(luastate, narg);
 }
-template<> long long Eluna::CHECKVAL<long long>(lua_State* luastate, int narg)
+template<> long long Forge::CHECKVAL<long long>(lua_State* luastate, int narg)
 {
     if (lua_isnumber(luastate, narg))
         return static_cast<long long>(CHECKVAL<double>(luastate, narg));
-    return *(Eluna::CHECKOBJ<long long>(luastate, narg, true));
+    return *(Forge::CHECKOBJ<long long>(luastate, narg, true));
 }
-template<> unsigned long long Eluna::CHECKVAL<unsigned long long>(lua_State* luastate, int narg)
+template<> unsigned long long Forge::CHECKVAL<unsigned long long>(lua_State* luastate, int narg)
 {
     if (lua_isnumber(luastate, narg))
         return static_cast<unsigned long long>(CHECKVAL<uint32>(luastate, narg));
-    return *(Eluna::CHECKOBJ<unsigned long long>(luastate, narg, true));
+    return *(Forge::CHECKOBJ<unsigned long long>(luastate, narg, true));
 }
-template<> long Eluna::CHECKVAL<long>(lua_State* luastate, int narg)
+template<> long Forge::CHECKVAL<long>(lua_State* luastate, int narg)
 {
     return static_cast<long>(CHECKVAL<long long>(luastate, narg));
 }
-template<> unsigned long Eluna::CHECKVAL<unsigned long>(lua_State* luastate, int narg)
+template<> unsigned long Forge::CHECKVAL<unsigned long>(lua_State* luastate, int narg)
 {
     return static_cast<unsigned long>(CHECKVAL<unsigned long long>(luastate, narg));
 }
-template<> ObjectGuid Eluna::CHECKVAL<ObjectGuid>(lua_State* luastate, int narg)
+template<> ObjectGuid Forge::CHECKVAL<ObjectGuid>(lua_State* luastate, int narg)
 {
     return ObjectGuid(uint64((CHECKVAL<unsigned long long>(luastate, narg))));
 }
 
-template<> Object* Eluna::CHECKOBJ<Object>(lua_State* luastate, int narg, bool error)
+template<> Object* Forge::CHECKOBJ<Object>(lua_State* luastate, int narg, bool error)
 {
     Object* obj = CHECKOBJ<WorldObject>(luastate, narg, false);
     if (!obj)
         obj = CHECKOBJ<Item>(luastate, narg, false);
     if (!obj)
-        obj = ElunaTemplate<Object>::Check(luastate, narg, error);
+        obj = ForgeTemplate<Object>::Check(luastate, narg, error);
     return obj;
 }
-template<> WorldObject* Eluna::CHECKOBJ<WorldObject>(lua_State* luastate, int narg, bool error)
+template<> WorldObject* Forge::CHECKOBJ<WorldObject>(lua_State* luastate, int narg, bool error)
 {
     WorldObject* obj = CHECKOBJ<Unit>(luastate, narg, false);
     if (!obj)
@@ -953,25 +953,25 @@ template<> WorldObject* Eluna::CHECKOBJ<WorldObject>(lua_State* luastate, int na
     if (!obj)
         obj = CHECKOBJ<Corpse>(luastate, narg, false);
     if (!obj)
-        obj = ElunaTemplate<WorldObject>::Check(luastate, narg, error);
+        obj = ForgeTemplate<WorldObject>::Check(luastate, narg, error);
     return obj;
 }
-template<> Unit* Eluna::CHECKOBJ<Unit>(lua_State* luastate, int narg, bool error)
+template<> Unit* Forge::CHECKOBJ<Unit>(lua_State* luastate, int narg, bool error)
 {
     Unit* obj = CHECKOBJ<Player>(luastate, narg, false);
     if (!obj)
         obj = CHECKOBJ<Creature>(luastate, narg, false);
     if (!obj)
-        obj = ElunaTemplate<Unit>::Check(luastate, narg, error);
+        obj = ForgeTemplate<Unit>::Check(luastate, narg, error);
     return obj;
 }
 
-template<> ElunaObject* Eluna::CHECKOBJ<ElunaObject>(lua_State* luastate, int narg, bool error)
+template<> ForgeObject* Forge::CHECKOBJ<ForgeObject>(lua_State* luastate, int narg, bool error)
 {
     return CHECKTYPE(luastate, narg, NULL, error);
 }
 
-ElunaObject* Eluna::CHECKTYPE(lua_State* luastate, int narg, const char* tname, bool error)
+ForgeObject* Forge::CHECKTYPE(lua_State* luastate, int narg, const char* tname, bool error)
 {
     if (lua_islightuserdata(luastate, narg))
     {
@@ -980,14 +980,14 @@ ElunaObject* Eluna::CHECKTYPE(lua_State* luastate, int narg, const char* tname, 
         return NULL;
     }
 
-    ElunaObject** ptrHold = static_cast<ElunaObject**>(lua_touserdata(luastate, narg));
+    ForgeObject** ptrHold = static_cast<ForgeObject**>(lua_touserdata(luastate, narg));
 
     if (!ptrHold || (tname && (*ptrHold)->GetTypeName() != tname))
     {
         if (error)
         {
             char buff[256];
-            snprintf(buff, 256, "bad argument : %s expected, got %s", tname ? tname : "ElunaObject", ptrHold ? (*ptrHold)->GetTypeName() : luaL_typename(luastate, narg));
+            snprintf(buff, 256, "bad argument : %s expected, got %s", tname ? tname : "ForgeObject", ptrHold ? (*ptrHold)->GetTypeName() : luaL_typename(luastate, narg));
             luaL_argerror(luastate, narg, buff);
         }
         return NULL;
@@ -998,7 +998,7 @@ ElunaObject* Eluna::CHECKTYPE(lua_State* luastate, int narg, const char* tname, 
 template<typename K>
 static int cancelBinding(lua_State *L)
 {
-    uint64 bindingID = Eluna::CHECKVAL<uint64>(L, lua_upvalueindex(1));
+    uint64 bindingID = Forge::CHECKVAL<uint64>(L, lua_upvalueindex(1));
 
     BindingMap<K>* bindings = (BindingMap<K>*)lua_touserdata(L, lua_upvalueindex(2));
     ASSERT(bindings != NULL);
@@ -1011,7 +1011,7 @@ static int cancelBinding(lua_State *L)
 template<typename K>
 static void createCancelCallback(lua_State* L, uint64 bindingID, BindingMap<K>* bindings)
 {
-    Eluna::Push(L, bindingID);
+    Forge::Push(L, bindingID);
     lua_pushlightuserdata(L, bindings);
     // Stack: bindingID, bindings
 
@@ -1020,7 +1020,7 @@ static void createCancelCallback(lua_State* L, uint64 bindingID, BindingMap<K>* 
 }
 
 // Saves the function reference ID given to the register type's store for given entry under the given event
-int Eluna::Register(lua_State* L, uint8 regtype, uint32 entry, ObjectGuid guid, uint32 instanceId, uint32 event_id, int functionRef, uint32 shots)
+int Forge::Register(lua_State* L, uint8 regtype, uint32 entry, ObjectGuid guid, uint32 instanceId, uint32 event_id, int functionRef, uint32 shots)
 {
     uint64 bindingID;
 
@@ -1259,7 +1259,7 @@ int Eluna::Register(lua_State* L, uint8 regtype, uint32 entry, ObjectGuid guid, 
 /*
  * Cleans up the stack, effectively undoing all Push calls and the Setup call.
  */
-void Eluna::CleanUpStack(int number_of_arguments)
+void Forge::CleanUpStack(int number_of_arguments)
 {
     // Stack: event_id, [arguments]
 
@@ -1275,7 +1275,7 @@ void Eluna::CleanUpStack(int number_of_arguments)
  *
  * The caller is responsible for keeping track of how many times this should be called.
  */
-int Eluna::CallOneFunction(int number_of_functions, int number_of_arguments, int number_of_results)
+int Forge::CallOneFunction(int number_of_functions, int number_of_arguments, int number_of_results)
 {
     ++number_of_arguments; // Caller doesn't know about `event_id`.
     ASSERT(number_of_functions > 0 && number_of_arguments > 0 && number_of_results >= 0);
@@ -1300,7 +1300,7 @@ int Eluna::CallOneFunction(int number_of_functions, int number_of_arguments, int
     return functions_top + 1; // Return the location of the first result (if any exist).
 }
 
-CreatureAI* Eluna::GetAI(Creature* creature)
+CreatureAI* Forge::GetAI(Creature* creature)
 {
     if (!IsEnabled())
         return NULL;
@@ -1314,13 +1314,13 @@ CreatureAI* Eluna::GetAI(Creature* creature)
 
         if (CreatureEventBindings->HasBindingsFor(entryKey) ||
             CreatureUniqueBindings->HasBindingsFor(uniqueKey))
-            return new ElunaCreatureAI(creature);
+            return new ForgeCreatureAI(creature);
     }
 
     return NULL;
 }
 
-InstanceData* Eluna::GetInstanceData(Map* map)
+InstanceData* Forge::GetInstanceData(Map* map)
 {
     if (!IsEnabled())
         return NULL;
@@ -1333,13 +1333,13 @@ InstanceData* Eluna::GetInstanceData(Map* map)
 
         if (MapEventBindings->HasBindingsFor(key) ||
             InstanceEventBindings->HasBindingsFor(key))
-            return new ElunaInstanceAI(map);
+            return new ForgeInstanceAI(map);
     }
 
     return NULL;
 }
 
-bool Eluna::HasInstanceData(Map const* map)
+bool Forge::HasInstanceData(Map const* map)
 {
     if (!map->Instanceable())
         return continentDataRefs.find(map->GetId()) != continentDataRefs.end();
@@ -1347,7 +1347,7 @@ bool Eluna::HasInstanceData(Map const* map)
         return instanceDataRefs.find(map->GetInstanceId()) != instanceDataRefs.end();
 }
 
-void Eluna::CreateInstanceData(Map const* map)
+void Forge::CreateInstanceData(Map const* map)
 {
     ASSERT(lua_istable(L, -1));
     int ref = luaL_ref(L, LUA_REGISTRYINDEX);
@@ -1384,9 +1384,9 @@ void Eluna::CreateInstanceData(Map const* map)
  * Unrefs the instanceId related events and data
  * Does all required actions for when an instance is freed.
  */
-void Eluna::FreeInstanceId(uint32 instanceId)
+void Forge::FreeInstanceId(uint32 instanceId)
 {
-    LOCK_ELUNA;
+    LOCK_FORGE;
 
     if (!IsEnabled())
         return;
@@ -1409,9 +1409,9 @@ void Eluna::FreeInstanceId(uint32 instanceId)
     }
 }
 
-void Eluna::PushInstanceData(lua_State* L, ElunaInstanceAI* ai, bool incrementCounter)
+void Forge::PushInstanceData(lua_State* L, ForgeInstanceAI* ai, bool incrementCounter)
 {
-    // Check if the instance data is missing (i.e. someone reloaded Eluna).
+    // Check if the instance data is missing (i.e. someone reloaded Forge).
     if (!HasInstanceData(ai->instance))
         ai->Reload();
 

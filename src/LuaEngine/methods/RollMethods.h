@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
@@ -18,7 +18,7 @@ namespace LuaRoll
      */
     int GetItemGUID(lua_State* L, Roll* roll)
     {
-        Eluna::Push(L, roll->itemGUID.GetCounter());
+        Forge::Push(L, roll->itemGUID.GetCounter());
         return 1;
     }
 
@@ -29,7 +29,7 @@ namespace LuaRoll
      */
     int GetItemId(lua_State* L, Roll* roll)
     {
-        Eluna::Push(L, roll->itemid);
+        Forge::Push(L, roll->itemid);
         return 1;
     }
 
@@ -40,7 +40,7 @@ namespace LuaRoll
      */
     int GetItemRandomPropId(lua_State* L, Roll* roll)
     {
-        Eluna::Push(L, roll->itemRandomPropId);
+        Forge::Push(L, roll->itemRandomPropId);
         return 1;
     }
 
@@ -51,7 +51,7 @@ namespace LuaRoll
      */
     int GetItemRandomSuffix(lua_State* L, Roll* roll)
     {
-        Eluna::Push(L, roll->itemRandomSuffix);
+        Forge::Push(L, roll->itemRandomSuffix);
         return 1;
     }
 
@@ -62,7 +62,7 @@ namespace LuaRoll
      */
     int GetItemCount(lua_State* L, Roll* roll)
     {
-        Eluna::Push(L, roll->itemCount);
+        Forge::Push(L, roll->itemCount);
         return 1;
     }
 
@@ -87,21 +87,21 @@ namespace LuaRoll
      */
     int GetPlayerVote(lua_State* L, Roll* roll)
     {
-        ObjectGuid guid = Eluna::CHECKVAL<ObjectGuid>(L, 2);
+        ObjectGuid guid = Forge::CHECKVAL<ObjectGuid>(L, 2);
 
         bool found = false;
         for (std::pair<const ObjectGuid, RollVote>& pair : roll->playerVote)
         {
             if (pair.first == guid)
             {
-                Eluna::Push(L, pair.second);
+                Forge::Push(L, pair.second);
                 found = true;
             }
         }
 
         if (!found)
         {
-            Eluna::Push(L);
+            Forge::Push(L);
         }
 
         return 1;
@@ -120,7 +120,7 @@ namespace LuaRoll
         uint32 i = 1;
         for (std::pair<const ObjectGuid, RollVote>& pair : roll->playerVote)
         {
-            Eluna::Push(L, pair.first);
+            Forge::Push(L, pair.first);
             lua_rawseti(L, table, i);
             ++i;
         }
@@ -136,7 +136,7 @@ namespace LuaRoll
      */
     int GetTotalPlayersRolling(lua_State* L, Roll* roll)
     {
-        Eluna::Push(L, roll->totalPlayersRolling);
+        Forge::Push(L, roll->totalPlayersRolling);
         return 1;
     }
 
@@ -147,7 +147,7 @@ namespace LuaRoll
      */
     int GetTotalNeed(lua_State* L, Roll* roll)
     {
-        Eluna::Push(L, roll->totalNeed);
+        Forge::Push(L, roll->totalNeed);
         return 1;
     }
 
@@ -158,7 +158,7 @@ namespace LuaRoll
      */
     int GetTotalGreed(lua_State* L, Roll* roll)
     {
-        Eluna::Push(L, roll->totalGreed);
+        Forge::Push(L, roll->totalGreed);
         return 1;
     }
 
@@ -169,7 +169,7 @@ namespace LuaRoll
      */
     int GetTotalPass(lua_State* L, Roll* roll)
     {
-        Eluna::Push(L, roll->totalPass);
+        Forge::Push(L, roll->totalPass);
         return 1;
     }
 
@@ -180,7 +180,7 @@ namespace LuaRoll
      */
     int GetItemSlot(lua_State* L, Roll* roll)
     {
-        Eluna::Push(L, roll->itemSlot);
+        Forge::Push(L, roll->itemSlot);
         return 1;
     }
 
@@ -204,7 +204,7 @@ namespace LuaRoll
      */
     int GetRollVoteMask(lua_State* L, Roll* roll)
     {
-        Eluna::Push(L, roll->rollVoteMask);
+        Forge::Push(L, roll->rollVoteMask);
         return 1;
     }
 }

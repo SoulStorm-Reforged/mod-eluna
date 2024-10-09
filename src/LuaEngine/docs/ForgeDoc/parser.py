@@ -5,7 +5,7 @@ from typedecorator import params, returns, Nullable
 
 
 class ParameterDoc(object):
-    """The documentation data of a parameter or return value for an Eluna method."""
+    """The documentation data of a parameter or return value for an Forge method."""
 
     # The integer ranges that each C++ type is valid for. None means valid for all numbers.
     valid_ranges = {
@@ -63,7 +63,7 @@ class ParameterDoc(object):
 
 
 class MethodDoc(object):
-    """The documentation data of an Eluna method."""
+    """The documentation data of an Forge method."""
     @params(self=object, name=str, description=str, prototypes=[str], parameters=[ParameterDoc], returned=[ParameterDoc])
     def __init__(self, name, description, prototypes, parameters, returned):
         self.name = name

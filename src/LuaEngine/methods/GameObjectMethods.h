@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
@@ -20,12 +20,12 @@ namespace LuaGameObject
      */
     int HasQuest(lua_State* L, GameObject* go)
     {
-        uint32 questId = Eluna::CHECKVAL<uint32>(L, 2);
+        uint32 questId = Forge::CHECKVAL<uint32>(L, 2);
 
 #if defined TRINITY || AZEROTHCORE
-        Eluna::Push(L, go->hasQuest(questId));
+        Forge::Push(L, go->hasQuest(questId));
 #else
-        Eluna::Push(L, go->HasQuest(questId));
+        Forge::Push(L, go->HasQuest(questId));
 #endif
         return 1;
     }
@@ -37,7 +37,7 @@ namespace LuaGameObject
      */
     int IsSpawned(lua_State* L, GameObject* go)
     {
-        Eluna::Push(L, go->isSpawned());
+        Forge::Push(L, go->isSpawned());
         return 1;
     }
 
@@ -48,7 +48,7 @@ namespace LuaGameObject
      */
     int IsTransport(lua_State* L, GameObject* go)
     {
-        Eluna::Push(L, go->IsTransport());
+        Forge::Push(L, go->IsTransport());
         return 1;
     }
 
@@ -59,13 +59,13 @@ namespace LuaGameObject
      */
     int IsActive(lua_State* L, GameObject* go)
     {
-        Eluna::Push(L, go->isActiveObject());
+        Forge::Push(L, go->isActiveObject());
         return 1;
     }
 
     /*int IsDestructible(lua_State* L, GameObject* go) // TODO: Implementation core side
     {
-        Eluna::Push(L, go->IsDestructibleBuilding());
+        Forge::Push(L, go->IsDestructibleBuilding());
         return 1;
     }*/
 
@@ -76,7 +76,7 @@ namespace LuaGameObject
      */
     int GetDisplayId(lua_State* L, GameObject* go)
     {
-        Eluna::Push(L, go->GetDisplayId());
+        Forge::Push(L, go->GetDisplayId());
         return 1;
     }
 
@@ -97,7 +97,7 @@ namespace LuaGameObject
      */
     int GetGoState(lua_State* L, GameObject* go)
     {
-        Eluna::Push(L, go->GetGoState());
+        Forge::Push(L, go->GetGoState());
         return 1;
     }
 
@@ -119,7 +119,7 @@ namespace LuaGameObject
      */
     int GetLootState(lua_State* L, GameObject* go)
     {
-        Eluna::Push(L, go->getLootState());
+        Forge::Push(L, go->getLootState());
         return 1;
     }
 
@@ -132,7 +132,7 @@ namespace LuaGameObject
      */
     int GetLootRecipient(lua_State* L, GameObject* go)
     {
-        Eluna::Push(L, go->GetLootRecipient());
+        Forge::Push(L, go->GetLootRecipient());
         return 1;
     }
 
@@ -146,9 +146,9 @@ namespace LuaGameObject
     int GetLootRecipientGroup(lua_State* L, GameObject* go)
     {
 #if defined TRINITY || AZEROTHCORE
-        Eluna::Push(L, go->GetLootRecipientGroup());
+        Forge::Push(L, go->GetLootRecipientGroup());
 #else
-        Eluna::Push(L, go->GetGroupLootRecipient());
+        Forge::Push(L, go->GetGroupLootRecipient());
 #endif
         return 1;
     }
@@ -161,10 +161,10 @@ namespace LuaGameObject
     int GetDBTableGUIDLow(lua_State* L, GameObject* go)
     {
 #if defined(TRINITY) || defined(AZEROTHCORE)
-        Eluna::Push(L, go->GetSpawnId());
+        Forge::Push(L, go->GetSpawnId());
 #else
         // on mangos based this is same as lowguid
-        Eluna::Push(L, go->GetGUIDLow());
+        Forge::Push(L, go->GetGUIDLow());
 #endif
         return 1;
     }
@@ -185,7 +185,7 @@ namespace LuaGameObject
      */
     int SetGoState(lua_State* L, GameObject* go)
     {
-        uint32 state = Eluna::CHECKVAL<uint32>(L, 2, 0);
+        uint32 state = Forge::CHECKVAL<uint32>(L, 2, 0);
 
         if (state == 0)
             go->SetGoState(GO_STATE_ACTIVE);
@@ -221,7 +221,7 @@ namespace LuaGameObject
      */
     int SetLootState(lua_State* L, GameObject* go)
     {
-        uint32 state = Eluna::CHECKVAL<uint32>(L, 2, 0);
+        uint32 state = Forge::CHECKVAL<uint32>(L, 2, 0);
 
         if (state == 0)
             go->SetLootState(GO_NOT_READY);
@@ -255,8 +255,8 @@ namespace LuaGameObject
         uint8 addedItems = 0;
         while (i + 2 <= argAmount)
         {
-            uint32 entry = Eluna::CHECKVAL<uint32>(L, ++i);
-            uint32 amount = Eluna::CHECKVAL<uint32>(L, ++i);
+            uint32 entry = Forge::CHECKVAL<uint32>(L, ++i);
+            uint32 amount = Forge::CHECKVAL<uint32>(L, ++i);
 
 #if defined TRINITY || AZEROTHCORE
             ItemTemplate const* item_proto = eObjectMgr->GetItemTemplate(entry);
@@ -283,9 +283,9 @@ namespace LuaGameObject
                 LootStoreItem storeItem(item->GetEntry(), 0, 100, 0, LOOT_MODE_DEFAULT, 0, item->GetCount(), item->GetCount());
                 go->loot.AddItem(storeItem);
 #if defined TRINITY || AZEROTHCORE
-                Eluna::Push(L, item->GetGUID().GetCounter());
+                Forge::Push(L, item->GetGUID().GetCounter());
 #else
-                Eluna::Push(L, item->GetGUIDLow());
+                Forge::Push(L, item->GetGUIDLow());
 #endif
                 ++addedItems;
             }
@@ -317,7 +317,7 @@ namespace LuaGameObject
      */
     int RemoveFromWorld(lua_State* L, GameObject* go)
     {
-        bool deldb = Eluna::CHECKVAL<bool>(L, 2, false);
+        bool deldb = Forge::CHECKVAL<bool>(L, 2, false);
 
         // cs_gobject.cpp copy paste
 #if defined TRINITY || AZEROTHCORE
@@ -346,7 +346,7 @@ namespace LuaGameObject
         go->SetRespawnTime(0);
         go->Delete();
 
-        Eluna::CHECKOBJ<ElunaObject>(L, 1)->Invalidate();
+        Forge::CHECKOBJ<ForgeObject>(L, 1)->Invalidate();
         return 0;
     }
 
@@ -357,7 +357,7 @@ namespace LuaGameObject
      */
     int UseDoorOrButton(lua_State* L, GameObject* go)
     {
-        uint32 delay = Eluna::CHECKVAL<uint32>(L, 2, 0);
+        uint32 delay = Forge::CHECKVAL<uint32>(L, 2, 0);
 
         go->UseDoorOrButton(delay);
         return 0;
@@ -392,7 +392,7 @@ namespace LuaGameObject
      */
     int SetRespawnTime(lua_State* L, GameObject* go)
     {
-        int32 respawn = Eluna::CHECKVAL<int32>(L, 2);
+        int32 respawn = Forge::CHECKVAL<int32>(L, 2);
 
         go->SetRespawnTime(respawn);
         return 0;

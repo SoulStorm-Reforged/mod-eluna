@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
@@ -9,12 +9,12 @@ extern "C"
 #include "lua.h"
 };
 
-// Eluna
+// Forge
 #include "LuaEngine.h"
-#include "ElunaEventMgr.h"
-#include "ElunaIncludes.h"
-#include "ElunaTemplate.h"
-#include "ElunaUtility.h"
+#include "ForgeEventMgr.h"
+#include "ForgeIncludes.h"
+#include "ForgeTemplate.h"
+#include "ForgeUtility.h"
 
 // Method includes
 #include "GlobalMethods.h"
@@ -26,7 +26,7 @@ extern "C"
 #include "GroupMethods.h"
 #include "GuildMethods.h"
 #include "GameObjectMethods.h"
-#include "ElunaQueryMethods.h"
+#include "ForgeQueryMethods.h"
 #include "AuraMethods.h"
 #include "ItemMethods.h"
 #include "LootMethods.h"
@@ -46,7 +46,7 @@ extern "C"
 
 
 
-ElunaRegister<Object> ObjectMethods[] =
+ForgeRegister<Object> ObjectMethods[] =
 {
     // Getters
     { "GetEntry", &LuaObject::GetEntry },
@@ -89,7 +89,7 @@ ElunaRegister<Object> ObjectMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<WorldObject> WorldObjectMethods[] =
+ForgeRegister<WorldObject> WorldObjectMethods[] =
 {
     // Getters
     { "GetName", &LuaWorldObject::GetName },
@@ -151,7 +151,7 @@ ElunaRegister<WorldObject> WorldObjectMethods[] =
 
 
 
-ElunaRegister<GameObject> GameObjectMethods[] =
+ForgeRegister<GameObject> GameObjectMethods[] =
 {
     // Getters
     { "GetDisplayId", &LuaGameObject::GetDisplayId },
@@ -184,7 +184,7 @@ ElunaRegister<GameObject> GameObjectMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<Item> ItemMethods[] =
+ForgeRegister<Item> ItemMethods[] =
 {
     // Getters
     { "GetOwnerGUID", &LuaItem::GetOwnerGUID },
@@ -261,7 +261,7 @@ ElunaRegister<Item> ItemMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<ItemTemplate> ItemTemplateMethods[] =
+ForgeRegister<ItemTemplate> ItemTemplateMethods[] =
 {
     { "GetItemId", &LuaItemTemplate::GetItemId },
     { "GetClass", &LuaItemTemplate::GetClass },
@@ -282,7 +282,7 @@ ElunaRegister<ItemTemplate> ItemTemplateMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<Aura> AuraMethods[] =
+ForgeRegister<Aura> AuraMethods[] =
 {
     // Getters
     { "GetCaster", &LuaAura::GetCaster },
@@ -305,7 +305,7 @@ ElunaRegister<Aura> AuraMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<Quest> QuestMethods[] =
+ForgeRegister<Quest> QuestMethods[] =
 {
     // Getters
     { "GetId", &LuaQuest::GetId },
@@ -328,7 +328,7 @@ ElunaRegister<Quest> QuestMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<Group> GroupMethods[] =
+ForgeRegister<Group> GroupMethods[] =
 {
     // Getters
     { "GetMembers", &LuaGroup::GetMembers },
@@ -368,7 +368,7 @@ ElunaRegister<Group> GroupMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<Guild> GuildMethods[] =
+ForgeRegister<Guild> GuildMethods[] =
 {
     // Getters
     { "GetMembers", &LuaGuild::GetMembers },
@@ -401,7 +401,7 @@ ElunaRegister<Guild> GuildMethods[] =
 
 #ifndef CLASSIC
 #ifndef TBC
-ElunaRegister<Vehicle> VehicleMethods[] =
+ForgeRegister<Vehicle> VehicleMethods[] =
 {
     // Getters
     { "GetOwner", &LuaVehicle::GetOwner },
@@ -420,7 +420,7 @@ ElunaRegister<Vehicle> VehicleMethods[] =
 #endif
 #endif
 
-ElunaRegister<ElunaQuery> QueryMethods[] =
+ForgeRegister<ForgeQuery> QueryMethods[] =
 {
     // Getters
     { "GetColumnCount", &LuaQuery::GetColumnCount },
@@ -446,7 +446,7 @@ ElunaRegister<ElunaQuery> QueryMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<WorldPacket> PacketMethods[] =
+ForgeRegister<WorldPacket> PacketMethods[] =
 {
     // Getters
     { "GetOpcode", &LuaPacket::GetOpcode },
@@ -482,7 +482,7 @@ ElunaRegister<WorldPacket> PacketMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<Corpse> CorpseMethods[] =
+ForgeRegister<Corpse> CorpseMethods[] =
 {
     // Getters
     { "GetOwnerGUID", &LuaCorpse::GetOwnerGUID },
@@ -496,12 +496,12 @@ ElunaRegister<Corpse> CorpseMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<AuctionHouseEntry> AuctionMethods[] =
+ForgeRegister<AuctionHouseEntry> AuctionMethods[] =
 {
     { NULL, NULL }
 };
 
-ElunaRegister<BattleGround> BattleGroundMethods[] =
+ForgeRegister<BattleGround> BattleGroundMethods[] =
 {
     // Getters
     { "GetName", &LuaBattleGround::GetName },
@@ -528,7 +528,7 @@ ElunaRegister<BattleGround> BattleGroundMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<ChatHandler> ChatHandlerMethods[] =
+ForgeRegister<ChatHandler> ChatHandlerMethods[] =
 {
     { "SendSysMessage", &LuaChatHandler::SendSysMessage },
     { "IsConsole", &LuaChatHandler::IsConsole },
@@ -548,7 +548,7 @@ ElunaRegister<ChatHandler> ChatHandlerMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<AchievementEntry> AchievementMethods[] =
+ForgeRegister<AchievementEntry> AchievementMethods[] =
 {
     { "GetId", &LuaAchievement::GetId },
     { "GetName", &LuaAchievement::GetName },
@@ -556,7 +556,7 @@ ElunaRegister<AchievementEntry> AchievementMethods[] =
     { NULL, NULL }
 };
 
-ElunaRegister<Roll> RollMethods[] =
+ForgeRegister<Roll> RollMethods[] =
 {
     { "GetItemGUID", &LuaRoll::GetItemGUID },
     { "GetItemId", &LuaRoll::GetItemId },
@@ -577,165 +577,165 @@ ElunaRegister<Roll> RollMethods[] =
 
 #if (!defined(TBC) && !defined(CLASSIC))
 // fix compile error about accessing vehicle destructor
-template<> int ElunaTemplate<Vehicle>::CollectGarbage(lua_State* L)
+template<> int ForgeTemplate<Vehicle>::CollectGarbage(lua_State* L)
 {
     ASSERT(!manageMemory);
 
     // Get object pointer (and check type, no error)
-    ElunaObject* obj = Eluna::CHECKOBJ<ElunaObject>(L, 1, false);
+    ForgeObject* obj = Forge::CHECKOBJ<ForgeObject>(L, 1, false);
     delete obj;
     return 0;
 }
 #endif
 
 // Template by Mud from http://stackoverflow.com/questions/4484437/lua-integer-type/4485511#4485511
-template<> int ElunaTemplate<unsigned long long>::Add(lua_State* L) { Eluna::Push(L, Eluna::CHECKVAL<unsigned long long>(L, 1) + Eluna::CHECKVAL<unsigned long long>(L, 2)); return 1; }
-template<> int ElunaTemplate<unsigned long long>::Substract(lua_State* L) { Eluna::Push(L, Eluna::CHECKVAL<unsigned long long>(L, 1) - Eluna::CHECKVAL<unsigned long long>(L, 2)); return 1; }
-template<> int ElunaTemplate<unsigned long long>::Multiply(lua_State* L) { Eluna::Push(L, Eluna::CHECKVAL<unsigned long long>(L, 1) * Eluna::CHECKVAL<unsigned long long>(L, 2)); return 1; }
-template<> int ElunaTemplate<unsigned long long>::Divide(lua_State* L) { Eluna::Push(L, Eluna::CHECKVAL<unsigned long long>(L, 1) / Eluna::CHECKVAL<unsigned long long>(L, 2)); return 1; }
-template<> int ElunaTemplate<unsigned long long>::Mod(lua_State* L) { Eluna::Push(L, Eluna::CHECKVAL<unsigned long long>(L, 1) % Eluna::CHECKVAL<unsigned long long>(L, 2)); return 1; }
-// template<> int ElunaTemplate<unsigned long long>::UnaryMinus(lua_State* L) { Eluna::Push(L, -Eluna::CHECKVAL<unsigned long long>(L, 1)); return 1; }
-template<> int ElunaTemplate<unsigned long long>::Equal(lua_State* L) { Eluna::Push(L, Eluna::CHECKVAL<unsigned long long>(L, 1) == Eluna::CHECKVAL<unsigned long long>(L, 2)); return 1; }
-template<> int ElunaTemplate<unsigned long long>::Less(lua_State* L) { Eluna::Push(L, Eluna::CHECKVAL<unsigned long long>(L, 1) < Eluna::CHECKVAL<unsigned long long>(L, 2)); return 1; }
-template<> int ElunaTemplate<unsigned long long>::LessOrEqual(lua_State* L) { Eluna::Push(L, Eluna::CHECKVAL<unsigned long long>(L, 1) <= Eluna::CHECKVAL<unsigned long long>(L, 2)); return 1; }
-template<> int ElunaTemplate<unsigned long long>::Pow(lua_State* L)
+template<> int ForgeTemplate<unsigned long long>::Add(lua_State* L) { Forge::Push(L, Forge::CHECKVAL<unsigned long long>(L, 1) + Forge::CHECKVAL<unsigned long long>(L, 2)); return 1; }
+template<> int ForgeTemplate<unsigned long long>::Substract(lua_State* L) { Forge::Push(L, Forge::CHECKVAL<unsigned long long>(L, 1) - Forge::CHECKVAL<unsigned long long>(L, 2)); return 1; }
+template<> int ForgeTemplate<unsigned long long>::Multiply(lua_State* L) { Forge::Push(L, Forge::CHECKVAL<unsigned long long>(L, 1) * Forge::CHECKVAL<unsigned long long>(L, 2)); return 1; }
+template<> int ForgeTemplate<unsigned long long>::Divide(lua_State* L) { Forge::Push(L, Forge::CHECKVAL<unsigned long long>(L, 1) / Forge::CHECKVAL<unsigned long long>(L, 2)); return 1; }
+template<> int ForgeTemplate<unsigned long long>::Mod(lua_State* L) { Forge::Push(L, Forge::CHECKVAL<unsigned long long>(L, 1) % Forge::CHECKVAL<unsigned long long>(L, 2)); return 1; }
+// template<> int ForgeTemplate<unsigned long long>::UnaryMinus(lua_State* L) { Forge::Push(L, -Forge::CHECKVAL<unsigned long long>(L, 1)); return 1; }
+template<> int ForgeTemplate<unsigned long long>::Equal(lua_State* L) { Forge::Push(L, Forge::CHECKVAL<unsigned long long>(L, 1) == Forge::CHECKVAL<unsigned long long>(L, 2)); return 1; }
+template<> int ForgeTemplate<unsigned long long>::Less(lua_State* L) { Forge::Push(L, Forge::CHECKVAL<unsigned long long>(L, 1) < Forge::CHECKVAL<unsigned long long>(L, 2)); return 1; }
+template<> int ForgeTemplate<unsigned long long>::LessOrEqual(lua_State* L) { Forge::Push(L, Forge::CHECKVAL<unsigned long long>(L, 1) <= Forge::CHECKVAL<unsigned long long>(L, 2)); return 1; }
+template<> int ForgeTemplate<unsigned long long>::Pow(lua_State* L)
 {
-    Eluna::Push(L, static_cast<unsigned long long>(powl(static_cast<long double>(Eluna::CHECKVAL<unsigned long long>(L, 1)), static_cast<long double>(Eluna::CHECKVAL<unsigned long long>(L, 2)))));
+    Forge::Push(L, static_cast<unsigned long long>(powl(static_cast<long double>(Forge::CHECKVAL<unsigned long long>(L, 1)), static_cast<long double>(Forge::CHECKVAL<unsigned long long>(L, 2)))));
     return 1;
 }
-template<> int ElunaTemplate<unsigned long long>::ToString(lua_State* L)
+template<> int ForgeTemplate<unsigned long long>::ToString(lua_State* L)
 {
-    unsigned long long l = Eluna::CHECKVAL<unsigned long long>(L, 1);
+    unsigned long long l = Forge::CHECKVAL<unsigned long long>(L, 1);
     std::ostringstream ss;
     ss << l;
-    Eluna::Push(L, ss.str());
+    Forge::Push(L, ss.str());
     return 1;
 }
 
-template<> int ElunaTemplate<long long>::Add(lua_State* L) { Eluna::Push(L, Eluna::CHECKVAL<long long>(L, 1) + Eluna::CHECKVAL<long long>(L, 2)); return 1; }
-template<> int ElunaTemplate<long long>::Substract(lua_State* L) { Eluna::Push(L, Eluna::CHECKVAL<long long>(L, 1) - Eluna::CHECKVAL<long long>(L, 2)); return 1; }
-template<> int ElunaTemplate<long long>::Multiply(lua_State* L) { Eluna::Push(L, Eluna::CHECKVAL<long long>(L, 1) * Eluna::CHECKVAL<long long>(L, 2)); return 1; }
-template<> int ElunaTemplate<long long>::Divide(lua_State* L) { Eluna::Push(L, Eluna::CHECKVAL<long long>(L, 1) / Eluna::CHECKVAL<long long>(L, 2)); return 1; }
-template<> int ElunaTemplate<long long>::Mod(lua_State* L) { Eluna::Push(L, Eluna::CHECKVAL<long long>(L, 1) % Eluna::CHECKVAL<long long>(L, 2)); return 1; }
-template<> int ElunaTemplate<long long>::UnaryMinus(lua_State* L) { Eluna::Push(L, -Eluna::CHECKVAL<long long>(L, 1)); return 1; }
-template<> int ElunaTemplate<long long>::Equal(lua_State* L) { Eluna::Push(L, Eluna::CHECKVAL<long long>(L, 1) == Eluna::CHECKVAL<long long>(L, 2)); return 1; }
-template<> int ElunaTemplate<long long>::Less(lua_State* L) { Eluna::Push(L, Eluna::CHECKVAL<long long>(L, 1) < Eluna::CHECKVAL<long long>(L, 2)); return 1; }
-template<> int ElunaTemplate<long long>::LessOrEqual(lua_State* L) { Eluna::Push(L, Eluna::CHECKVAL<long long>(L, 1) <= Eluna::CHECKVAL<long long>(L, 2)); return 1; }
-template<> int ElunaTemplate<long long>::Pow(lua_State* L)
+template<> int ForgeTemplate<long long>::Add(lua_State* L) { Forge::Push(L, Forge::CHECKVAL<long long>(L, 1) + Forge::CHECKVAL<long long>(L, 2)); return 1; }
+template<> int ForgeTemplate<long long>::Substract(lua_State* L) { Forge::Push(L, Forge::CHECKVAL<long long>(L, 1) - Forge::CHECKVAL<long long>(L, 2)); return 1; }
+template<> int ForgeTemplate<long long>::Multiply(lua_State* L) { Forge::Push(L, Forge::CHECKVAL<long long>(L, 1) * Forge::CHECKVAL<long long>(L, 2)); return 1; }
+template<> int ForgeTemplate<long long>::Divide(lua_State* L) { Forge::Push(L, Forge::CHECKVAL<long long>(L, 1) / Forge::CHECKVAL<long long>(L, 2)); return 1; }
+template<> int ForgeTemplate<long long>::Mod(lua_State* L) { Forge::Push(L, Forge::CHECKVAL<long long>(L, 1) % Forge::CHECKVAL<long long>(L, 2)); return 1; }
+template<> int ForgeTemplate<long long>::UnaryMinus(lua_State* L) { Forge::Push(L, -Forge::CHECKVAL<long long>(L, 1)); return 1; }
+template<> int ForgeTemplate<long long>::Equal(lua_State* L) { Forge::Push(L, Forge::CHECKVAL<long long>(L, 1) == Forge::CHECKVAL<long long>(L, 2)); return 1; }
+template<> int ForgeTemplate<long long>::Less(lua_State* L) { Forge::Push(L, Forge::CHECKVAL<long long>(L, 1) < Forge::CHECKVAL<long long>(L, 2)); return 1; }
+template<> int ForgeTemplate<long long>::LessOrEqual(lua_State* L) { Forge::Push(L, Forge::CHECKVAL<long long>(L, 1) <= Forge::CHECKVAL<long long>(L, 2)); return 1; }
+template<> int ForgeTemplate<long long>::Pow(lua_State* L)
 {
-    Eluna::Push(L, static_cast<long long>(powl(static_cast<long double>(Eluna::CHECKVAL<long long>(L, 1)), static_cast<long double>(Eluna::CHECKVAL<long long>(L, 2)))));
+    Forge::Push(L, static_cast<long long>(powl(static_cast<long double>(Forge::CHECKVAL<long long>(L, 1)), static_cast<long double>(Forge::CHECKVAL<long long>(L, 2)))));
     return 1;
 }
-template<> int ElunaTemplate<long long>::ToString(lua_State* L)
+template<> int ForgeTemplate<long long>::ToString(lua_State* L)
 {
-    long long l = Eluna::CHECKVAL<long long>(L, 1);
+    long long l = Forge::CHECKVAL<long long>(L, 1);
     std::ostringstream ss;
     ss << l;
-    Eluna::Push(L, ss.str());
+    Forge::Push(L, ss.str());
     return 1;
 }
 
-void RegisterFunctions(Eluna* E)
+void RegisterFunctions(Forge* E)
 {
-    ElunaGlobal::SetMethods(E, LuaGlobalFunctions::GlobalMethods);
+    ForgeGlobal::SetMethods(E, LuaGlobalFunctions::GlobalMethods);
 
-    ElunaTemplate<Object>::Register(E, "Object");
-    ElunaTemplate<Object>::SetMethods(E, ObjectMethods);
+    ForgeTemplate<Object>::Register(E, "Object");
+    ForgeTemplate<Object>::SetMethods(E, ObjectMethods);
 
-    ElunaTemplate<WorldObject>::Register(E, "WorldObject");
-    ElunaTemplate<WorldObject>::SetMethods(E, ObjectMethods);
-    ElunaTemplate<WorldObject>::SetMethods(E, WorldObjectMethods);
+    ForgeTemplate<WorldObject>::Register(E, "WorldObject");
+    ForgeTemplate<WorldObject>::SetMethods(E, ObjectMethods);
+    ForgeTemplate<WorldObject>::SetMethods(E, WorldObjectMethods);
 
-    ElunaTemplate<Unit>::Register(E, "Unit");
-    ElunaTemplate<Unit>::SetMethods(E, ObjectMethods);
-    ElunaTemplate<Unit>::SetMethods(E, WorldObjectMethods);
-    ElunaTemplate<Unit>::SetMethods(E, LuaUnit::UnitMethods);
+    ForgeTemplate<Unit>::Register(E, "Unit");
+    ForgeTemplate<Unit>::SetMethods(E, ObjectMethods);
+    ForgeTemplate<Unit>::SetMethods(E, WorldObjectMethods);
+    ForgeTemplate<Unit>::SetMethods(E, LuaUnit::UnitMethods);
 
-    ElunaTemplate<Player>::Register(E, "Player");
-    ElunaTemplate<Player>::SetMethods(E, ObjectMethods);
-    ElunaTemplate<Player>::SetMethods(E, WorldObjectMethods);
-    ElunaTemplate<Player>::SetMethods(E, LuaUnit::UnitMethods);
-    ElunaTemplate<Player>::SetMethods(E, LuaPlayer::PlayerMethods);
+    ForgeTemplate<Player>::Register(E, "Player");
+    ForgeTemplate<Player>::SetMethods(E, ObjectMethods);
+    ForgeTemplate<Player>::SetMethods(E, WorldObjectMethods);
+    ForgeTemplate<Player>::SetMethods(E, LuaUnit::UnitMethods);
+    ForgeTemplate<Player>::SetMethods(E, LuaPlayer::PlayerMethods);
 
-    ElunaTemplate<Creature>::Register(E, "Creature");
-    ElunaTemplate<Creature>::SetMethods(E, ObjectMethods);
-    ElunaTemplate<Creature>::SetMethods(E, WorldObjectMethods);
-    ElunaTemplate<Creature>::SetMethods(E, LuaUnit::UnitMethods);
-    ElunaTemplate<Creature>::SetMethods(E, LuaCreature::CreatureMethods);
+    ForgeTemplate<Creature>::Register(E, "Creature");
+    ForgeTemplate<Creature>::SetMethods(E, ObjectMethods);
+    ForgeTemplate<Creature>::SetMethods(E, WorldObjectMethods);
+    ForgeTemplate<Creature>::SetMethods(E, LuaUnit::UnitMethods);
+    ForgeTemplate<Creature>::SetMethods(E, LuaCreature::CreatureMethods);
 
-    ElunaTemplate<GameObject>::Register(E, "GameObject");
-    ElunaTemplate<GameObject>::SetMethods(E, ObjectMethods);
-    ElunaTemplate<GameObject>::SetMethods(E, WorldObjectMethods);
-    ElunaTemplate<GameObject>::SetMethods(E, GameObjectMethods);
+    ForgeTemplate<GameObject>::Register(E, "GameObject");
+    ForgeTemplate<GameObject>::SetMethods(E, ObjectMethods);
+    ForgeTemplate<GameObject>::SetMethods(E, WorldObjectMethods);
+    ForgeTemplate<GameObject>::SetMethods(E, GameObjectMethods);
 
-    ElunaTemplate<Corpse>::Register(E, "Corpse");
-    ElunaTemplate<Corpse>::SetMethods(E, ObjectMethods);
-    ElunaTemplate<Corpse>::SetMethods(E, WorldObjectMethods);
-    ElunaTemplate<Corpse>::SetMethods(E, CorpseMethods);
+    ForgeTemplate<Corpse>::Register(E, "Corpse");
+    ForgeTemplate<Corpse>::SetMethods(E, ObjectMethods);
+    ForgeTemplate<Corpse>::SetMethods(E, WorldObjectMethods);
+    ForgeTemplate<Corpse>::SetMethods(E, CorpseMethods);
 
-    ElunaTemplate<Item>::Register(E, "Item");
-    ElunaTemplate<Item>::SetMethods(E, ObjectMethods);
-    ElunaTemplate<Item>::SetMethods(E, ItemMethods);
+    ForgeTemplate<Item>::Register(E, "Item");
+    ForgeTemplate<Item>::SetMethods(E, ObjectMethods);
+    ForgeTemplate<Item>::SetMethods(E, ItemMethods);
 
-    ElunaTemplate<ItemTemplate>::Register(E, "ItemTemplate");
-    ElunaTemplate<ItemTemplate>::SetMethods(E, ItemTemplateMethods);
+    ForgeTemplate<ItemTemplate>::Register(E, "ItemTemplate");
+    ForgeTemplate<ItemTemplate>::SetMethods(E, ItemTemplateMethods);
 
 #ifndef CLASSIC
 #ifndef TBC
-    ElunaTemplate<Vehicle>::Register(E, "Vehicle");
-    ElunaTemplate<Vehicle>::SetMethods(E, VehicleMethods);
+    ForgeTemplate<Vehicle>::Register(E, "Vehicle");
+    ForgeTemplate<Vehicle>::SetMethods(E, VehicleMethods);
 #endif
 #endif
 
-    ElunaTemplate<Group>::Register(E, "Group");
-    ElunaTemplate<Group>::SetMethods(E, GroupMethods);
+    ForgeTemplate<Group>::Register(E, "Group");
+    ForgeTemplate<Group>::SetMethods(E, GroupMethods);
 
-    ElunaTemplate<Guild>::Register(E, "Guild");
-    ElunaTemplate<Guild>::SetMethods(E, GuildMethods);
+    ForgeTemplate<Guild>::Register(E, "Guild");
+    ForgeTemplate<Guild>::SetMethods(E, GuildMethods);
 
-    ElunaTemplate<Aura>::Register(E, "Aura");
-    ElunaTemplate<Aura>::SetMethods(E, AuraMethods);
+    ForgeTemplate<Aura>::Register(E, "Aura");
+    ForgeTemplate<Aura>::SetMethods(E, AuraMethods);
 
-    ElunaTemplate<Spell>::Register(E, "Spell");
-    ElunaTemplate<Spell>::SetMethods(E, LuaSpell::SpellMethods);
+    ForgeTemplate<Spell>::Register(E, "Spell");
+    ForgeTemplate<Spell>::SetMethods(E, LuaSpell::SpellMethods);
 
-    ElunaTemplate<SpellInfo>::Register(E, "SpellInfo");
-    ElunaTemplate<SpellInfo>::SetMethods(E, LuaSpellInfo::SpellInfoMethods);
+    ForgeTemplate<SpellInfo>::Register(E, "SpellInfo");
+    ForgeTemplate<SpellInfo>::SetMethods(E, LuaSpellInfo::SpellInfoMethods);
 
-    ElunaTemplate<SpellEffectInfo>::Register(E, "SpellEffectInfo");
-    ElunaTemplate<SpellEffectInfo>::SetMethods(E, LuaSpellEffectInfo::SpellEffectInfoMethods);
+    ForgeTemplate<SpellEffectInfo>::Register(E, "SpellEffectInfo");
+    ForgeTemplate<SpellEffectInfo>::SetMethods(E, LuaSpellEffectInfo::SpellEffectInfoMethods);
 
-    ElunaTemplate<Quest>::Register(E, "Quest");
-    ElunaTemplate<Quest>::SetMethods(E, QuestMethods);
+    ForgeTemplate<Quest>::Register(E, "Quest");
+    ForgeTemplate<Quest>::SetMethods(E, QuestMethods);
 
-    ElunaTemplate<Map>::Register(E, "Map");
-    ElunaTemplate<Map>::SetMethods(E, LuaMap::MapMethods);
+    ForgeTemplate<Map>::Register(E, "Map");
+    ForgeTemplate<Map>::SetMethods(E, LuaMap::MapMethods);
 
-    ElunaTemplate<AuctionHouseEntry>::Register(E, "AuctionHouseEntry");
-    ElunaTemplate<AuctionHouseEntry>::SetMethods(E, AuctionMethods);
+    ForgeTemplate<AuctionHouseEntry>::Register(E, "AuctionHouseEntry");
+    ForgeTemplate<AuctionHouseEntry>::SetMethods(E, AuctionMethods);
 
-    ElunaTemplate<BattleGround>::Register(E, "BattleGround");
-    ElunaTemplate<BattleGround>::SetMethods(E, BattleGroundMethods);
+    ForgeTemplate<BattleGround>::Register(E, "BattleGround");
+    ForgeTemplate<BattleGround>::SetMethods(E, BattleGroundMethods);
 
-    ElunaTemplate<ChatHandler>::Register(E, "ChatHandler");
-    ElunaTemplate<ChatHandler>::SetMethods(E, ChatHandlerMethods);
+    ForgeTemplate<ChatHandler>::Register(E, "ChatHandler");
+    ForgeTemplate<ChatHandler>::SetMethods(E, ChatHandlerMethods);
 
-    ElunaTemplate<WorldPacket>::Register(E, "WorldPacket", true);
-    ElunaTemplate<WorldPacket>::SetMethods(E, PacketMethods);
+    ForgeTemplate<WorldPacket>::Register(E, "WorldPacket", true);
+    ForgeTemplate<WorldPacket>::SetMethods(E, PacketMethods);
 
-    ElunaTemplate<ElunaQuery>::Register(E, "ElunaQuery", true);
-    ElunaTemplate<ElunaQuery>::SetMethods(E, QueryMethods);
+    ForgeTemplate<ForgeQuery>::Register(E, "ForgeQuery", true);
+    ForgeTemplate<ForgeQuery>::SetMethods(E, QueryMethods);
 
-    ElunaTemplate<AchievementEntry>::Register(E, "AchievementEntry");
-    ElunaTemplate<AchievementEntry>::SetMethods(E, AchievementMethods);
+    ForgeTemplate<AchievementEntry>::Register(E, "AchievementEntry");
+    ForgeTemplate<AchievementEntry>::SetMethods(E, AchievementMethods);
 
-    ElunaTemplate<Roll>::Register(E, "Roll");
-    ElunaTemplate<Roll>::SetMethods(E, RollMethods);
+    ForgeTemplate<Roll>::Register(E, "Roll");
+    ForgeTemplate<Roll>::SetMethods(E, RollMethods);
 
-    ElunaTemplate<Loot>::Register(E, "Loot");
-    ElunaTemplate<Loot>::SetMethods(E, LuaLoot::LootMethods);
+    ForgeTemplate<Loot>::Register(E, "Loot");
+    ForgeTemplate<Loot>::SetMethods(E, LuaLoot::LootMethods);
 
-    ElunaTemplate<long long>::Register(E, "long long", true);
+    ForgeTemplate<long long>::Register(E, "long long", true);
 
-    ElunaTemplate<unsigned long long>::Register(E, "unsigned long long", true);
+    ForgeTemplate<unsigned long long>::Register(E, "unsigned long long", true);
 }

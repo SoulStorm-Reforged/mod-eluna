@@ -3,7 +3,7 @@ import shutil
 import typing
 from jinja2 import Environment, FileSystemLoader
 from typedecorator import params, returns
-from ElunaDoc.parser import ClassParser, MethodDoc
+from ForgeDoc.parser import ClassParser, MethodDoc
 import glob
 import time
 
@@ -11,10 +11,10 @@ import time
 @returns([(str, typing.IO)])
 @params(search_path=str)
 def find_class_files(search_path):
-    """Find and open all files containing Eluna class methods in `search_path`.
+    """Find and open all files containing Forge class methods in `search_path`.
 
-    :param search_path: the path to search for Eluna methods in
-    :return: a list of all files containing Eluna methods, and the name of their respective classes
+    :param search_path: the path to search for Forge methods in
+    :return: a list of all files containing Forge methods, and the name of their respective classes
     """
     # Get the current working dir and switch to the search path.
     old_dir = os.getcwd()
@@ -60,10 +60,10 @@ if __name__ == '__main__':
     if os.path.exists('build'):
         shutil.rmtree('build')
     os.mkdir('build')
-    shutil.copytree('ElunaDoc/static', 'build/static')
+    shutil.copytree('ForgeDoc/static', 'build/static')
 
     # Load up all files with methods we need to parse.
-    print('Finding Eluna method files...')
+    print('Finding Forge method files...')
     class_files = find_class_files('../')
 
     # Parse all the method files.
@@ -136,7 +136,7 @@ if __name__ == '__main__':
 
             # Case for enums to direct to a search on github
             enum_name = content[1:-1]
-            url = 'https://github.com/ElunaLuaEngine/ElunaTrinityWotlk/search?l=cpp&q=%22enum+{}%22&type=Code&utf8=%E2%9C%93'.format(enum_name)
+            url = 'https://github.com/ForgeLuaEngine/ForgeTrinityWotlk/search?l=cpp&q=%22enum+{}%22&type=Code&utf8=%E2%9C%93'.format(enum_name)
             return '<strong><a href="{}">{}</a></strong>'.format(url, enum_name)
 
             # By default we just return the name without the [] around it
@@ -145,7 +145,7 @@ if __name__ == '__main__':
         return link_parser, data_type_parser
 
     # Create the render function with the template path and parser maker.
-    render = make_renderer('ElunaDoc/templates', make_parsers)
+    render = make_renderer('ForgeDoc/templates', make_parsers)
 
     # Render the index.
     render('index.html', 'index.html', level=0, classes=classes)

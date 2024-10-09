@@ -1,11 +1,11 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
 
-#ifndef _ELUNA_UTIL_H
-#define _ELUNA_UTIL_H
+#ifndef _FORGE_UTIL_H
+#define _FORGE_UTIL_H
 
 #include <unordered_map>
 #include <unordered_set>
@@ -26,7 +26,7 @@
 #endif
 
 #if defined(TRINITY) || defined(AZEROTHCORE)
-typedef QueryResult ElunaQuery;
+typedef QueryResult ForgeQuery;
 #define GET_GUID                GetGUID
 #define HIGHGUID_PLAYER         HighGuid::Player
 #define HIGHGUID_UNIT           HighGuid::Unit
@@ -44,19 +44,19 @@ typedef QueryResult ElunaQuery;
 #endif
 
 #ifdef TRINITY
-#define ELUNA_LOG_INFO(...)     TC_LOG_INFO("eluna", __VA_ARGS__);
-#define ELUNA_LOG_ERROR(...)    TC_LOG_ERROR("eluna", __VA_ARGS__);
-#define ELUNA_LOG_DEBUG(...)    TC_LOG_DEBUG("eluna", __VA_ARGS__);
+#define FORGE_LOG_INFO(...)     TC_LOG_INFO("forge", __VA_ARGS__);
+#define FORGE_LOG_ERROR(...)    TC_LOG_ERROR("forge", __VA_ARGS__);
+#define FORGE_LOG_DEBUG(...)    TC_LOG_DEBUG("forge", __VA_ARGS__);
 #elif defined(AZEROTHCORE)
-#define ELUNA_LOG_INFO(...)     LOG_INFO("eluna", __VA_ARGS__);
-#define ELUNA_LOG_ERROR(...)    LOG_ERROR("eluna", __VA_ARGS__);
-#define ELUNA_LOG_DEBUG(...)    LOG_DEBUG("eluna", __VA_ARGS__);
+#define FORGE_LOG_INFO(...)     LOG_INFO("forge", __VA_ARGS__);
+#define FORGE_LOG_ERROR(...)    LOG_ERROR("forge", __VA_ARGS__);
+#define FORGE_LOG_DEBUG(...)    LOG_DEBUG("forge", __VA_ARGS__);
 #else
-typedef QueryNamedResult ElunaQuery;
+typedef QueryNamedResult ForgeQuery;
 #define ASSERT                  MANGOS_ASSERT
-#define ELUNA_LOG_INFO(...)     sLog.outString(__VA_ARGS__);
-#define ELUNA_LOG_ERROR(...)    sLog.outErrorEluna(__VA_ARGS__);
-#define ELUNA_LOG_DEBUG(...)    sLog.outDebug(__VA_ARGS__);
+#define FORGE_LOG_INFO(...)     sLog.outString(__VA_ARGS__);
+#define FORGE_LOG_ERROR(...)    sLog.outErrorForge(__VA_ARGS__);
+#define FORGE_LOG_DEBUG(...)    sLog.outDebug(__VA_ARGS__);
 #define GET_GUID                GetObjectGuid
 #define GetGameObjectTemplate   GetGameObjectInfo
 #define GetItemTemplate         GetItemPrototype
@@ -78,11 +78,13 @@ typedef QueryNamedResult ElunaQuery;
 #endif
 #endif
 
+typedef std::vector<uint8> BytecodeBuffer;
+
 class Unit;
 class WorldObject;
 struct FactionTemplateEntry;
 
-namespace ElunaUtil
+namespace ForgeUtil
 {
     uint32 GetCurrTime();
 

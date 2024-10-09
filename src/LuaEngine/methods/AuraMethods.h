@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 - 2016 Eluna Lua Engine <http://emudevs.com/>
+* Copyright (C) 2010 - 2016 Forge Lua Engine <http://emudevs.com/>
 * This program is free software licensed under GPL version 3
 * Please see the included DOCS/LICENSE.md for more information
 */
@@ -28,7 +28,7 @@ namespace LuaAura
      */
     int GetCaster(lua_State* L, Aura* aura)
     {
-        Eluna::Push(L, aura->GetCaster());
+        Forge::Push(L, aura->GetCaster());
         return 1;
     }
 
@@ -40,9 +40,9 @@ namespace LuaAura
     int GetCasterGUID(lua_State* L, Aura* aura)
     {
 #if defined TRINITY || AZEROTHCORE
-        Eluna::Push(L, aura->GetCasterGUID());
+        Forge::Push(L, aura->GetCasterGUID());
 #else
-        Eluna::Push(L, aura->GetCasterGuid());
+        Forge::Push(L, aura->GetCasterGuid());
 #endif
         return 1;
     }
@@ -54,7 +54,7 @@ namespace LuaAura
      */
     int GetCasterLevel(lua_State* L, Aura* aura)
     {
-        Eluna::Push(L, aura->GetCaster()->GetLevel());
+        Forge::Push(L, aura->GetCaster()->GetLevel());
         return 1;
     }
 
@@ -66,9 +66,9 @@ namespace LuaAura
     int GetDuration(lua_State* L, Aura* aura)
     {
 #if defined TRINITY || AZEROTHCORE
-        Eluna::Push(L, aura->GetDuration());
+        Forge::Push(L, aura->GetDuration());
 #else
-        Eluna::Push(L, aura->GetAuraDuration());
+        Forge::Push(L, aura->GetAuraDuration());
 #endif
         return 1;
     }
@@ -80,7 +80,7 @@ namespace LuaAura
      */
     int GetAuraId(lua_State* L, Aura* aura)
     {
-        Eluna::Push(L, aura->GetId());
+        Forge::Push(L, aura->GetId());
         return 1;
     }
 
@@ -95,9 +95,9 @@ namespace LuaAura
     int GetMaxDuration(lua_State* L, Aura* aura)
     {
 #if defined TRINITY || AZEROTHCORE
-        Eluna::Push(L, aura->GetMaxDuration());
+        Forge::Push(L, aura->GetMaxDuration());
 #else
-        Eluna::Push(L, aura->GetAuraMaxDuration());
+        Forge::Push(L, aura->GetAuraMaxDuration());
 #endif
         return 1;
     }
@@ -111,7 +111,7 @@ namespace LuaAura
      */
     int GetStackAmount(lua_State* L, Aura* aura)
     {
-        Eluna::Push(L, aura->GetStackAmount());
+        Forge::Push(L, aura->GetStackAmount());
         return 1;
     }
 
@@ -123,9 +123,9 @@ namespace LuaAura
     int GetOwner(lua_State* L, Aura* aura)
     {
 #if defined TRINITY || defined AZEROTHCORE
-        Eluna::Push(L, aura->GetOwner());
+        Forge::Push(L, aura->GetOwner());
 #else
-        Eluna::Push(L, aura->GetTarget());
+        Forge::Push(L, aura->GetTarget());
 #endif
         return 1;
     }
@@ -137,7 +137,7 @@ namespace LuaAura
      */
     int SetDuration(lua_State* L, Aura* aura)
     {
-        int32 duration = Eluna::CHECKVAL<int32>(L, 2);
+        int32 duration = Forge::CHECKVAL<int32>(L, 2);
 #if defined TRINITY || defined AZEROTHCORE
         aura->SetDuration(duration);
 #else
@@ -161,7 +161,7 @@ namespace LuaAura
      */
     int SetMaxDuration(lua_State* L, Aura* aura)
     {
-        int32 duration = Eluna::CHECKVAL<int32>(L, 2);
+        int32 duration = Forge::CHECKVAL<int32>(L, 2);
 #if defined TRINITY || defined AZEROTHCORE
         aura->SetMaxDuration(duration);
 #else
@@ -185,7 +185,7 @@ namespace LuaAura
      */
     int SetStackAmount(lua_State* L, Aura* aura)
     {
-        uint8 amount = Eluna::CHECKVAL<uint8>(L, 2);
+        uint8 amount = Forge::CHECKVAL<uint8>(L, 2);
 #if defined TRINITY || defined AZEROTHCORE
         aura->SetStackAmount(amount);
 #else
@@ -204,7 +204,7 @@ namespace LuaAura
 #else
         aura->GetTarget()->RemoveSpellAuraHolder(aura->GetHolder(), AURA_REMOVE_BY_CANCEL);
 #endif
-        Eluna::CHECKOBJ<ElunaObject>(L, 1)->Invalidate();
+        Forge::CHECKOBJ<ForgeObject>(L, 1)->Invalidate();
         return 0;
     }
 };
