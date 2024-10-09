@@ -136,6 +136,9 @@ public:
     typedef std::recursive_mutex LockType;
     typedef std::lock_guard<LockType> Guard;
 
+    const std::string& GetRequirePath() const { return m_requirePath; }
+    const std::string& GetRequireCPath() const { return m_requirecPath; }
+
 private:
     static bool reload;
     static bool initialized;
@@ -148,7 +151,8 @@ private:
     // Lua script folder path
     static std::string lua_folderpath;
     // lua path variable for require() function
-    static std::string lua_requirepath;
+    static std::string m_requirePath;
+    static std::string m_requirecPath;
 
     // A counter for lua event stacks that occur (see event_level).
     // This is used to determine whether an object belongs to the current call stack or not.
